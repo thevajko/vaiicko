@@ -95,7 +95,7 @@ abstract class Model
      * @param $id
      * @throws \Exception
      */
-    public function getOne($id)
+    static public function getOne($id)
     {
         self::connect();
         try {
@@ -105,11 +105,13 @@ abstract class Model
             $model = $stmt->fetch();
             if ($model) {
                 $data = array_fill_keys(self::getDbColumns(), null);
+                $tmpModel = new static();
                 foreach ($data as $key => $item) {
-                    $this->$key = $model[$key];
+                    $tmpModel->$key = $model[$key];
                 }
+                return $tmpModel;
             } else {
-                throw new \Exception('Model not found!');
+                throw new \Exception('Record not found!');
             }
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage());
