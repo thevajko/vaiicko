@@ -32,8 +32,7 @@ class Router
      * Returns a controller instance of from an URL
      * @return AControllerBase
      */
-    public
-    function getFullControllerName(): string
+    public function getFullControllerName(): string
     {
         $controllerName = empty(trim(@$_GET['c'])) ? "home" : trim($_GET['c']);
         return 'App\Controllers\\' . $controllerName . "Controller";
@@ -44,8 +43,7 @@ class Router
      * Returns an action name from an URL
      * @return string
      */
-    public
-    function getAction(): string
+    public function getAction(): string
     {
         return (empty(trim(@$_GET['a'])) ? "Index" : $_GET['a']);
     }
