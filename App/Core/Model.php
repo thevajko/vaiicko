@@ -59,7 +59,7 @@ abstract class Model
      * Gets DB connection for additional model methods
      * @return null
      */
-    protected static function getConnection()
+    protected static function getConnection() : PDO
     {
         self::connect();
         return self::$db;
@@ -67,7 +67,7 @@ abstract class Model
 
     /**
      * Return an array of models from DB
-     * @return array
+     * @return static[]
      */
     static public function getAll()
     {

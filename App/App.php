@@ -35,7 +35,7 @@ class App
      * Runs the application
      * @throws \Exception
      */
-    public function run(): void
+    public function run()
     {
         ob_start();
 
