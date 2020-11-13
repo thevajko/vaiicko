@@ -12,35 +12,25 @@ class Router
     public function processURL()
     {
         $fullControllerName = $this->getFullControllerName();
-        try {
-            $controller = new $fullControllerName();
-        } catch (\Exception $e) {
-            $controller = null;
-        }
+        $controller = new $fullControllerName();
         $action = $this->getAction();
-
-        if (!method_exists($controller, $action)) {
-            http_response_code(404);
-            echo '404 Not Found';
-            die();
-        }
 
         return ['controller' => $controller, 'action' => $action];
     }
 
     /**
-     * Returns a controller instance of from an URL
-     * @return AControllerBase
+     * Returns a controller instance of from an URL (Home controller as default)
+     * @return string
      */
     public function getFullControllerName(): string
     {
-        $controllerName = empty(trim(@$_GET['c'])) ? "home" : trim($_GET['c']);
+        $controllerName = empty(trim(@$_GET['c'])) ? "Home" : trim($_GET['c']);
         return 'App\Controllers\\' . $controllerName . "Controller";
 
     }
 
     /**
-     * Returns an action name from an URL
+     * Returns an action name from an URL (index action by default)
      * @return string
      */
     public function getAction(): string
