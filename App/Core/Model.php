@@ -67,13 +67,20 @@ abstract class Model
 
     /**
      * Return an array of models from DB
+     * @param string $whereClause Additional where Statement
+     * @param array $whereParams Parameters for where
      * @return static[]
+     * @throws \Exception
      */
-    static public function getAll()
+    static public function getAll(string $whereClause = '', array $whereParams = [])
     {
         self::connect();
         try {
-            $stmt = self::$db->query("SELECT * FROM " . self::getTableName());
+            $sql = "SELECT * FROM " . self::getTableName() . ($whereClause=='' ? '' : " WHERE $whereClause");
+
+            $stmt = self::$db->prepare($sql);
+            $stmt->execute($whereParams);
+
             $dbModels = $stmt->fetchAll();
             $models = [];
             foreach ($dbModels as $model) {
