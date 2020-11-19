@@ -89,7 +89,7 @@ abstract class Model
                 foreach ($data as $key => $item) {
                     $tmpModel->$key = $model[$key];
                 }
-                $models[] = $tmpModel;
+                $models[$model[static::$pkColumn]] = $tmpModel;
             }
             return $models;
         } catch (PDOException $e) {
@@ -104,6 +104,8 @@ abstract class Model
      */
     static public function getOne($id)
     {
+        if ($id == null) return null;
+
         self::connect();
         try {
             $sql = "SELECT * FROM " . self::getTableName() . " WHERE id=$id";
