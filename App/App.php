@@ -51,7 +51,7 @@ class App
         // call appropriate method of the controller class
         $response =  call_user_func([$this->router->getController(), $this->router->getAction()]);
 
-        $response->render();
+        $response->generate();
 
         if (Configuration::DEBUG_QUERY) {
             $queries = array_map(function ($q) {$lines = explode("\n", $q); return '<pre>' . (substr($lines[1], 0, 7) == 'Params:'? 'Sent '.$lines[0] : $lines[1]) .'</pre>';} , Connection::getQueryLog());
