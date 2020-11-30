@@ -2,7 +2,11 @@
 
 namespace App;
 
+use App\Core\DB\Connection;
+use App\Core\Request;
+use App\Core\Responses\Response;
 use App\Core\Router;
+use App\Config\Configuration;
 
 /**
  * Class App
@@ -11,24 +15,23 @@ use App\Core\Router;
  */
 class App
 {
-
     /**
      * @var Router
      */
     private $router;
 
     /**
-     * @var Config\Configuration|null
+     * @var Request
      */
-    private static $config;
+    private Request $request;
 
     /**
      * App constructor
      */
     public function __construct()
     {
-        self::$config = Config\Configuration::getInstance();
         $this->router = new Router();
+        $this->request = new Request();
     }
 
     /**
@@ -39,23 +42,37 @@ class App
     {
         ob_start();
 
-        $route = $this->router->processURL();
+        // get a controller and action from URL
+        $this->router->processURL();
 
-        $data = call_user_func([$route['controller'], $route['action']]);
+        //inject app into Controller
+        call_user_func([$this->router->getController(), 'setApp'], $this);
 
-        require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $route['controller']->getName() . DIRECTORY_SEPARATOR . $route['action'] . ".view.php";
+        // call appropriate method of the controller class
+        $response =  call_user_func([$this->router->getController(), $this->router->getAction()]);
 
-        $contentHTML = ob_get_clean();
+        $response->render();
 
-        require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . "root.layout.view.php";
+        if (Configuration::DEBUG_QUERY) {
+            $queries = array_map(function ($q) {$lines = explode("\n", $q); return '<pre>' . (substr($lines[1], 0, 7) == 'Params:'? 'Sent '.$lines[0] : $lines[1]) .'</pre>';} , Connection::getQueryLog());
+            echo implode(PHP_EOL . PHP_EOL, $queries);
+        }
     }
 
     /**
-     * @return Config\Configuration|null
+     * @return Router
      */
-    public static function getConfig(): ?Config\Configuration
+    public function getRouter(): Router
     {
-        return self::$config;
+        return $this->router;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest(): Request
+    {
+        return $this->request;
     }
 
 }

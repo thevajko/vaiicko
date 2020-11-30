@@ -9,13 +9,18 @@ namespace App\Core;
  */
 class Router
 {
+    private $controller;
+    private $controllerName;
+    private $action;
+
     public function processURL()
     {
         $fullControllerName = $this->getFullControllerName();
-        $controller = new $fullControllerName();
-        $action = $this->getAction();
+        $this->controller = new $fullControllerName();
 
-        return ['controller' => $controller, 'action' => $action];
+        $this->controllerName = $this->getControllerName();
+
+        $this->action = $this->getAction();
     }
 
     /**
@@ -24,9 +29,16 @@ class Router
      */
     public function getFullControllerName(): string
     {
-        $controllerName = empty(trim(@$_GET['c'])) ? "Home" : trim($_GET['c']);
-        return 'App\Controllers\\' . $controllerName . "Controller";
+        return 'App\Controllers\\' . $this->getControllerName() . "Controller";
+    }
 
+    /**
+     * Returns a controller name from an URL (home controller action by default)
+     * @return string
+     */
+    public function getControllerName() : string
+    {
+            return empty(trim(@$_GET['c'])) ? "Home" : trim($_GET['c']);
     }
 
     /**
@@ -36,5 +48,13 @@ class Router
     public function getAction(): string
     {
         return (empty(trim(@$_GET['a'])) ? "index" : $_GET['a']);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getController()
+    {
+        return $this->controller;
     }
 }
