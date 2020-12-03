@@ -11,7 +11,7 @@ use PDOException;
  * Allows basic CRUD operations
  * @package App\Core\Storage
  */
-abstract class Model
+abstract class Model implements \JsonSerializable
 {
     private static $connection = null;
     private static $pkColumn = 'id';
@@ -72,7 +72,7 @@ abstract class Model
                 foreach ($data as $key => $item) {
                     $tmpModel->$key = $model[$key];
                 }
-                $models[$model[static::$pkColumn]] = $tmpModel;
+                $models[] = $tmpModel;
             }
             return $models;
         } catch (PDOException $e) {
@@ -172,4 +172,15 @@ abstract class Model
     {
         return self::$connection;
     }
+
+    /**
+     * Default implementation of JSON serialize method
+     * @return array|mixed
+     */
+
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
+    }
+
 }
