@@ -1,15 +1,14 @@
 <?php /** @var Array $data */ ?>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <h1>Fakulta riadenia a informatiky</h1>
-            <strong>Adresa</strong>: Univerzitná 8215/1, 010 26 Žilina<br>
-            <strong>Tel. číslo</strong>: +421/41 513 4061<br>
+<div class="row">
+    <div class="col">
+        <h1>Fakulta riadenia a informatiky</h1>
+        <strong>Adresa</strong>: Univerzitná 8215/1, 010 26 Žilina<br>
+        <strong>Tel. číslo</strong>: +421/41 513 4061<br>
 
-            <strong>GPS</strong>: 49°12'6,4"N 18°45'42,6"E
-        </div>
+        <strong>GPS</strong>: 49°12'6,4"N 18°45'42,6"E
     </div>
 </div>
+
 <div class="row mt-3">
     <div class="col">
         <iframe width="100%" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"

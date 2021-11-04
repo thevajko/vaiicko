@@ -57,8 +57,11 @@ abstract class AControllerBase
     protected function html($data = null, $viewName = null) : ViewResponse
     {
         if ($viewName == null) {
+            // the default view name is in a directory with same name as controller and an action name is a view file name
             $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $this->app->getRouter()->getAction();
         } else {
+            // if the view name is a string, contains only a view file name, so append only the default controller name
+            // else the view name is array of two items: controller name and action name as view file name
             $viewName = is_string($viewName) ? ($this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $viewName) : ($viewName['0'] . DIRECTORY_SEPARATOR . $viewName['1']);
         }
         return new ViewResponse($viewName, $data);

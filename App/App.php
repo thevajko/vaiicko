@@ -4,7 +4,6 @@ namespace App;
 
 use App\Core\DB\Connection;
 use App\Core\Request;
-use App\Core\Responses\Response;
 use App\Core\Router;
 use App\Config\Configuration;
 
@@ -53,6 +52,7 @@ class App
 
         $response->generate();
 
+        // if SQL debugging in configuration is allowed, display all SQL queries
         if (Configuration::DEBUG_QUERY) {
             $queries = array_map(function ($q) {$lines = explode("\n", $q); return '<pre>' . (substr($lines[1], 0, 7) == 'Params:'? 'Sent '.$lines[0] : $lines[1]) .'</pre>';} , Connection::getQueryLog());
             echo implode(PHP_EOL . PHP_EOL, $queries);
@@ -60,6 +60,7 @@ class App
     }
 
     /**
+     * Getter for router instance
      * @return Router
      */
     public function getRouter(): Router
@@ -68,6 +69,7 @@ class App
     }
 
     /**
+     * Getter for Request instance
      * @return Request
      */
     public function getRequest(): Request

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="sk">
 <head>
     <title>FRI-MVC FW</title>
@@ -10,7 +11,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-end">
-    <div class="container-fluid">
+    <div class="container">
         <a class="navbar-brand" href="#">FRI-MVC FW </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
@@ -27,7 +28,7 @@
         </div>
     </div>
 </nav>
-<div class="conatiner-fluid">
+<div class="container">
     <div class="row mt-2">
         <div class="col">
                 <?= $contentHTML ?>

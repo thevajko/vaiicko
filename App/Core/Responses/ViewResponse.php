@@ -24,8 +24,10 @@ class ViewResponse extends Response
     public function generate() {
         $data = $this->data;
 
+        // render view
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->viewName . ".view.php";
 
+        // gets current buffer content (a rendered view) and stores it into $contentHTML
         $contentHTML = ob_get_clean();
 
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->layoutName;
