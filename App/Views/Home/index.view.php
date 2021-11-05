@@ -2,7 +2,7 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            Ahoj <?= $data['meno'] ?>!
+            Ahoj <?=$data['meno'] ?>!
         </div>
     </div>
 </div>

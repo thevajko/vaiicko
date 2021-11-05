@@ -13,6 +13,9 @@ class Router
     private $controllerName;
     private $action;
 
+    /**
+     * Processes an URL and sets, which controller and action to run
+     */
     public function processURL()
     {
         $fullControllerName = $this->getFullControllerName();
@@ -24,7 +27,7 @@ class Router
     }
 
     /**
-     * Returns a controller instance of from an URL (Home controller as default)
+     * Returns a full controller name (with their namespace path) from an URL (Home controller as default)
      * @return string
      */
     public function getFullControllerName(): string
@@ -33,7 +36,7 @@ class Router
     }
 
     /**
-     * Returns a controller name from an URL (home controller action by default)
+     * Returns a controller name from an URL (Home controller action by default)
      * @return string
      */
     public function getControllerName() : string
@@ -51,6 +54,7 @@ class Router
     }
 
     /**
+     * Returns a controller instance of from an URL (Home controller as default)
      * @return mixed
      */
     public function getController()
