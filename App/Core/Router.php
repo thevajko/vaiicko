@@ -41,7 +41,7 @@ class Router
      */
     public function getControllerName() : string
     {
-            return empty(trim(@$_GET['c'])) ? "Home" : trim($_GET['c']);
+            return empty(trim(@$_GET['c'])) ? "Home" : trim(ucfirst(strtolower($_GET['c'])));
     }
 
     /**
