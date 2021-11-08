@@ -15,7 +15,7 @@ use App\Core\Responses\ViewResponse;
 abstract class AControllerBase
 {
     /**
-     * Reference to APP object instance
+     * Reference to App object instance
      * @var App
      */
      protected App $app;

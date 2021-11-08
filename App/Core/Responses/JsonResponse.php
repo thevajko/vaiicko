@@ -12,7 +12,7 @@ class JsonResponse extends Response
     private $data;
 
     /**
-     * JsonResponse constructor.
+     * JsonResponse constructor
      * @param $data
      */
     public function __construct($data)

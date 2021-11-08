@@ -7,7 +7,7 @@ use PDOStatement as PDOStatementAlias;
 /**
  * Class DebugStatement
  * Special class for logging SQL DB queries
- * @package App\Core
+ * @package App\Core\DB
  */
 class DebugStatement
 {

@@ -9,7 +9,7 @@ use PDOException;
  * Class Model
  * Abstract class serving as a simple model example, predecessor of all models
  * Allows basic CRUD operations
- * @package App\Core\Storage
+ * @package App\Core
  */
 abstract class Model implements \JsonSerializable
 {
@@ -166,6 +166,7 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
+     * Returns the connection to database
      * @return null
      */
     public static function getConnection()
@@ -177,10 +178,8 @@ abstract class Model implements \JsonSerializable
      * Default implementation of JSON serialize method
      * @return array|mixed
      */
-
     public function jsonSerialize()
     {
         return get_object_vars($this);
     }
-
 }

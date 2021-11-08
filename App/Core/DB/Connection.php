@@ -6,18 +6,31 @@ use App\Config\Configuration;
 use PDO;
 use PDOException;
 
+/**
+ * Class Connection
+ * Class for connecting to database
+ * @package App\Core\DB
+ */
 class Connection
 {
-    private $db;
     private static $instance;
-
     private static $log = [];
+    private $db;
 
+    /**
+     * Connection constructor
+     * @param $db
+     */
     public function __construct($db)
     {
         $this->db = $db;
     }
 
+    /**
+     * Creates a new connection to DB, if connection already exists, returns the existing one (singleton)
+     * @return Connection
+     * @throws \Exception
+     */
     public static function connect()
     {
         try {
@@ -35,7 +48,7 @@ class Connection
 
 
     /**
-     * Creates a new connection to DB, if connection already exists, returns the existing one
+     * Prepare SQL command
      * @return \PDOStatement | DebugStatement
      */
     public function prepare($sql)
@@ -47,6 +60,10 @@ class Connection
         }
     }
 
+    /**
+     * Appends query to log of all queries (for one action) for debugging purposes
+     * @param $query
+     */
     public static function appendQueryLog($query)
     {
         self::$log[] = $query;
@@ -60,10 +77,15 @@ class Connection
      */
     public function __call($name, $arguments)
     {
-        return $this->db->{$name}(...$arguments);
+        try {
+            return $this->db->{$name}(...$arguments);
+        } catch (PDOException $e) {
+            throw new \Exception('DB command failed: ' . $e->getMessage());
+        }
     }
 
     /**
+     * Return query debug log
      * @return array
      */
     public static function getQueryLog(): array

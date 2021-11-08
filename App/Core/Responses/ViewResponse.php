@@ -15,12 +15,20 @@ class ViewResponse extends Response
     private $layoutName = Configuration::ROOT_LAYOUT;
     private $data;
 
+    /**
+     * ViewResponse constructor
+     * @param $viewName
+     * @param $data
+     */
     public function __construct($viewName, $data)
     {
         $this->viewName = $viewName;
         $this->data = $data;
     }
 
+    /**
+     * Generates view with data
+     */
     public function generate() {
         $data = $this->data;
 
@@ -35,6 +43,7 @@ class ViewResponse extends Response
     }
 
     /**
+     * Changes default layout
      * @param mixed $layoutName
      */
     public function setLayoutName($layoutName)
@@ -42,5 +51,4 @@ class ViewResponse extends Response
         $this->layoutName = $layoutName;
         return $this;
     }
-
 }
