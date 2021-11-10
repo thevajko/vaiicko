@@ -84,7 +84,7 @@ class Request
     {
         if (isset($_POST[$key])) {
             return $_POST[$key];
-        } else if (isset($_GETT[$key])){
+        } else if (isset($_GET[$key])){
             return $_GET[$key];
         } else {
             return null;
