@@ -2,6 +2,10 @@
 
 Tento framework vznikol na podporu výučby predmetu Vývoj aplikácií pre intranet a intrenate (VAII) na [Fakulte informatiky a riadenia](https://www.fri.uniza.sk/) [Žilinskej univerzity v Žiline](https://www.uniza.sk/). Framework je navrhnutý tak aby bol čo najmenší a najjednoduchší. 
 
+# Návod a dokumentácia
+
+Kód frameworku je kompletne okomentovaný. V prípade, že na pochopenie potrebujete dodatočné informácie, navštívte [WIKI stránky](https://github.com/thevajko/vaiicko/wiki/00-%C3%9Avodn%C3%A9-inform%C3%A1cie).
+
 # Docker
 
 Framework ma v adresári `<root>/docker` základnú konfiguráciu pre spustenie a debug web aplikácie. Všetky potrebné služby sú v `docker-compose.yml`. Po ich spustení sa vytvorí:
