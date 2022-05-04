@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Core\AControllerBase;
-use App\Core\Responses\JsonResponse;
 
 /**
  * Class HomeController
@@ -25,16 +24,6 @@ class HomeController extends AControllerBase
     {
         return $this->html(
             []
-        );
-    }
-
-    /**
-     * @return mixed
-     */
-    public function data()
-    {
-        return $this->json(
-            ['data' => 'aaa']
         );
     }
 }

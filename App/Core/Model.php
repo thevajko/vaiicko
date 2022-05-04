@@ -176,9 +176,9 @@ abstract class Model implements \JsonSerializable
 
     /**
      * Default implementation of JSON serialize method
-     * @return mixed
+     * @return array
      */
-    public function jsonSerialize() : mixed
+    public function jsonSerialize() : array
     {
         return get_object_vars($this);
     }
