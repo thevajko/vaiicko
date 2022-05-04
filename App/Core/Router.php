@@ -50,7 +50,7 @@ class Router
      */
     public function getAction(): string
     {
-        return (!isset($_GET['c']) || empty(trim(@$_GET['a'])) ? "index" : $_GET['a']);
+        return (!isset($_GET['a']) || empty(trim(@$_GET['a'])) ? "index" : $_GET['a']);
     }
 
     /**
