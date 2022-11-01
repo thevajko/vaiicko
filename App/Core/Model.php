@@ -3,43 +3,58 @@
 namespace App\Core;
 
 use App\Core\DB\Connection;
+use App\Helpers\Inflect;
 use PDOException;
 
 /**
  * Class Model
  * Abstract class serving as a simple model example, predecessor of all models
  * Allows basic CRUD operations
- * @package App\Core
+ * @package App\Core\Storage
  */
 abstract class Model implements \JsonSerializable
 {
     private static $connection = null;
-    private static $pkColumn = 'id';
-
-    abstract static public function setDbColumns();
-
-    abstract static public function setTableName();
 
     /**
-     * Gets a db columns from a model
-     * @return mixed
+     * Get array of column names from the associated model table
+     * @return array
+     * @throws \Exception
      */
-    private static function getDbColumns()
+    public static function getDbColumns(): array
     {
-        return static::setDbColumns();
+        self::connect();
+        try {
+            $sql = "DESCRIBE " . static::getTableName();
+            $stmt = self::$connection->prepare($sql);
+            $stmt->execute([]);
+            return array_column($stmt->fetchAll(), 'Field');
+        } catch (PDOException $e) {
+            throw new \Exception('Query failed: ' . $e->getMessage());
+        }
     }
 
     /**
-     * Reads the table name from a model
-     * @return mixed
+     * Get table name from model class name
+     * @return string
      */
-    private static function getTableName()
+    public static function getTableName(): string
     {
-        return static::setTableName();
+        $arr = explode("\\", get_called_class());
+        return Inflect::pluralize(strtolower(end($arr)));
     }
 
     /**
-     * Gets DB connection for other model methods
+     * Return default primary key column name
+     * @return string
+     */
+    public static function getPkColumnName()
+    {
+        return 'id';
+    }
+
+    /**
+     * Connect to DB
      * @return null
      * @throws \Exception
      */
@@ -55,11 +70,11 @@ abstract class Model implements \JsonSerializable
      * @return static[]
      * @throws \Exception
      */
-    static public function getAll(string $whereClause = '', array $whereParams = [])
+    static public function getAll(string $whereClause = '', array $whereParams = [], $orderBy = '')
     {
         self::connect();
         try {
-            $sql = "SELECT * FROM " . self::getTableName() . ($whereClause=='' ? '' : " WHERE $whereClause");
+            $sql = "SELECT * FROM `" . static::getTableName() . "`" . ($whereClause == '' ? '' : " WHERE $whereClause") . ($orderBy == '' ? '' : " ORDER BY $orderBy");
 
             $stmt = self::$connection->prepare($sql);
             $stmt->execute($whereParams);
@@ -68,7 +83,7 @@ abstract class Model implements \JsonSerializable
             $models = [];
             foreach ($dbModels as $model) {
                 $tmpModel = new static();
-                $data = array_fill_keys(self::getDbColumns(), null);
+                $data = array_fill_keys(static::getDbColumns(), null);
                 foreach ($data as $key => $item) {
                     $tmpModel->$key = $model[$key];
                 }
@@ -83,6 +98,7 @@ abstract class Model implements \JsonSerializable
     /**
      * Gets one model by primary key
      * @param $id
+     * @return Model|null
      * @throws \Exception
      */
     static public function getOne($id)
@@ -91,19 +107,19 @@ abstract class Model implements \JsonSerializable
 
         self::connect();
         try {
-            $sql = "SELECT * FROM " . self::getTableName() . " WHERE " . self::$pkColumn . "=?";
+            $sql = "SELECT * FROM `" . static::getTableName() . "` WHERE `" . static::getPkColumnName() . "`=?";
             $stmt = self::$connection->prepare($sql);
             $stmt->execute([$id]);
             $model = $stmt->fetch();
             if ($model) {
-                $data = array_fill_keys(self::getDbColumns(), null);
+                $data = array_fill_keys(static::getDbColumns(), null);
                 $tmpModel = new static();
                 foreach ($data as $key => $item) {
                     $tmpModel->$key = $model[$key];
                 }
                 return $tmpModel;
             } else {
-                throw new \Exception('Record not found!');
+                return null;
             }
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage());
@@ -111,32 +127,33 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Saves the current model to DB (if model id is set, updates it, else creates a new model)
+     * Save the current model to DB (if model id is set, update it, else create a new model)
      * @return mixed
+     * @throws \Exception
      */
     public function save()
     {
         self::connect();
         try {
-            $data = array_fill_keys(self::getDbColumns(), null);
+            $data = array_fill_keys(static::getDbColumns(), null);
             foreach ($data as $key => &$item) {
-                $item = $this->$key;
+                $item = isset($this->$key) ? $this->$key : null;
             }
-            if ($data[self::$pkColumn] == null) {
+            if ($data[static::getPkColumnName()] == null) {
                 $arrColumns = array_map(fn($item) => (':' . $item), array_keys($data));
-                $columns = implode(',', array_keys($data));
+                $columns = '`' . implode('`,`', array_keys($data)) . "`";
                 $params = implode(',', $arrColumns);
-                $sql = "INSERT INTO " . self::getTableName() . " ($columns) VALUES ($params)";
+                $sql = "INSERT INTO `" . static::getTableName() . "` ($columns) VALUES ($params)";
                 $stmt = self::$connection->prepare($sql);
                 $stmt->execute($data);
                 return self::$connection->lastInsertId();
             } else {
-                $arrColumns = array_map(fn($item) => ($item . '=:' . $item), array_keys($data));
+                $arrColumns = array_map(fn($item) => ("`" . $item . '`=:' . $item), array_keys($data));
                 $columns = implode(',', $arrColumns);
-                $sql = "UPDATE " . self::getTableName() . " SET $columns WHERE id=:" . self::$pkColumn;
+                $sql = "UPDATE `" . static::getTableName() . "` SET $columns WHERE `" . static::getPkColumnName() . "`=:" . static::getPkColumnName();
                 $stmt = self::$connection->prepare($sql);
                 $stmt->execute($data);
-                return $data[self::$pkColumn];
+                return $data[static::getPkColumnName()];
             }
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage());
@@ -144,19 +161,19 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Deletes current model from DB
+     * Delete current model from DB
      * @throws \Exception If model not exists, throw an exception
      */
     public function delete()
     {
-        if ($this->{self::$pkColumn} == null) {
+        if ($this->static::getPkColumnName() == null) {
             return;
         }
         self::connect();
         try {
-            $sql = "DELETE FROM " . self::getTableName() . " WHERE id=?";
+            $sql = "DELETE FROM `" . static::getTableName() . "` WHERE `" . static::getPkColumnName() . "`=?";
             $stmt = self::$connection->prepare($sql);
-            $stmt->execute([$this->{self::$pkColumn}]);
+            $stmt->execute([static::getPkColumnName()]);
             if ($stmt->rowCount() == 0) {
                 throw new \Exception('Model not found!');
             }
@@ -166,7 +183,7 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Returns the connection to database
+     * Return DB connection
      * @return null
      */
     public static function getConnection()
@@ -176,9 +193,9 @@ abstract class Model implements \JsonSerializable
 
     /**
      * Default implementation of JSON serialize method
-     * @return array
+     * @return array|mixed
      */
-    public function jsonSerialize() : array
+    public function jsonSerialize()
     {
         return get_object_vars($this);
     }

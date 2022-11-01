@@ -14,20 +14,16 @@ class Router
     private $action;
 
     /**
-     * Processes an URL and sets, which controller and action to run
+     * Process URL to get controller and action
      */
     public function processURL()
     {
-        $fullControllerName = $this->getFullControllerName();
-        $this->controller = new $fullControllerName();
-
         $this->controllerName = $this->getControllerName();
-
         $this->action = $this->getAction();
     }
 
     /**
-     * Returns a full controller name (with their namespace path) from an URL (Home controller as default)
+     * Return a controller instance of from a URL (Home controller as default)
      * @return string
      */
     public function getFullControllerName(): string
@@ -36,29 +32,20 @@ class Router
     }
 
     /**
-     * Returns a controller name from an URL (Home controller action by default)
+     * Return a controller name from a URL (home controller action by default)
      * @return string
      */
     public function getControllerName() : string
     {
-            return (!isset($_GET['c']) || empty(trim(@$_GET['c']))) ? "Home" : trim(ucfirst(strtolower($_GET['c'])));
+            return empty(trim(@$_GET['c'])) ? "Home" : trim($_GET['c']);
     }
 
     /**
-     * Returns an action name from an URL (index action by default)
+     * Return an action name from a URL (index action by default)
      * @return string
      */
     public function getAction(): string
     {
-        return (!isset($_GET['a']) || empty(trim(@$_GET['a'])) ? "index" : $_GET['a']);
-    }
-
-    /**
-     * Returns a controller instance of from an URL (Home controller as default)
-     * @return mixed
-     */
-    public function getController()
-    {
-        return $this->controller;
+        return (empty(trim(@$_GET['a'])) ? "index" : $_GET['a']);
     }
 }

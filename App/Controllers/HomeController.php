@@ -6,24 +6,40 @@ use App\Core\AControllerBase;
 
 /**
  * Class HomeController
- * Example of simple controller
+ * Example class of a controller
  * @package App\Controllers
  */
 class HomeController extends AControllerBase
 {
-
-    public function index()
+    /**
+     * Authorize controller actions
+     * @param $action
+     * @return bool
+     */
+    public function authorize($action)
     {
-        return $this->html(
-            [
-                'meno' => 'študent'
-            ]);
+        switch ($action) {
+            case "contact":
+                return true;
+            default:
+                return $this->app->getAuth()->isLogged();
+        }
     }
 
-    public function contact()
+    /**
+     * Example of an action (authorization needed)
+     * @return \App\Core\Responses\Response|\App\Core\Responses\ViewResponse
+     */
+    public function index()
     {
-        return $this->html(
-            []
-        );
+        return $this->html();
+    }
+
+    /**
+     * Example of an action accessible without authorization
+     * @return \App\Core\Responses\ViewResponse
+     */
+    public function contact() {
+        return $this->html();
     }
 }

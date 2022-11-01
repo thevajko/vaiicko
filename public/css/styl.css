@@ -1,0 +1,7 @@
+.navbar {
+    border-bottom: 1px solid grey;
+}
+
+.navbar-brand img {
+    width: 50px;
+}

@@ -21,9 +21,10 @@ class JsonResponse extends Response
     }
 
     /**
-     * Renders response for JSON data
+     * Render response for JSON data
      */
-    public function generate() {
+    public function generate()
+    {
         header('Content-Type: application/json');
         echo json_encode($this->data);
     }
