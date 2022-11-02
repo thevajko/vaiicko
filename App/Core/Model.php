@@ -91,7 +91,7 @@ abstract class Model implements \JsonSerializable
      * @return static|null
      * @throws \Exception
      */
-    static public function getOne($id) : ?static
+    static public function getOne($id): ?static
     {
         if ($id == null) return null;
 
@@ -109,10 +109,10 @@ abstract class Model implements \JsonSerializable
 
     /**
      * Save the current model to DB (if model id is set, update it, else create a new model)
-     * @return mixed
+     * @return void
      * @throws \Exception
      */
-    public function save()
+    public function save(): void
     {
         self::connect();
         try {
@@ -127,14 +127,13 @@ abstract class Model implements \JsonSerializable
                 $sql = "INSERT INTO `" . static::getTableName() . "` ($columns) VALUES ($params)";
                 $stmt = self::$connection->prepare($sql);
                 $stmt->execute($data);
-                return self::$connection->lastInsertId();
+                $this->{static::getPkColumnName()} = self::$connection->lastInsertId();
             } else {
                 $arrColumns = array_map(fn($item) => ("`" . $item . '`=:' . $item), array_keys($data));
                 $columns = implode(',', $arrColumns);
                 $sql = "UPDATE `" . static::getTableName() . "` SET $columns WHERE `" . static::getPkColumnName() . "`=:" . static::getPkColumnName();
                 $stmt = self::$connection->prepare($sql);
                 $stmt->execute($data);
-                return $data[static::getPkColumnName()];
             }
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
@@ -176,7 +175,7 @@ abstract class Model implements \JsonSerializable
      * Default implementation of JSON serialize method
      * @return array
      */
-    public function jsonSerialize() : array
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }
