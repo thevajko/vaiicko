@@ -12,11 +12,6 @@ use App\Core\AControllerBase;
  */
 class AuthController extends AControllerBase
 {
-    public function __construct(App $app)
-    {
-        parent::__construct($app);
-    }
-
     /**
      *
      * @return \App\Core\Responses\RedirectResponse|\App\Core\Responses\Response
