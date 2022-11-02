@@ -13,10 +13,10 @@ services:
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
     environment:
-      MYSQL_ROOT_PASSWORD: heslo
-      MYSQL_DATABASE: databaza
+      MYSQL_ROOT_PASSWORD: dtb456
+      MYSQL_DATABASE: vajiicko_db
       MYSQL_USER: db_user
-      MYSQL_PASSWORD: db_user_pass
+      MYSQL_PASSWORD: dtb456
     ports:
       - "3306:3306"
   phpmyadmin:
@@ -28,7 +28,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      MYSQL_ROOT_PASSWORD: heslo
+      MYSQL_ROOT_PASSWORD: dtb456
       PMA_HOST: db
       PMA_USER: db_user
-      PMA_PASSWORD: db_user_pass
+      PMA_PASSWORD: dtb456
