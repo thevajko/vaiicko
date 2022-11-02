@@ -88,10 +88,10 @@ abstract class Model implements \JsonSerializable
     /**
      * Gets one model by primary key
      * @param $id
-     * @return Model|null
+     * @return static|null
      * @throws \Exception
      */
-    static public function getOne($id)
+    static public function getOne($id) : ?static
     {
         if ($id == null) return null;
 

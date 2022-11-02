@@ -28,7 +28,6 @@ class ViewResponse extends Response
         $this->app = $app;
         $this->viewName = $viewName;
         $this->data = $data;
-        $this->setLayoutName(Configuration::ROOT_LAYOUT);
     }
 
     /**
@@ -37,13 +36,14 @@ class ViewResponse extends Response
      */
     public function generate()
     {
-
+        $layout = Configuration::ROOT_LAYOUT;
         $data = $this->data;
         $auth = $this->app->getAuth();
 
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->viewName . ".view.php";
 
         $contentHTML = ob_get_clean();
+        $this->setLayoutName($layout);
 
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->layoutName;
     }
