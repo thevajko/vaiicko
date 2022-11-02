@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Config\Configuration;
-use App\Core\AAuthenticator;
+use App\Core\IAuthenticator;
 use App\Core\DB\Connection;
 use App\Core\Request;
 use App\Core\Responses\RedirectResponse;
@@ -26,7 +26,7 @@ class App
      */
     private Request $request;
 
-    private ?AAuthenticator $auth;
+    private ?IAuthenticator $auth;
 
     /**
      * App constructor
@@ -102,9 +102,9 @@ class App
     }
 
     /**
-     * @return AAuthenticator|null
+     * @return IAuthenticator|null
      */
-    public function getAuth(): ?AAuthenticator
+    public function getAuth(): ?IAuthenticator
     {
         return $this->auth;
     }

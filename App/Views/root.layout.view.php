@@ -1,6 +1,6 @@
 <?php
 /** @var string $contentHTML */
-/** @var \App\Core\AAuthenticator $auth */
+/** @var \App\Core\IAuthenticator $auth */
 ?>
 <html>
 <head>

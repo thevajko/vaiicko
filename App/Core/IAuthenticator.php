@@ -3,11 +3,11 @@
 namespace App\Core;
 
 /**
- * Class AAuthenticator
- * Abstract class for authentication
+ * Interface IAuthenticator
+ * Interface for authentication
  * @package App\Core
  */
-abstract class AAuthenticator
+interface IAuthenticator
 {
     /**
      * Perform user login
@@ -15,29 +15,35 @@ abstract class AAuthenticator
      * @param $pass
      * @return bool
      */
-    abstract function login($userLogin, $pass) : bool;
+    function login($userLogin, $pass): bool;
 
     /**
      * Perform user login
-     * @return mixed
+     * @return void
      */
-    abstract function logout();
+    function logout(): void;
 
     /**
      * Return name of a logged user
      * @return string
      */
-    abstract function getLoggedUserName(): string;
+    function getLoggedUserName(): string;
+
+    /**
+     * Return id of a logged user
+     * @return mixed
+     */
+    function getLoggedUserId(): mixed;
 
     /**
      * Return a context of logged user, e.g. user class instance
      * @return mixed
      */
-    abstract function getLoggedUserContext(): mixed;
+    function getLoggedUserContext(): mixed;
 
     /**
      * Return, if a user is logged or not
      * @return bool
      */
-    abstract function isLogged() : bool;
+    function isLogged(): bool;
 }

@@ -2,21 +2,21 @@
 
 namespace App\Auth;
 
-use App\Core\AAuthenticator;
-use App\Models\User;
+use App\Core\IAuthenticator;
 
 /**
- * Class DBAuthenticator
+ * Class DummyAuthenticator
+ * Basic implementation of user authentication
  * @package App\Auth
  */
-class DummyAuthenticator extends AAuthenticator
+class DummyAuthenticator implements IAuthenticator
 {
     const LOGIN = "admin";
-    const PASSWORD_HASH = '$2y$10$GRA8D27bvZZw8b85CAwRee9NH5nj4CQA6PDFMc90pN9Wi4VAWq3yq';
+    const PASSWORD_HASH = '$2y$10$GRA8D27bvZZw8b85CAwRee9NH5nj4CQA6PDFMc90pN9Wi4VAWq3yq'; // admin
     const USERNAME = "Admin";
 
     /**
-     * DBAuthenticator constructor
+     * DummyAuthenticator constructor
      */
     public function __construct()
     {
@@ -43,7 +43,7 @@ class DummyAuthenticator extends AAuthenticator
     /**
      * Logout the user
      */
-    function logout()
+    function logout() : void
     {
         if (isset($_SESSION["user"])) {
             unset($_SESSION["user"]);
@@ -59,11 +59,12 @@ class DummyAuthenticator extends AAuthenticator
     {
         return $_SESSION['user'];
     }
+
     /**
      * Get the context of the logged-in user
      * @return string
      */
-    function getLoggedUserContext() : mixed
+    function getLoggedUserContext(): mixed
     {
         return null;
     }
@@ -75,5 +76,14 @@ class DummyAuthenticator extends AAuthenticator
     function isLogged(): bool
     {
         return isset($_SESSION['user']) && $_SESSION['user'] != null;
+    }
+
+    /**
+     * Return the id of the logged-in user
+     * @return mixed
+     */
+    function getLoggedUserId(): mixed
+    {
+        return $_SESSION['user'];
     }
 }
