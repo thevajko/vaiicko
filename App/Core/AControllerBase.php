@@ -22,16 +22,6 @@ abstract class AControllerBase
      protected App $app;
 
     /**
-     * AControllerBase constructor.
-     * @param App $app
-     */
-    public function __construct(App $app)
-     {
-
-         $this->app = $app;
-     }
-
-    /**
      * Returns controller name (without Controller prefix)
      * @return string
      */
@@ -48,6 +38,15 @@ abstract class AControllerBase
     {
         $arr = explode("\\", get_class($this));
         return end($arr);
+    }
+
+    /**
+     * Method for injecting App object
+     * @param App $app
+     */
+    public function setApp(App $app)
+    {
+        $this->app = $app;
     }
 
     /**

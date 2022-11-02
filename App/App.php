@@ -56,13 +56,13 @@ class App
         // get a controller and action from URL
         $this->router->processURL();
 
-        //create a Controller and inject App into it
-        $controllerName = $this->router->getFullControllerName();
-        $controller = new $controllerName($this);
+        //inject app into Controller
+        call_user_func([$this->router->getController(), 'setApp'], $this);
 
-        if ($controller->authorize($this->router->getAction())) {
+
+        if ($this->router->getController()->authorize($this->router->getAction())) {
             // call appropriate method of the controller class
-            $response = call_user_func([$controller, $this->router->getAction()]);
+            $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
             // return view to user
             $response->generate();
         } else {
@@ -75,13 +75,10 @@ class App
             }
         }
 
-        // if DEBUG for SQL is set, show SQL queries to DB
+        // if SQL debugging in configuration is allowed, display all SQL queries
         if (Configuration::DEBUG_QUERY) {
-            $queries = array_map(function ($q) {
-                $lines = explode("\n", $q);
-                return '<pre>' . (substr($lines[1], 0, 7) == 'Params:' ? 'Sent ' . $lines[0] : $lines[1]) . '</pre>';
-            }, Connection::getQueryLog());
-            echo PHP_EOL . PHP_EOL . implode(PHP_EOL . PHP_EOL, $queries) . "\n\nTotal queries: " . count($queries);
+            $queries = array_map(function ($q) {$lines = explode("\n", $q); return '<pre>' . (substr($lines[1], 0, 7) == 'Params:'? 'Sent '.$lines[0] : $lines[1]) .'</pre>';} , Connection::getQueryLog());
+            echo implode(PHP_EOL . PHP_EOL, $queries);
         }
     }
 

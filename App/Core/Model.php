@@ -15,10 +15,7 @@ use PDOException;
  */
 abstract class Model implements \JsonSerializable
 {
-    /**
-     * @var PDO
-     */
-    private static $connection = null;
+    private static ?Connection $connection = null;
 
     /**
      * Get array of column names from the associated model table
@@ -34,7 +31,7 @@ abstract class Model implements \JsonSerializable
             $stmt->execute([]);
             return array_column($stmt->fetchAll(), 'Field');
         } catch (PDOException $e) {
-            throw new \Exception('Query failed: ' . $e->getMessage());
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
@@ -79,23 +76,12 @@ abstract class Model implements \JsonSerializable
         self::connect();
         try {
             $sql = "SELECT * FROM `" . static::getTableName() . "`" . ($whereClause == '' ? '' : " WHERE $whereClause") . ($orderBy == '' ? '' : " ORDER BY $orderBy");
-
             $stmt = self::$connection->prepare($sql);
             $stmt->execute($whereParams);
-
-            $models = $stmt->fetchAll(PDO::FETCH_CLASS, static::class);
-//            $models = [];
-//            foreach ($dbModels as $model) {
-//                $tmpModel = new static();
-//                $data = array_fill_keys(static::getDbColumns(), null);
-//                foreach ($data as $key => $item) {
-//                    $tmpModel->$key = $model[$key];
-//                }
-//                $models[] = $tmpModel;
-//            }
+            $models = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
             return $models;
         } catch (PDOException $e) {
-            throw new \Exception('Query failed: ' . $e->getMessage());
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
@@ -113,21 +99,11 @@ abstract class Model implements \JsonSerializable
         try {
             $sql = "SELECT * FROM `" . static::getTableName() . "` WHERE `" . static::getPkColumnName() . "`=?";
             $stmt = self::$connection->prepare($sql);
-            $stmt->setFetchMode(PDO::FETCH_CLASS, static::class);
-                $stmt->execute([$id]);
+            $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
+            $stmt->execute([$id]);
             return $stmt->fetch();
-//            if ($model) {
-//                $data = array_fill_keys(static::getDbColumns(), null);
-//                $tmpModel = new static();
-//                foreach ($data as $key => $item) {
-//                    $tmpModel->$key = $model[$key];
-//                }
-//                return $tmpModel;
-//            } else {
-//                return null;
-//            }
         } catch (PDOException $e) {
-            throw new \Exception('Query failed: ' . $e->getMessage());
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
@@ -161,7 +137,7 @@ abstract class Model implements \JsonSerializable
                 return $data[static::getPkColumnName()];
             }
         } catch (PDOException $e) {
-            throw new \Exception('Query failed: ' . $e->getMessage());
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
@@ -171,20 +147,19 @@ abstract class Model implements \JsonSerializable
      */
     public function delete()
     {
-        if (static::getPkColumnName() == null) {
+        if ($this->{static::getPkColumnName()} == null) {
             return;
         }
         self::connect();
         try {
             $sql = "DELETE FROM `" . static::getTableName() . "` WHERE `" . static::getPkColumnName() . "`=?";
             $stmt = self::$connection->prepare($sql);
-            // id je privatny atrinut, je potrebne volat getter - doplnit lepsi vypis, pokial getter chyba
-            $stmt->execute([$this->{"get".static::getPkColumnName()}()]);
+            $stmt->execute([$this->{static::getPkColumnName()}]);
             if ($stmt->rowCount() == 0) {
                 throw new \Exception('Model not found!');
             }
         } catch (PDOException $e) {
-            throw new \Exception('Query failed: ' . $e->getMessage());
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
@@ -199,10 +174,22 @@ abstract class Model implements \JsonSerializable
 
     /**
      * Default implementation of JSON serialize method
-     * @return array|mixed
+     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         return get_object_vars($this);
+    }
+
+    /**
+     * Check
+     * @param string $name
+     * @param $value
+     * @return void
+     * @throws \Exception
+     */
+    public function __set(string $name, $value): void
+    {
+        throw new \Exception("Attribute `$name` doesn't exist in the model " . get_called_class() . ".");
     }
 }

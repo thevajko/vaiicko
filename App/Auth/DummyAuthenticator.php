@@ -57,7 +57,8 @@ class DummyAuthenticator implements IAuthenticator
      */
     function getLoggedUserName(): string
     {
-        return $_SESSION['user'];
+
+        return isset($_SESSION['user']) ? $_SESSION['user'] : throw new \Exception("User not logged in");
     }
 
     /**
