@@ -14,7 +14,7 @@ class Configuration
     public const APP_NAME = 'Vajííčko MVC FW';
     public const FW_VERSION = '2.0';
 
-    public const DB_HOST = 'localhost';
+    public const DB_HOST = 'localhost';  // change to db, if docker is used
     public const DB_NAME = 'vajiicko_db';
     public const DB_USER = 'root';
     public const DB_PASS = 'dtb456';
