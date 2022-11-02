@@ -4,6 +4,7 @@ namespace App\Core;
 
 use App\Core\DB\Connection;
 use App\Helpers\Inflect;
+use PDO;
 use PDOException;
 
 /**
@@ -14,6 +15,9 @@ use PDOException;
  */
 abstract class Model implements \JsonSerializable
 {
+    /**
+     * @var PDO
+     */
     private static $connection = null;
 
     /**
@@ -79,16 +83,16 @@ abstract class Model implements \JsonSerializable
             $stmt = self::$connection->prepare($sql);
             $stmt->execute($whereParams);
 
-            $dbModels = $stmt->fetchAll();
-            $models = [];
-            foreach ($dbModels as $model) {
-                $tmpModel = new static();
-                $data = array_fill_keys(static::getDbColumns(), null);
-                foreach ($data as $key => $item) {
-                    $tmpModel->$key = $model[$key];
-                }
-                $models[] = $tmpModel;
-            }
+            $models = $stmt->fetchAll(PDO::FETCH_CLASS, static::class);
+//            $models = [];
+//            foreach ($dbModels as $model) {
+//                $tmpModel = new static();
+//                $data = array_fill_keys(static::getDbColumns(), null);
+//                foreach ($data as $key => $item) {
+//                    $tmpModel->$key = $model[$key];
+//                }
+//                $models[] = $tmpModel;
+//            }
             return $models;
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage());
@@ -109,18 +113,20 @@ abstract class Model implements \JsonSerializable
         try {
             $sql = "SELECT * FROM `" . static::getTableName() . "` WHERE `" . static::getPkColumnName() . "`=?";
             $stmt = self::$connection->prepare($sql);
-            $stmt->execute([$id]);
-            $model = $stmt->fetch();
-            if ($model) {
-                $data = array_fill_keys(static::getDbColumns(), null);
-                $tmpModel = new static();
-                foreach ($data as $key => $item) {
-                    $tmpModel->$key = $model[$key];
-                }
-                return $tmpModel;
-            } else {
-                return null;
-            }
+            $stmt
+                ->setFetchMode(PDO::FETCH_CLASS, static::class)
+                ->execute([$id]);
+            return $stmt->fetch();
+//            if ($model) {
+//                $data = array_fill_keys(static::getDbColumns(), null);
+//                $tmpModel = new static();
+//                foreach ($data as $key => $item) {
+//                    $tmpModel->$key = $model[$key];
+//                }
+//                return $tmpModel;
+//            } else {
+//                return null;
+//            }
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage());
         }
