@@ -113,9 +113,8 @@ abstract class Model implements \JsonSerializable
         try {
             $sql = "SELECT * FROM `" . static::getTableName() . "` WHERE `" . static::getPkColumnName() . "`=?";
             $stmt = self::$connection->prepare($sql);
-            $stmt
-                ->setFetchMode(PDO::FETCH_CLASS, static::class)
-                ->execute([$id]);
+            $stmt->setFetchMode(PDO::FETCH_CLASS, static::class);
+                $stmt->execute([$id]);
             return $stmt->fetch();
 //            if ($model) {
 //                $data = array_fill_keys(static::getDbColumns(), null);
@@ -172,14 +171,15 @@ abstract class Model implements \JsonSerializable
      */
     public function delete()
     {
-        if ($this->static::getPkColumnName() == null) {
+        if (static::getPkColumnName() == null) {
             return;
         }
         self::connect();
         try {
             $sql = "DELETE FROM `" . static::getTableName() . "` WHERE `" . static::getPkColumnName() . "`=?";
             $stmt = self::$connection->prepare($sql);
-            $stmt->execute([static::getPkColumnName()]);
+            // id je privatny atrinut, je potrebne volat getter - doplnit lepsi vypis, pokial getter chyba
+            $stmt->execute([$this->{"get".static::getPkColumnName()}()]);
             if ($stmt->rowCount() == 0) {
                 throw new \Exception('Model not found!');
             }
