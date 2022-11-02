@@ -21,7 +21,7 @@ class Configuration
 
     public const LOGIN_URL = '?c=auth&a=login';
 
-    public const ROOT_LAYOUT = 'root.layout.view.php';
+    public const ROOT_LAYOUT = 'root';
 
     public const DEBUG_QUERY = false;
 

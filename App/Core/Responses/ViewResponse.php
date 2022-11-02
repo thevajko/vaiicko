@@ -14,7 +14,7 @@ class ViewResponse extends Response
 {
     private App $app;
     private $viewName;
-    private $layoutName = Configuration::ROOT_LAYOUT;
+    private $layoutName;
     private $data;
 
     /**
@@ -28,6 +28,7 @@ class ViewResponse extends Response
         $this->app = $app;
         $this->viewName = $viewName;
         $this->data = $data;
+        $this->setLayoutName(Configuration::ROOT_LAYOUT);
     }
 
     /**
@@ -53,7 +54,7 @@ class ViewResponse extends Response
      */
     public function setLayoutName($layoutName)
     {
-        $this->layoutName = $layoutName;
+        $this->layoutName = str_ends_with($layoutName, '.layout.view.php') ? $layoutName : $layoutName . '.layout.view.php';
         return $this;
     }
 }
