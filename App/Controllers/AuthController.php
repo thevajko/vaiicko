@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\App;
+use App\Config\Configuration;
 use App\Core\AControllerBase;
 
 /**
@@ -18,7 +18,7 @@ class AuthController extends AControllerBase
      */
     public function index()
     {
-        return $this->redirect('?c=auth&a=login');
+        return $this->redirect(Configuration::LOGIN_URL);
     }
 
     /**
@@ -32,7 +32,7 @@ class AuthController extends AControllerBase
         if (isset($formData['submit'])) {
             $logged = $this->app->getAuth()->login($formData['login'], $formData['password']);
             if ($logged) {
-                return $this->redirect('?c=Admin');
+                return $this->redirect('?c=admin');
             }
         }
 

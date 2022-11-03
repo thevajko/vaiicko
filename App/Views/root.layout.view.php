@@ -41,7 +41,7 @@
         <?php } else { ?>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="?c=auth&a=login">Prihlásenie</a>
+                    <a class="nav-link" href="<?= \App\Config\Configuration::LOGIN_URL ?>">Prihlásenie</a>
                 </li>
             </ul>
         <?php } ?>

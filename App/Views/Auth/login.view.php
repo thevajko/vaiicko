@@ -11,7 +11,7 @@ $layout = 'auth';
                     <div class="text-center text-danger mb-3">
                         <?= @$data['message'] ?>
                     </div>
-                    <form class="form-signin" method="post" action="?c=auth&a=login">
+                    <form class="form-signin" method="post" action="<?= \App\Config\Configuration::LOGIN_URL ?>">
                         <div class="form-label-group mb-3">
                             <input name="login" type="text" id="login" class="form-control" placeholder="Login"
                                    required autofocus>
