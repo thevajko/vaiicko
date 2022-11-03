@@ -9,7 +9,7 @@ use App\Core\AControllerBase;
  * Example class of a controller
  * @package App\Controllers
  */
-class HomeController extends AControllerBase
+class AdminController extends AControllerBase
 {
     /**
      * Authorize controller actions
@@ -18,15 +18,14 @@ class HomeController extends AControllerBase
      */
     public function authorize($action)
     {
-        return true;
+        return $this->app->getAuth()->isLogged();
     }
 
     /**
      * Example of an action (authorization needed)
      * @return \App\Core\Responses\Response|\App\Core\Responses\ViewResponse
      */
-    public
-    function index()
+    public function index()
     {
         return $this->html();
     }
@@ -35,8 +34,7 @@ class HomeController extends AControllerBase
      * Example of an action accessible without authorization
      * @return \App\Core\Responses\ViewResponse
      */
-    public
-    function contact()
+    public function contact()
     {
         return $this->html();
     }
