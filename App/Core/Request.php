@@ -13,6 +13,7 @@ class Request
     private array $post;
     private array $request;
     private array $server;
+    private array $files;
 
     private bool $ajax = false;
 
@@ -25,6 +26,7 @@ class Request
         $this->post = $_POST;
         $this->request = $_REQUEST;
         $this->server = $_SERVER;
+        $this->files = $_FILES;
 
         $this->ajax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
     }
@@ -73,6 +75,15 @@ class Request
     public function getServer(): array
     {
         return $this->server;
+    }
+
+    /**
+     * Getter for FILES variables
+     * @return array
+     */
+    public function getFiles(): array
+    {
+        return $this->files;
     }
 
     /**
