@@ -8,17 +8,18 @@ use PDOException;
 
 /**
  * Class Connection
- * Class for connecting to database
+ * Class for Mysql DB (MariaDB) connection
  * @package App\Core\DB
  */
 class Connection
 {
-    private static $instance;
-    private static $log = [];
     private $db;
+    private static $instance;
+
+    private static $log = [];
 
     /**
-     * Connection constructor
+     * Constructor for DB connection
      * @param $db
      */
     public function __construct($db)
@@ -27,7 +28,7 @@ class Connection
     }
 
     /**
-     * Creates a new connection to DB, if connection already exists, returns the existing one (singleton)
+     * Create a connection to DB or return existing one, if exists
      * @return Connection
      * @throws \Exception
      */
@@ -46,10 +47,11 @@ class Connection
         }
     }
 
-
     /**
-     * Prepare SQL command
-     * @return \PDOStatement | DebugStatement
+     * Overridden version of prepare method (for debugging purposes)
+     * @param $sql
+     * @return DebugStatement
+     * @throws \Exception
      */
     public function prepare($sql)
     {
@@ -61,8 +63,9 @@ class Connection
     }
 
     /**
-     * Appends query to log of all queries (for one action) for debugging purposes
+     * Append a new SQL command to query log
      * @param $query
+     * @return void
      */
     public static function appendQueryLog($query)
     {
@@ -77,15 +80,11 @@ class Connection
      */
     public function __call($name, $arguments)
     {
-        try {
-            return $this->db->{$name}(...$arguments);
-        } catch (PDOException $e) {
-            throw new \Exception('DB command failed: ' . $e->getMessage());
-        }
+        return $this->db->{$name}(...$arguments);
     }
 
     /**
-     * Return query debug log
+     * Get query log
      * @return array
      */
     public static function getQueryLog(): array

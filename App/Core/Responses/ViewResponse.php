@@ -2,6 +2,7 @@
 
 namespace App\Core\Responses;
 
+use App\App;
 use App\Config\Configuration;
 
 /**
@@ -11,44 +12,49 @@ use App\Config\Configuration;
  */
 class ViewResponse extends Response
 {
+    private App $app;
     private $viewName;
-    private $layoutName = Configuration::ROOT_LAYOUT;
+    private $layoutName;
     private $data;
 
     /**
-     * ViewResponse constructor
+     * Constructor
+     * @param $app
      * @param $viewName
      * @param $data
      */
-    public function __construct($viewName, $data)
+    public function __construct($app, $viewName, $data)
     {
+        $this->app = $app;
         $this->viewName = $viewName;
         $this->data = $data;
     }
 
     /**
-     * Generates view with data
+     * Return a rendered view
+     * @return mixed|void
      */
-    public function generate() {
+    public function generate()
+    {
+        $layout = Configuration::ROOT_LAYOUT;
         $data = $this->data;
+        $auth = $this->app->getAuth();
 
-        // render view
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->viewName . ".view.php";
 
-        // gets current buffer content (a rendered view) and stores it into $contentHTML
         $contentHTML = ob_get_clean();
+        $this->setLayoutName($layout);
 
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->layoutName;
-
     }
 
     /**
-     * Changes default layout
+     * Set another root layout if needed.
      * @param mixed $layoutName
      */
     public function setLayoutName($layoutName)
     {
-        $this->layoutName = $layoutName;
+        $this->layoutName = str_ends_with($layoutName, '.layout.view.php') ? $layoutName : $layoutName . '.layout.view.php';
         return $this;
     }
 }

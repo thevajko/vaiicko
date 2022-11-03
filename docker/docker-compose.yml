@@ -5,7 +5,7 @@ services:
     volumes:
       - ./../:/var/www/html/
     ports:
-      - "80:80"
+      - "127.0.0.1:80:80"
     stdin_open: true
     tty: true
   db:
@@ -13,22 +13,23 @@ services:
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
     environment:
-      MYSQL_ROOT_PASSWORD: heslo
-      MYSQL_DATABASE: databaza
-      MYSQL_USER: db_user
-      MYSQL_PASSWORD: db_user_pass
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
   phpmyadmin:
     links:
       - db
     depends_on:
       - db
-    image: phpmyadmin/phpmyadmin
+    image: adminer
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:8080"
     environment:
-      MYSQL_ROOT_PASSWORD: heslo
+      ADMINER_DEFAULT_SERVER: db
+      MYSQL_ROOT_PASSWORD: dtb456
       PMA_HOST: db
       PMA_USER: db_user
-      PMA_PASSWORD: db_user_pass
+      PMA_PASSWORD: dtb456

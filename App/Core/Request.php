@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Core;
 
 /**
@@ -18,7 +17,7 @@ class Request
     private bool $ajax = false;
 
     /**
-     * Request constructor.
+     * Request constructor
      */
     public function __construct()
     {
@@ -32,6 +31,7 @@ class Request
 
     /**
      * Is request AJAX?
+     * This method works only, if you set the HTTP_X_REQUESTED_WITH header set to xmlhttprequest in JS ajax call
      * @return bool
      */
     public function isAjax(): bool
@@ -84,7 +84,7 @@ class Request
     {
         if (isset($_POST[$key])) {
             return $_POST[$key];
-        } else if (isset($_GET[$key])){
+        } else if (isset($_GET[$key])) {
             return $_GET[$key];
         } else {
             return null;

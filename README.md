@@ -19,3 +19,4 @@ Framework ma v adresári `<root>/docker` základnú konfiguráciu pre spustenie 
    - MYSQL_USER: db_user
    - MYSQL_PASSWORD: db_user_pass
  - phpmyadmin server, ktorý sa automatický nastavený na databázový server na porte __8080__ a bude dostupný na adrese [http://localhost:8080/](http://localhost:8080/)
+

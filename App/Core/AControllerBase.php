@@ -4,6 +4,7 @@ namespace App\Core;
 
 use App\App;
 use App\Core\Responses\JsonResponse;
+use App\Core\Responses\RedirectResponse;
 use App\Core\Responses\Response;
 use App\Core\Responses\ViewResponse;
 
@@ -15,7 +16,7 @@ use App\Core\Responses\ViewResponse;
 abstract class AControllerBase
 {
     /**
-     * Reference to App object instance
+     * Reference to APP object instance
      * @var App
      */
      protected App $app;
@@ -57,14 +58,11 @@ abstract class AControllerBase
     protected function html($data = null, $viewName = null) : ViewResponse
     {
         if ($viewName == null) {
-            // the default view name is in a directory with same name as controller and an action name is a view file name
             $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $this->app->getRouter()->getAction();
         } else {
-            // if the view name is a string, contains only a view file name, so append only the default controller name
-            // else the view name is array of two items: controller name and action name as view file name
             $viewName = is_string($viewName) ? ($this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $viewName) : ($viewName['0'] . DIRECTORY_SEPARATOR . $viewName['1']);
         }
-        return new ViewResponse($viewName, $data);
+        return new ViewResponse($this->app, $viewName, $data);
     }
 
     /**
@@ -78,12 +76,32 @@ abstract class AControllerBase
     }
 
     /**
+     * Helper method for redirect request to another URL
+     * @param string $redirectUrl
+     * @return RedirectResponse
+     */
+    public function redirect(string $redirectUrl)
+    {
+        return new RedirectResponse($redirectUrl);
+    }
+
+    /**
      * Helper method for request
      * @return Request
      */
     public function request() : Request
     {
         return $this->app->getRequest();
+    }
+
+    /**
+     * Authorize action
+     * @param string $action
+     * @return bool
+     */
+    public function authorize(string $action)
+    {
+        return true;
     }
 
     /**

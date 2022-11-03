@@ -14,7 +14,7 @@ class Router
     private $action;
 
     /**
-     * Processes an URL and sets, which controller and action to run
+     * Processes a URL and sets, which controller and action to run
      */
     public function processURL()
     {
@@ -36,16 +36,16 @@ class Router
     }
 
     /**
-     * Returns a controller name from an URL (Home controller action by default)
+     * Returns a controller name from a URL (Home controller action by default)
      * @return string
      */
     public function getControllerName() : string
     {
-            return (!isset($_GET['c']) || empty(trim(@$_GET['c']))) ? "Home" : trim(ucfirst(strtolower($_GET['c'])));
+        return (!isset($_GET['c']) || empty(trim(@$_GET['c']))) ? "Home" : trim(ucfirst(strtolower($_GET['c'])));
     }
 
     /**
-     * Returns an action name from an URL (index action by default)
+     * Returns an action name from a URL (index action by default)
      * @return string
      */
     public function getAction(): string
@@ -54,7 +54,7 @@ class Router
     }
 
     /**
-     * Returns a controller instance of from an URL (Home controller as default)
+     * Returns a controller instance of from a URL (Home controller as default)
      * @return mixed
      */
     public function getController()

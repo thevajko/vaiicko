@@ -2,10 +2,12 @@
 
 namespace App;
 
+use App\Config\Configuration;
+use App\Core\IAuthenticator;
 use App\Core\DB\Connection;
 use App\Core\Request;
+use App\Core\Responses\RedirectResponse;
 use App\Core\Router;
-use App\Config\Configuration;
 
 /**
  * Class App
@@ -24,6 +26,8 @@ class App
      */
     private Request $request;
 
+    private ?IAuthenticator $auth;
+
     /**
      * App constructor
      */
@@ -31,6 +35,14 @@ class App
     {
         $this->router = new Router();
         $this->request = new Request();
+
+        // Check if there is an authenticator
+        if (defined('\\App\\Config\\Configuration::AUTH_CLASS')) {
+            //$authClass = Configuration::AUTH_CLASS;
+            $this->auth = new (Configuration::AUTH_CLASS)();
+        } else {
+            $this->auth = null;
+        }
     }
 
     /**
@@ -47,10 +59,21 @@ class App
         //inject app into Controller
         call_user_func([$this->router->getController(), 'setApp'], $this);
 
-        // call appropriate method of the controller class
-        $response =  call_user_func([$this->router->getController(), $this->router->getAction()]);
 
-        $response->generate();
+        if ($this->router->getController()->authorize($this->router->getAction())) {
+            // call appropriate method of the controller class
+            $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
+            // return view to user
+            $response->generate();
+        } else {
+            if ($this->auth->isLogged() or !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
+                http_response_code(403);
+                echo '<h1>403 Forbidden</h1>';
+            } else {
+                (new RedirectResponse(Configuration::LOGIN_URL))->generate();
+
+            }
+        }
 
         // if SQL debugging in configuration is allowed, display all SQL queries
         if (Configuration::DEBUG_QUERY) {
@@ -60,7 +83,6 @@ class App
     }
 
     /**
-     * Getter for router instance
      * @return Router
      */
     public function getRouter(): Router
@@ -69,7 +91,6 @@ class App
     }
 
     /**
-     * Getter for Request instance
      * @return Request
      */
     public function getRequest(): Request
@@ -77,4 +98,11 @@ class App
         return $this->request;
     }
 
+    /**
+     * @return IAuthenticator|null
+     */
+    public function getAuth(): ?IAuthenticator
+    {
+        return $this->auth;
+    }
 }

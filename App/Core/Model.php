@@ -3,43 +3,59 @@
 namespace App\Core;
 
 use App\Core\DB\Connection;
+use App\Helpers\Inflect;
+use PDO;
 use PDOException;
 
 /**
  * Class Model
  * Abstract class serving as a simple model example, predecessor of all models
  * Allows basic CRUD operations
- * @package App\Core
+ * @package App\Core\Storage
  */
 abstract class Model implements \JsonSerializable
 {
-    private static $connection = null;
-    private static $pkColumn = 'id';
-
-    abstract static public function setDbColumns();
-
-    abstract static public function setTableName();
+    private static ?Connection $connection = null;
 
     /**
-     * Gets a db columns from a model
-     * @return mixed
+     * Get array of column names from the associated model table
+     * @return array
+     * @throws \Exception
      */
-    private static function getDbColumns()
+    public static function getDbColumns(): array
     {
-        return static::setDbColumns();
+        self::connect();
+        try {
+            $sql = "DESCRIBE " . static::getTableName();
+            $stmt = self::$connection->prepare($sql);
+            $stmt->execute([]);
+            return array_column($stmt->fetchAll(), 'Field');
+        } catch (PDOException $e) {
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
+        }
     }
 
     /**
-     * Reads the table name from a model
-     * @return mixed
+     * Get table name from model class name
+     * @return string
      */
-    private static function getTableName()
+    public static function getTableName(): string
     {
-        return static::setTableName();
+        $arr = explode("\\", get_called_class());
+        return Inflect::pluralize(strtolower(end($arr)));
     }
 
     /**
-     * Gets DB connection for other model methods
+     * Return default primary key column name
+     * @return string
+     */
+    public static function getPkColumnName()
+    {
+        return 'id';
+    }
+
+    /**
+     * Connect to DB
      * @return null
      * @throws \Exception
      */
@@ -55,118 +71,99 @@ abstract class Model implements \JsonSerializable
      * @return static[]
      * @throws \Exception
      */
-    static public function getAll(string $whereClause = '', array $whereParams = [])
+    static public function getAll(string $whereClause = '', array $whereParams = [], $orderBy = '')
     {
         self::connect();
         try {
-            $sql = "SELECT * FROM " . self::getTableName() . ($whereClause=='' ? '' : " WHERE $whereClause");
-
+            $sql = "SELECT * FROM `" . static::getTableName() . "`" . ($whereClause == '' ? '' : " WHERE $whereClause") . ($orderBy == '' ? '' : " ORDER BY $orderBy");
             $stmt = self::$connection->prepare($sql);
             $stmt->execute($whereParams);
-
-            $dbModels = $stmt->fetchAll();
-            $models = [];
-            foreach ($dbModels as $model) {
-                $tmpModel = new static();
-                $data = array_fill_keys(self::getDbColumns(), null);
-                foreach ($data as $key => $item) {
-                    $tmpModel->$key = $model[$key];
-                }
-                $models[] = $tmpModel;
-            }
+            $models = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
             return $models;
         } catch (PDOException $e) {
-            throw new \Exception('Query failed: ' . $e->getMessage());
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
     /**
      * Gets one model by primary key
      * @param $id
+     * @return static|null
      * @throws \Exception
      */
-    static public function getOne($id)
+    static public function getOne($id): ?static
     {
         if ($id == null) return null;
 
         self::connect();
         try {
-            $sql = "SELECT * FROM " . self::getTableName() . " WHERE " . self::$pkColumn . "=?";
+            $sql = "SELECT * FROM `" . static::getTableName() . "` WHERE `" . static::getPkColumnName() . "`=?";
             $stmt = self::$connection->prepare($sql);
+            $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
             $stmt->execute([$id]);
-            $model = $stmt->fetch();
-            if ($model) {
-                $data = array_fill_keys(self::getDbColumns(), null);
-                $tmpModel = new static();
-                foreach ($data as $key => $item) {
-                    $tmpModel->$key = $model[$key];
-                }
-                return $tmpModel;
-            } else {
-                throw new \Exception('Record not found!');
-            }
+            return $stmt->fetch();
         } catch (PDOException $e) {
-            throw new \Exception('Query failed: ' . $e->getMessage());
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
     /**
-     * Saves the current model to DB (if model id is set, updates it, else creates a new model)
-     * @return mixed
+     * Save the current model to DB (if model id is set, update it, else create a new model)
+     * @return void
+     * @throws \Exception
      */
-    public function save()
+    public function save(): void
     {
         self::connect();
         try {
-            $data = array_fill_keys(self::getDbColumns(), null);
+            $data = array_fill_keys(static::getDbColumns(), null);
             foreach ($data as $key => &$item) {
-                $item = $this->$key;
+                $item = isset($this->$key) ? $this->$key : null;
             }
-            if ($data[self::$pkColumn] == null) {
+            if ($data[static::getPkColumnName()] == null) {
                 $arrColumns = array_map(fn($item) => (':' . $item), array_keys($data));
-                $columns = implode(',', array_keys($data));
+                $columns = '`' . implode('`,`', array_keys($data)) . "`";
                 $params = implode(',', $arrColumns);
-                $sql = "INSERT INTO " . self::getTableName() . " ($columns) VALUES ($params)";
+                $sql = "INSERT INTO `" . static::getTableName() . "` ($columns) VALUES ($params)";
                 $stmt = self::$connection->prepare($sql);
                 $stmt->execute($data);
-                return self::$connection->lastInsertId();
+                $this->{static::getPkColumnName()} = self::$connection->lastInsertId();
             } else {
-                $arrColumns = array_map(fn($item) => ($item . '=:' . $item), array_keys($data));
+                $arrColumns = array_map(fn($item) => ("`" . $item . '`=:' . $item), array_keys($data));
                 $columns = implode(',', $arrColumns);
-                $sql = "UPDATE " . self::getTableName() . " SET $columns WHERE id=:" . self::$pkColumn;
+                $sql = "UPDATE `" . static::getTableName() . "` SET $columns WHERE `" . static::getPkColumnName() . "`=:" . static::getPkColumnName();
                 $stmt = self::$connection->prepare($sql);
                 $stmt->execute($data);
-                return $data[self::$pkColumn];
             }
         } catch (PDOException $e) {
-            throw new \Exception('Query failed: ' . $e->getMessage());
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
     /**
-     * Deletes current model from DB
+     * Delete current model from DB
      * @throws \Exception If model not exists, throw an exception
      */
     public function delete()
     {
-        if ($this->{self::$pkColumn} == null) {
+        if ($this->{static::getPkColumnName()} == null) {
             return;
         }
         self::connect();
         try {
-            $sql = "DELETE FROM " . self::getTableName() . " WHERE id=?";
+            $sql = "DELETE FROM `" . static::getTableName() . "` WHERE `" . static::getPkColumnName() . "`=?";
             $stmt = self::$connection->prepare($sql);
-            $stmt->execute([$this->{self::$pkColumn}]);
+            $stmt->execute([$this->{static::getPkColumnName()}]);
             if ($stmt->rowCount() == 0) {
                 throw new \Exception('Model not found!');
             }
         } catch (PDOException $e) {
-            throw new \Exception('Query failed: ' . $e->getMessage());
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
     /**
-     * Returns the connection to database
+     * Return DB connection
      * @return null
      */
     public static function getConnection()
@@ -178,8 +175,20 @@ abstract class Model implements \JsonSerializable
      * Default implementation of JSON serialize method
      * @return array
      */
-    public function jsonSerialize() : array
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
+    }
+
+    /**
+     * Check
+     * @param string $name
+     * @param $value
+     * @return void
+     * @throws \Exception
+     */
+    public function __set(string $name, $value): void
+    {
+        throw new \Exception("Attribute `$name` doesn't exist in the model " . get_called_class() . ".");
     }
 }
