@@ -49,7 +49,7 @@ abstract class Model implements \JsonSerializable
      * Return default primary key column name
      * @return string
      */
-    public static function getPkColumnName()
+    public static function getPkColumnName() : string
     {
         return 'id';
     }
@@ -59,7 +59,7 @@ abstract class Model implements \JsonSerializable
      * @return null
      * @throws \Exception
      */
-    private static function connect()
+    private static function connect(): void
     {
         self::$connection = Connection::connect();
     }
@@ -71,7 +71,7 @@ abstract class Model implements \JsonSerializable
      * @return static[]
      * @throws \Exception
      */
-    static public function getAll(string $whereClause = '', array $whereParams = [], $orderBy = '')
+    static public function getAll(string $whereClause = '', array $whereParams = [], $orderBy = ''): array
     {
         self::connect();
         try {
@@ -163,7 +163,7 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Return DB connection
+     * Return DB connection, ready for custom developer use
      * @return null
      */
     public static function getConnection()
@@ -181,7 +181,7 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Check
+     * Check if DB contains a column, which doesn't exist in model class as an attribute
      * @param string $name
      * @param $value
      * @return void
