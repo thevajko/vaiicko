@@ -2,7 +2,8 @@
 /** @var string $contentHTML */
 /** @var \App\Core\IAuthenticator $auth */
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="sk">
 <head>
     <title><?= \App\Config\Configuration::APP_NAME ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
