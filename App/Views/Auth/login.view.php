@@ -22,7 +22,7 @@ $layout = 'auth';
                                    placeholder="Password" required>
                         </div>
                         <div class="text-center">
-                            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" name="submit">Prihlásiť
+                            <button class="btn btn-primary" type="submit" name="submit">Prihlásiť
                             </button>
                         </div>
                     </form>
