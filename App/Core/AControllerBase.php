@@ -108,5 +108,5 @@ abstract class AControllerBase
      * Every controller should implement the method for index action at least
      * @return Response
      */
-    public abstract function index();
+    public abstract function index(): Response;
 }

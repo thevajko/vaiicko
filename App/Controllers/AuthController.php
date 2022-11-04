@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Config\Configuration;
 use App\Core\AControllerBase;
+use App\Core\Responses\Response;
 
 /**
  * Class AuthController
@@ -16,7 +17,7 @@ class AuthController extends AControllerBase
      *
      * @return \App\Core\Responses\RedirectResponse|\App\Core\Responses\Response
      */
-    public function index()
+    public function index(): Response
     {
         return $this->redirect(Configuration::LOGIN_URL);
     }
@@ -25,7 +26,7 @@ class AuthController extends AControllerBase
      * Login a user
      * @return \App\Core\Responses\RedirectResponse|\App\Core\Responses\ViewResponse
      */
-    public function login()
+    public function login(): Response
     {
         $formData = $this->app->getRequest()->getPost();
         $logged = null;
@@ -44,7 +45,7 @@ class AuthController extends AControllerBase
      * Logout a user
      * @return \App\Core\Responses\ViewResponse
      */
-    public function logout()
+    public function logout(): Response
     {
         $this->app->getAuth()->logout();
         return $this->html(viewName: 'logout');
