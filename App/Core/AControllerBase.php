@@ -80,7 +80,7 @@ abstract class AControllerBase
      * @param string $redirectUrl
      * @return RedirectResponse
      */
-    public function redirect(string $redirectUrl)
+    public function redirect(string $redirectUrl) : RedirectResponse
     {
         return new RedirectResponse($redirectUrl);
     }

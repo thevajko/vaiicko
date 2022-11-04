@@ -7,6 +7,7 @@ use App\Core\IAuthenticator;
 use App\Core\DB\Connection;
 use App\Core\Request;
 use App\Core\Responses\RedirectResponse;
+use App\Core\Responses\Response;
 use App\Core\Router;
 
 /**
@@ -64,7 +65,11 @@ class App
             // call appropriate method of the controller class
             $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
             // return view to user
-            $response->generate();
+            if ($response instanceof Response) {
+                $response->generate();
+            } else {
+                throw new \Exception("Action {$this->router->getFullControllerName()}::{$this->router->getAction()} didn't return an instance of Response.");
+            }
         } else {
             if ($this->auth->isLogged() or !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
                 http_response_code(403);
