@@ -38,7 +38,7 @@ class AuthController extends AControllerBase
         }
 
         $data = ($logged === false ? ['message' => 'Zlý login alebo heslo!'] : []);
-        return $this->html($data, 'login');
+        return $this->html($data);
     }
 
     /**
@@ -48,6 +48,6 @@ class AuthController extends AControllerBase
     public function logout(): Response
     {
         $this->app->getAuth()->logout();
-        return $this->html(viewName: 'logout');
+        return $this->html();
     }
 }
