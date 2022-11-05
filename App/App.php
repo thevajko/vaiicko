@@ -71,7 +71,7 @@ class App
                 throw new \Exception("Action {$this->router->getFullControllerName()}::{$this->router->getAction()} didn't return an instance of Response.");
             }
         } else {
-            if ($this->auth->isLogged() or !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
+            if ($this->auth->isLogged() || !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
                 http_response_code(403);
                 echo '<h1>403 Forbidden</h1>';
             } else {
