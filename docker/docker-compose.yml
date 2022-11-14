@@ -19,7 +19,7 @@ services:
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
     ports:
       - "127.0.0.1:3306:3306"
-  phpmyadmin:
+  adminer:
     links:
       - db
     depends_on:
@@ -29,7 +29,3 @@ services:
       - "127.0.0.1:8080:8080"
     environment:
       ADMINER_DEFAULT_SERVER: db
-      MYSQL_ROOT_PASSWORD: dtb456
-      PMA_HOST: db
-      PMA_USER: db_user
-      PMA_PASSWORD: dtb456
