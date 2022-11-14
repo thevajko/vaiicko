@@ -16,6 +16,7 @@ use PDOException;
 abstract class Model implements \JsonSerializable
 {
     private static ?Connection $connection = null;
+    private mixed $_dbId = null;
 
     /**
      * Get array of column names from the associated model table
@@ -79,6 +80,9 @@ abstract class Model implements \JsonSerializable
             $stmt = self::$connection->prepare($sql);
             $stmt->execute($whereParams);
             $models = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
+            foreach ($models as $model) {
+                $model->_dbId = $model->{static::getPkColumnName()};
+            }
             return $models;
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
@@ -101,7 +105,11 @@ abstract class Model implements \JsonSerializable
             $stmt = self::$connection->prepare($sql);
             $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
             $stmt->execute([$id]);
-            return $stmt->fetch() ?: null;
+            $model = $stmt->fetch() ?: null;
+            if ($model != null) {
+                $model->_dbId = $model->{static::getPkColumnName()};
+            }
+            return $model;
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
@@ -120,19 +128,22 @@ abstract class Model implements \JsonSerializable
             foreach ($data as $key => &$item) {
                 $item = isset($this->$key) ? $this->$key : null;
             }
-            if ($data[static::getPkColumnName()] == null) {
+            if ($this->_dbId == null) {
                 $arrColumns = array_map(fn($item) => (':' . $item), array_keys($data));
                 $columns = '`' . implode('`,`', array_keys($data)) . "`";
                 $params = implode(',', $arrColumns);
                 $sql = "INSERT INTO `" . static::getTableName() . "` ($columns) VALUES ($params)";
                 $stmt = self::$connection->prepare($sql);
                 $stmt->execute($data);
-                $this->{static::getPkColumnName()} = self::$connection->lastInsertId();
+                if ($this->{static::getPkColumnName()} == null) {
+                    $this->{static::getPkColumnName()} = self::$connection->lastInsertId();
+                }
             } else {
                 $arrColumns = array_map(fn($item) => ("`" . $item . '`=:' . $item), array_keys($data));
                 $columns = implode(',', $arrColumns);
-                $sql = "UPDATE `" . static::getTableName() . "` SET $columns WHERE `" . static::getPkColumnName() . "`=:" . static::getPkColumnName();
+                $sql = "UPDATE `" . static::getTableName() . "` SET $columns WHERE `" . static::getPkColumnName() . "`=:__pk";
                 $stmt = self::$connection->prepare($sql);
+                $data["__pk"] = $this->_dbId;
                 $stmt->execute($data);
             }
         } catch (PDOException $e) {
