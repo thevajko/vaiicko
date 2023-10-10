@@ -59,25 +59,29 @@ class App
 
         //inject app into Controller
         call_user_func([$this->router->getController(), 'setApp'], $this);
-
-
-        if ($this->router->getController()->authorize($this->router->getAction())) {
-            // call appropriate method of the controller class
-            $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
-            // return view to user
-            if ($response instanceof Response) {
-                $response->generate();
+        try {
+            if ($this->router->getController()->authorize($this->router->getAction())) {
+                // call appropriate method of the controller class
+                $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
+                // return view to user
+                if ($response instanceof Response) {
+                    $response->generate();
+                } else {
+                    throw new \Exception("Action {$this->router->getFullControllerName()}::{$this->router->getAction()} didn't return an instance of Response.");
+                }
             } else {
-                throw new \Exception("Action {$this->router->getFullControllerName()}::{$this->router->getAction()} didn't return an instance of Response.");
-            }
-        } else {
-            if ($this->auth->isLogged() || !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
-                http_response_code(403);
-                echo '<h1>403 Forbidden</h1>';
-            } else {
-                (new RedirectResponse(Configuration::LOGIN_URL))->generate();
+                if ($this->auth->isLogged() || !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
+                    http_response_code(403);
+                    echo '<h1>403 Forbidden</h1>';
+                } else {
+                    (new RedirectResponse(Configuration::LOGIN_URL))->generate();
 
+                }
             }
+        } catch (\Exception $exception) {
+            $erhname = Configuration::ERROR_HANDLER_CLASS;
+            $er = new $erhname();
+            $er->handleError($exception)->generateWholeResponse();
         }
 
         // if SQL debugging in configuration is allowed, display all SQL queries
