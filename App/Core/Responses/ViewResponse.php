@@ -34,7 +34,7 @@ class ViewResponse extends Response
      * Return a rendered view
      * @return mixed|void
      */
-    public function generate()
+    protected function generate()
     {
         $layout = Configuration::ROOT_LAYOUT;
         $data = $this->data;
@@ -42,10 +42,12 @@ class ViewResponse extends Response
 
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->viewName . ".view.php";
 
-        $contentHTML = ob_get_clean();
-        $this->setLayoutName($layout);
+        if ($layout != null) {
+            $contentHTML = ob_get_clean();
+            $this->setLayoutName($layout); //TODO prerobit asi to takto netreba uz
 
-        require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->layoutName;
+            require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->layoutName;
+        }
     }
 
     /**

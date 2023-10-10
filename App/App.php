@@ -54,18 +54,19 @@ class App
     {
         ob_start();
 
-        // get a controller and action from URL
-        $this->router->processURL();
-
-        //inject app into Controller
-        call_user_func([$this->router->getController(), 'setApp'], $this);
         try {
+            // get a controller and action from URL
+            $this->router->processURL();
+
+            //inject app into Controller
+            call_user_func([$this->router->getController(), 'setApp'], $this);
+
             if ($this->router->getController()->authorize($this->router->getAction())) {
                 // call appropriate method of the controller class
                 $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
                 // return view to user
                 if ($response instanceof Response) {
-                    $response->generate();
+                    $response->generateWholeResponse();
                 } else {
                     throw new \Exception("Action {$this->router->getFullControllerName()}::{$this->router->getAction()} didn't return an instance of Response.");
                 }
@@ -74,14 +75,14 @@ class App
                     http_response_code(403);
                     echo '<h1>403 Forbidden</h1>';
                 } else {
-                    (new RedirectResponse(Configuration::LOGIN_URL))->generate();
+                    (new RedirectResponse(Configuration::LOGIN_URL))->generateWholeResponse();
 
                 }
             }
         } catch (\Exception $exception) {
             $erhname = Configuration::ERROR_HANDLER_CLASS;
             $er = new $erhname();
-            $er->handleError($exception)->generateWholeResponse();
+            $er->handleError($this, $exception)->generateWholeResponse();
         }
 
         // if SQL debugging in configuration is allowed, display all SQL queries
