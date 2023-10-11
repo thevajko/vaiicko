@@ -59,36 +59,35 @@ class App
             // get a controller and action from URL
             $this->router->processURL();
 
-            //inject app into Controller
+            // inject app into Controller
             call_user_func([$this->router->getController(), 'setApp'], $this);
 
+            // try to authorize action
             if ($this->router->getController()->authorize($this->router->getAction())) {
                 // call appropriate method of the controller class
                 $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
+
                 // return view to user
                 if ($response instanceof Response) {
-                    $response->generateWholeResponse();
+                    $response->send();
                 } else {
                     throw new \Exception("Action {$this->router->getFullControllerName()}::{$this->router->getAction()} didn't return an instance of Response.");
                 }
             } else {
                 if ($this->auth->isLogged() || !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
-                    http_response_code(403);
-                    echo '<h1>403 Forbidden</h1>';
+                    throw new HTTPException(403);
                 } else {
-                    (new RedirectResponse(Configuration::LOGIN_URL))->generateWholeResponse();
-
+                    (new RedirectResponse(Configuration::LOGIN_URL))->send();
                 }
             }
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
 
             if (!($exception instanceof HTTPException)) {
                 $exception =  HTTPException::fromException($exception);
             }
 
-            $erhname = Configuration::ERROR_HANDLER_CLASS;
-            $er = new $erhname();
-            $er->handleError($this, $exception)->generateWholeResponse();
+            $errorHandler = new (Configuration::ERROR_HANDLER_CLASS)();
+            $errorHandler->handleError($this, $exception)->send();
         }
 
         // if SQL debugging in configuration is allowed, display all SQL queries

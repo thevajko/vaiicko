@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Core\Responses;
 
 /**
@@ -12,20 +11,24 @@ abstract class Response
 {
     private int $statusCode = 200;
 
-
-    //TODO lepsi nazov
-    public function generateWholeResponse() {
+    /**
+     * Sends response with headers to client
+     */
+    public function send() : void {
         http_response_code($this->statusCode);
         $this->generate();
     }
 
     /**
-     * Method needed to implement
-     * @return mixed
+     * Method needed to be implemented
      */
-    abstract protected function generate();
+    abstract protected function generate() : void;
 
-    //TODO premysliet ci nieje lepsi nazov withStatusCode
+    /**
+     * Set HTTP Status code of response
+     * @param int $statusCode
+     * @return $this
+     */
     public function setStatusCode(int $statusCode): Response
     {
         $this->statusCode = $statusCode;

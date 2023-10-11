@@ -21,7 +21,7 @@ class Configuration
     public const LOGIN_URL = '?c=auth&a=login';
     public const ROOT_LAYOUT = 'root';
     public const DEBUG_QUERY = false;
-
+    public const DEBUG_EXCEPTION_HANDLER = true;
     public const AUTH_CLASS = DummyAuthenticator::class;
     public const ERROR_HANDLER_CLASS = ErrorHandler::class;
 }

@@ -25,9 +25,8 @@ class RedirectResponse extends Response
 
     /**
      * Redirect the request. If debugging is true, the request is not redirected (to allow see SQL log)
-     * @return mixed|void
      */
-    protected function generate()
+    protected function generate() : void
     {
         if (!Configuration::DEBUG_QUERY) {
             header('Location: ' . $this->redirectUrl);
