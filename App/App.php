@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Config\Configuration;
+use App\Core\HTTPException;
 use App\Core\IAuthenticator;
 use App\Core\DB\Connection;
 use App\Core\Request;
@@ -80,6 +81,11 @@ class App
                 }
             }
         } catch (\Exception $exception) {
+
+            if (!($exception instanceof HTTPException)) {
+                $exception =  HTTPException::fromException($exception);
+            }
+
             $erhname = Configuration::ERROR_HANDLER_CLASS;
             $er = new $erhname();
             $er->handleError($this, $exception)->generateWholeResponse();
