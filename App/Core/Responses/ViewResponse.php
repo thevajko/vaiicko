@@ -2,8 +2,8 @@
 
 namespace App\Core\Responses;
 
-use App\App;
 use App\Config\Configuration;
+use App\Core\ControllerContext;
 
 /**
  * Class ViewResponse
@@ -12,20 +12,17 @@ use App\Config\Configuration;
  */
 class ViewResponse extends Response
 {
-    private App $app;
-    private $viewName;
-    private $layoutName;
-    private $data;
+    private ControllerContext $controllerContext;
+    private string $viewName;
+    private string $layoutName;
+    private mixed $data;
 
     /**
      * Constructor
-     * @param $app
-     * @param $viewName
-     * @param $data
      */
-    public function __construct($app, $viewName, $data)
+    public function __construct(ControllerContext $controllerContext, string $viewName, mixed $data)
     {
-        $this->app = $app;
+        $this->controllerContext = $controllerContext;
         $this->viewName = $viewName;
         $this->data = $data;
     }
@@ -38,7 +35,7 @@ class ViewResponse extends Response
     {
         $layout = Configuration::ROOT_LAYOUT;
         $data = $this->data;
-        $auth = $this->app->getAuth();
+        $auth = $this->controllerContext->getAuth();
 
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->viewName . ".view.php";
 

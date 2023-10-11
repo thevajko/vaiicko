@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Config\Configuration;
-use App\Core\IAuthenticator;
+use App\Core\ControllerContext;
 use App\Core\DB\Connection;
 use App\Core\Request;
 use App\Core\Responses\RedirectResponse;
@@ -23,27 +23,11 @@ class App
     private $router;
 
     /**
-     * @var Request
-     */
-    private Request $request;
-
-    private ?IAuthenticator $auth;
-
-    /**
      * App constructor
      */
     public function __construct()
     {
         $this->router = new Router();
-        $this->request = new Request();
-
-        // Check if there is an authenticator
-        if (defined('\\App\\Config\\Configuration::AUTH_CLASS')) {
-            //$authClass = Configuration::AUTH_CLASS;
-            $this->auth = new (Configuration::AUTH_CLASS)();
-        } else {
-            $this->auth = null;
-        }
     }
 
     /**
@@ -54,29 +38,38 @@ class App
     {
         ob_start();
 
-        // get a controller and action from URL
-        $this->router->processURL();
+        // Create request object from http request
+        $request = new Request();
 
-        //inject app into Controller
-        call_user_func([$this->router->getController(), 'setApp'], $this);
+        // Create authentificator for request
+        $auth = (defined('\\App\\Config\\Configuration::AUTH_CLASS')) ? new (Configuration::AUTH_CLASS)($request) : null;
 
+        // route params from url
+        $route = $this->router->processRequest($request);
 
-        if ($this->router->getController()->authorize($this->router->getAction())) {
-            // call appropriate method of the controller class
-            $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
-            // return view to user
-            if ($response instanceof Response) {
-                $response->generate();
-            } else {
-                throw new \Exception("Action {$this->router->getFullControllerName()}::{$this->router->getAction()} didn't return an instance of Response.");
-            }
-        } else {
-            if ($this->auth->isLogged() || !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
+        // create controller with context
+        $context = new ControllerContext($request, $route, $auth);
+        $controller = new ($route->getControllerClassName())();
+
+        //inject context into Controller
+        call_user_func([$controller, 'setContext'], $context);
+
+        if (!$controller->authorize($route->getAction())) {
+            if ($auth->isLogged() || !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
                 http_response_code(403);
                 echo '<h1>403 Forbidden</h1>';
             } else {
                 (new RedirectResponse(Configuration::LOGIN_URL))->generate();
 
+            }
+        } else {
+            // call appropriate method of the controller class
+            $response = call_user_func([$controller, $route->getAction()]);
+            // return view to user
+            if ($response instanceof Response) {
+                $response->generate();
+            } else {
+                throw new \Exception("Action {$route->getControllerClassName()}::{$route->getAction()} didn't return an instance of Response.");
             }
         }
 
@@ -93,21 +86,5 @@ class App
     public function getRouter(): Router
     {
         return $this->router;
-    }
-
-    /**
-     * @return Request
-     */
-    public function getRequest(): Request
-    {
-        return $this->request;
-    }
-
-    /**
-     * @return IAuthenticator|null
-     */
-    public function getAuth(): ?IAuthenticator
-    {
-        return $this->auth;
     }
 }

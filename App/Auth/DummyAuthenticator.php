@@ -3,6 +3,7 @@
 namespace App\Auth;
 
 use App\Core\IAuthenticator;
+use App\Core\Request;
 
 /**
  * Class DummyAuthenticator
@@ -18,7 +19,7 @@ class DummyAuthenticator implements IAuthenticator
     /**
      * DummyAuthenticator constructor
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         session_start();
     }

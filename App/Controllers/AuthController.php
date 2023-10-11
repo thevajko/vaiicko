@@ -28,10 +28,10 @@ class AuthController extends AControllerBase
      */
     public function login(): Response
     {
-        $formData = $this->app->getRequest()->getPost();
+        $formData = $this->getRequest()->getPost();
         $logged = null;
         if (isset($formData['submit'])) {
-            $logged = $this->app->getAuth()->login($formData['login'], $formData['password']);
+            $logged = $this->getAuth()->login($formData['login'], $formData['password']);
             if ($logged) {
                 return $this->redirect('?c=admin');
             }
@@ -47,7 +47,7 @@ class AuthController extends AControllerBase
      */
     public function logout(): Response
     {
-        $this->app->getAuth()->logout();
+        $this->getAuth()->logout();
         return $this->html();
     }
 }

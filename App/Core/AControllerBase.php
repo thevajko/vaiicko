@@ -2,7 +2,6 @@
 
 namespace App\Core;
 
-use App\App;
 use App\Core\Responses\JsonResponse;
 use App\Core\Responses\RedirectResponse;
 use App\Core\Responses\Response;
@@ -16,14 +15,12 @@ use App\Core\Responses\ViewResponse;
 abstract class AControllerBase
 {
     /**
-     * Reference to APP object instance
-     * @var App
+     * Reference to controller context
      */
-     protected App $app;
+    private ControllerContext $context;
 
     /**
      * Returns controller name (without Controller prefix)
-     * @return string
      */
     public function getName()  : string
     {
@@ -32,37 +29,35 @@ abstract class AControllerBase
 
     /**
      * Return full class name
-     * @return string
      */
-    public function getClassName()
+    public function getClassName() : string
     {
         $arr = explode("\\", get_class($this));
         return end($arr);
     }
 
     /**
-     * Method for injecting App object
-     * @param App $app
+     * Method for injecting controller context
      */
-    public function setApp(App $app)
+    public final function setContext(ControllerContext $context) : void
     {
-        $this->app = $app;
+        $this->context = $context;
     }
 
     /**
      * Helper method for returning response type ViewResponse
-     * @param null $data
-     * @param null $viewName
+     * @param mixed|null $data
+     * @param string|null $viewName
      * @return ViewResponse
      */
-    protected function html($data = null, $viewName = null) : ViewResponse
+    protected function html(mixed $data = null, string $viewName = null) : ViewResponse
     {
         if ($viewName == null) {
-            $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $this->app->getRouter()->getAction();
+            $viewName = $this->getName(). DIRECTORY_SEPARATOR . $this->context->getRoute()->getAction();
         } else {
-            $viewName = is_string($viewName) ? ($this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $viewName) : ($viewName['0'] . DIRECTORY_SEPARATOR . $viewName['1']);
+            $viewName = is_string($viewName) ? ($this->getName() . DIRECTORY_SEPARATOR . $viewName) : ($viewName['0'] . DIRECTORY_SEPARATOR . $viewName['1']);
         }
-        return new ViewResponse($this->app, $viewName, $data);
+        return new ViewResponse($this->context, $viewName, $data);
     }
 
     /**
@@ -87,11 +82,18 @@ abstract class AControllerBase
 
     /**
      * Helper method for request
-     * @return Request
      */
-    public function request() : Request
+    protected function getRequest() : Request
     {
-        return $this->app->getRequest();
+        return $this->context->getRequest();
+    }
+
+    /**
+     * Helper method for auth
+     */
+    protected function getAuth() : IAuthenticator | null
+    {
+        return $this->context->getAuth();
     }
 
     /**
