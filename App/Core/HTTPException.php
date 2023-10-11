@@ -80,7 +80,7 @@ class HTTPException extends \Exception
         parent::__construct($message ? $message : self::$statusCodeMessages[$statusCode], $statusCode, $h);
     }
 
-    public static function fromException(\Exception $exception, int $statusCode = 500) {
+    public static function from(\Exception $exception, int $statusCode = 500) {
         return  new HTTPException($statusCode, null , $exception );
     }
 

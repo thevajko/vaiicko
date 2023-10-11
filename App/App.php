@@ -83,7 +83,7 @@ class App
         } catch (\Throwable $exception) {
 
             if (!($exception instanceof HTTPException)) {
-                $exception =  HTTPException::fromException($exception);
+                $exception =  HTTPException::from($exception);
             }
 
             $errorHandler = new (Configuration::ERROR_HANDLER_CLASS)();
