@@ -81,12 +81,13 @@ class App
                 }
             }
         } catch (\Throwable $exception) {
-
+            // if not HTTP exception wrap it to one
             if (!($exception instanceof HTTPException)) {
                 $exception =  HTTPException::from($exception);
             }
-
-            $errorHandler = new (Configuration::ERROR_HANDLER_CLASS)();
+            // get handler instance
+            $errorHandler = new (Cofiguration::ERROR_HANDLER_CLASS)();
+            // handle error and send response
             $errorHandler->handleError($this, $exception)->send();
         }
 
