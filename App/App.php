@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Config\Configuration;
+use App\Core\HTTPException;
 use App\Core\IAuthenticator;
 use App\Core\DB\Connection;
 use App\Core\Request;
@@ -54,30 +55,40 @@ class App
     {
         ob_start();
 
-        // get a controller and action from URL
-        $this->router->processURL();
+        try {
+            // get a controller and action from URL
+            $this->router->processURL();
 
-        //inject app into Controller
-        call_user_func([$this->router->getController(), 'setApp'], $this);
+            // inject app into Controller
+            call_user_func([$this->router->getController(), 'setApp'], $this);
 
+            // try to authorize action
+            if ($this->router->getController()->authorize($this->router->getAction())) {
+                // call appropriate method of the controller class
+                $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
 
-        if ($this->router->getController()->authorize($this->router->getAction())) {
-            // call appropriate method of the controller class
-            $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
-            // return view to user
-            if ($response instanceof Response) {
-                $response->generate();
+                // return view to user
+                if ($response instanceof Response) {
+                    $response->send();
+                } else {
+                    throw new \Exception("Action {$this->router->getFullControllerName()}::{$this->router->getAction()} didn't return an instance of Response.");
+                }
             } else {
-                throw new \Exception("Action {$this->router->getFullControllerName()}::{$this->router->getAction()} didn't return an instance of Response.");
+                if ($this->auth->isLogged() || !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
+                    throw new HTTPException(403);
+                } else {
+                    (new RedirectResponse(Configuration::LOGIN_URL))->send();
+                }
             }
-        } else {
-            if ($this->auth->isLogged() || !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
-                http_response_code(403);
-                echo '<h1>403 Forbidden</h1>';
-            } else {
-                (new RedirectResponse(Configuration::LOGIN_URL))->generate();
-
+        } catch (\Throwable $exception) {
+            // if not HTTP exception wrap it to one
+            if (!($exception instanceof HTTPException)) {
+                $exception =  HTTPException::from($exception);
             }
+            // get handler instance
+            $errorHandler = new (Cofiguration::ERROR_HANDLER_CLASS)();
+            // handle error and send response
+            $errorHandler->handleError($this, $exception)->send();
         }
 
         // if SQL debugging in configuration is allowed, display all SQL queries

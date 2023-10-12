@@ -20,13 +20,13 @@ class RedirectResponse extends Response
     public function __construct(string $redirectUrl)
     {
         $this->redirectUrl = $redirectUrl;
+        $this->setStatusCode(301);
     }
 
     /**
      * Redirect the request. If debugging is true, the request is not redirected (to allow see SQL log)
-     * @return mixed|void
      */
-    public function generate()
+    protected function generate() : void
     {
         if (!Configuration::DEBUG_QUERY) {
             header('Location: ' . $this->redirectUrl);

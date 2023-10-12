@@ -14,7 +14,6 @@ class ViewResponse extends Response
 {
     private App $app;
     private $viewName;
-    private $layoutName;
     private $data;
 
     /**
@@ -31,10 +30,9 @@ class ViewResponse extends Response
     }
 
     /**
-     * Return a rendered view
-     * @return mixed|void
+     * Render a view
      */
-    public function generate()
+    protected function generate() : void
     {
         $layout = Configuration::ROOT_LAYOUT;
         $data = $this->data;
@@ -42,19 +40,19 @@ class ViewResponse extends Response
 
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->viewName . ".view.php";
 
-        $contentHTML = ob_get_clean();
-        $this->setLayoutName($layout);
-
-        require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->layoutName;
+        if ($layout != null) {
+            $contentHTML = ob_get_clean();
+            unset($data); //Unsets data, because data are not needed to be passed to layout
+            require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->getLayoutFullName($layout);
+        }
     }
 
     /**
-     * Set another root layout if needed.
-     * @param mixed $layoutName
+     * Finds full path of layout
+     * @param string $layoutName
      */
-    public function setLayoutName($layoutName)
+    private function getLayoutFullName($layoutName) : string
     {
-        $this->layoutName = str_ends_with($layoutName, '.layout.view.php') ? $layoutName : $layoutName . '.layout.view.php';
-        return $this;
+        return str_ends_with($layoutName, '.layout.view.php') ? $layoutName : $layoutName . '.layout.view.php';
     }
 }
