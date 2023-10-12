@@ -1,0 +1,94 @@
+< {%
+
+   // setup global value for login
+   client.global.set("login", "matko");
+   client.global.set("password", "matko");
+
+%}
+
+POST http://localhost:80/?c=auth&a=login
+Content-Type: application/x-www-form-urlencoded
+X-Requested-With: xmlhttprequest
+
+id = 99 &
+content = new-element
+
+
+> {%
+ client.test("Try login without needed parameters", function(){
+     client.assert(response.status == 400, "Required attribs not present in login request")
+     client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json' but received '" + response.contentType.mimeType + "'");
+ })
+
+ %}
+
+###
+
+POST http://localhost:80/?c=auth&a=login
+Content-Type: application/x-www-form-urlencoded
+X-Requested-With: xmlhttprequest
+
+login = {{login}} &
+password = heslo
+
+> {%
+    client.test("Try login with correct attribs but not with right valies", function(){
+        client.assert(response.status == 400, "Login worked and it should not or response has bad code.");
+        client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json' but received '" + response.contentType.mimeType + "'");
+    })
+
+%}
+###
+
+POST http://localhost:80/?c=auth&a=login
+Content-Type: application/x-www-form-urlencoded
+X-Requested-With: xmlhttprequest
+
+login = {{login}} &
+password = {{password}}
+
+> {%
+    client.test("Correct login", function(){
+        client.assert(response.status == 200, "Not logged or bad response code");
+        client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json' but received '" + response.contentType.mimeType + "'");
+    })
+%}
+
+###
+GET http://localhost:80/?c=auth&a=status
+Accept: application/json
+X-Requested-With: xmlhttprequest
+
+> {%
+    client.test("Logged user test", function(){
+        client.assert(response.status == 200, "Server have to return code 200");
+        client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json' but received '" + response.contentType.mimeType + "'");
+        client.assert(response.body.login === client.global.get("login"), "Returned login is not in value");
+    })
+
+%}
+
+###
+GET http://localhost:80/?c=auth&a=logout
+Accept: application/json
+X-Requested-With: xmlhttprequest
+
+> {%
+    client.test("Log out user", function(){
+        client.assert(response.status == 200, "Status code is not 200:");
+        client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json' but received '" + response.contentType.mimeType + "'");
+    })
+
+%}
+###
+GET http://localhost:80/?c=auth&a=status
+Accept: application/json
+X-Requested-With: xmlhttprequest
+
+> {%
+    client.test("Is user logged out test", function(){
+        client.assert(response.status == 500, "Server have to return code 500");
+        client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json' but received '" + response.contentType.mimeType + "'");
+    })
+
+%}

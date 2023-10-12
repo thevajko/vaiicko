@@ -86,7 +86,7 @@ class App
                 $exception =  HTTPException::from($exception);
             }
             // get handler instance
-            $errorHandler = new (Cofiguration::ERROR_HANDLER_CLASS)();
+            $errorHandler = new (Configuration::ERROR_HANDLER_CLASS)();
             // handle error and send response
             $errorHandler->handleError($this, $exception)->send();
         }

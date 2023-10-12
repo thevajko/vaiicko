@@ -18,10 +18,15 @@ class ErrorHandler implements IHandleError
         ];
 
         if ($app->getRequest()->isAjax()) {
+
+            function rectGetTrace(\Throwable $t){
+                return array_merge([$t->getTrace()], $t->getPrevious() ? rectGetTrace($t->getPrevious()) : []);
+            }
+
             return (new JsonResponse([
                 'code'   => $exception->getCode(),
                 'status' => $exception->getMessage(),
-                'stack'  => $exception->getTraceAsString()
+                'stack'  => rectGetTrace($exception)
             ]))
                 ->setStatusCode($exception->getCode());
         } else {
