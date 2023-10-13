@@ -18,10 +18,16 @@ class ErrorHandler implements IHandleError
         ];
 
         if ($app->getRequest()->isAjax()) {
+
+            // to make less mess, this function is used to do recursive crawl down whole exception tree
+            function recursiveTrace(\Throwable $t){
+                return array_merge([$t->getTrace()], $t->getPrevious() ? recursiveTrace($t->getPrevious()) : []);
+            }
+
             return (new JsonResponse([
                 'code'   => $exception->getCode(),
                 'status' => $exception->getMessage(),
-                'stack'  => $exception->getTraceAsString()
+                'stack'  => $exception->recursiveTrace($exception)
             ]))
                 ->setStatusCode($exception->getCode());
         } else {
