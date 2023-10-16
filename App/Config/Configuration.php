@@ -17,14 +17,14 @@ class Configuration
      * App name
      */
     public const APP_NAME = 'Vaííčko MVC FW';
-    public const FW_VERSION = '2.0';
+    public const FW_VERSION = '2.1';
 
     public const DB_HOST = 'localhost';  // change to db, if docker you use docker
     public const DB_NAME = 'vaiicko_db';
     public const DB_USER = 'root'; // change to vaiicko_user, if docker you use docker
     public const DB_PASS = 'dtb456';
     /**
-     * URL where main page loging is. If action needs login, user will be redirected to this url
+     * URL where main page logging is. If action needs login, user will be redirected to this url
      */
     public const LOGIN_URL = null; //'?c=auth&a=login';
     /**
