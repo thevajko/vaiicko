@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Core\AControllerBase;
+use App\Core\HTTPException;
+use App\Core\Responses\Response;
+use App\Models\Login;
+
+class AuthApiController extends AControllerBase {
+
+    public function index(): Response
+    {
+        throw new HTTPException(501);
+    }
+    public function login(): Response
+    {
+        $jsonData = json_decode(file_get_contents('php://input'));
+
+        if (
+            !$jsonData
+            || empty($jsonData->login)
+            || empty($jsonData->password)
+        ) {
+            throw new HTTPException(400, 'Wrong parameters.');
+        }
+
+           if ($this->app->getAuth()->login($jsonData->login, $jsonData->password)) {
+
+               $logged =  Login::OneByName($jsonData->login);
+
+               if (empty($logged)) {
+                    $newLogin = new Login();
+                    $newLogin->setLogin($jsonData->login);
+                    $newLogin->save();
+               }
+
+               return $this->json([]);
+           } else {
+               throw new HTTPException(400, 'Bad credencials.');
+           }
+    }
+
+    public function logout(): Response
+    {
+
+        $logged =  Login::OneByName($this->app->getAuth()->getLoggedUserName());
+        $this->app->getAuth()->logout();
+
+        if (!empty($logged)) {
+            $logged->delete();
+        }
+
+        return $this->json([])->setStatusCode(204);
+    }
+
+
+    public function status() {
+        return $this->json([
+            'login' => $this->app->getAuth()->getLoggedUserName()
+        ]);
+    }
+}

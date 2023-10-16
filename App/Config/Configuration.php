@@ -26,7 +26,7 @@ class Configuration
     /**
      * URL where main page loging is. If action needs login, user will be redirected to this url
      */
-    public const LOGIN_URL = '?c=auth&a=login';
+    public const LOGIN_URL = null; //'?c=auth&a=login';
     /**
      * Prefix of default view in App/Views dir. <ROOT_LAYOUT>.layout.view.php
      */

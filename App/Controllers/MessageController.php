@@ -14,6 +14,14 @@ class MessageController extends AControllerBase
         throw new HTTPException(501);
     }
 
+    public function sendMessage(){
+
+        $jsonData = json_decode(file_get_contents('php://input'));
+
+
+
+    }
+
     public function getMessages(){
 
     }
