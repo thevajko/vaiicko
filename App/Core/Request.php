@@ -56,9 +56,16 @@ class Request
      * Try to convert default input of PHP to JSON object. Returns null if there
      * is a parsing error
      * @return stdClass|null
+     * @throws HTTPException thrown if there is error in parson request body from JSON
      */
     public function getRawBodyJSON() :  stdClass|null {
-        return json_decode(file_get_contents('php://input'));
+        return json_decode(
+            file_get_contents('php://input'),
+            null,
+            512,
+            JSON_THROW_ON_ERROR
+
+        );
     }
 
     /**
