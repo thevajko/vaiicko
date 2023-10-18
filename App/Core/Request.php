@@ -41,9 +41,10 @@ class Request
 
     /**
      * Returns true if HTTP request has defined content type as 'application/json'
-     * @return bool true
+     * @return bool
      */
-    public function isContentTypeJSON(){
+    public function isContentTypeJSON(): bool
+    {
         return $_SERVER['CONTENT_TYPE'] == "application/json";
     }
 
@@ -51,24 +52,20 @@ class Request
      * Returns true if client in request demands JSON formatted response. Only valid value in request headers is 'application/json'
      * @return bool
      */
-    public function clientRequestsJSON(){
+    public function clientRequestsJSON(): bool
+    {
         return $_SERVER['HTTP_ACCEPT'] == "application/json";
     }
 
     /**
      * Try to convert default input of PHP to JSON object. Returns null if there
      * is a parsing error
-     * @return stdClass|null
-     * @throws HTTPException thrown if there is error in parson request body from JSON
+     * @return mixed
+     * @throws \JsonException
      */
-    public function getRawBodyJSON() :  stdClass|null {
-        return json_decode(
-            file_get_contents('php://input'),
-            null,
-            512,
-            JSON_THROW_ON_ERROR
-
-        );
+    public function getRawBodyJSON(): mixed
+    {
+        return json_decode(file_get_contents('php://input'), flags: JSON_THROW_ON_ERROR);
     }
 
     /**
