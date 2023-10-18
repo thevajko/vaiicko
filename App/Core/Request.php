@@ -59,12 +59,13 @@ class Request
      * @throws HTTPException thrown if there is error in parson request body from JSON
      */
     public function getRawBodyJSON() :  stdClass|null {
+        return json_decode(
+            file_get_contents('php://input'),
+            null,
+            512,
+            JSON_THROW_ON_ERROR
 
-        $json = json_decode(file_get_contents('php://input'));
-        if (empty($json)) {
-            throw new HTTPException(422, "Error in parsing request body.");
-        }
-        return $json;
+        );
     }
 
     /**
