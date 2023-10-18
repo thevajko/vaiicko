@@ -17,8 +17,6 @@ class Request
     private array $server;
     private array $files;
 
-    private bool $ajax = false;
-
     /**
      * Request constructor
      */
@@ -29,8 +27,6 @@ class Request
         $this->request = $_REQUEST;
         $this->server = $_SERVER;
         $this->files = $_FILES;
-
-        $this->ajax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
     }
 
     /**
@@ -40,17 +36,24 @@ class Request
      */
     public function isAjax(): bool
     {
-        return $this->ajax;
+        return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
     }
 
     /**
-     * Returns true if HTTP request has defined content type as application/json
+     * Returns true if HTTP request has defined content type as 'application/json'
      * @return bool true
      */
     public function isContentTypeJSON(){
         return $_SERVER['CONTENT_TYPE'] == "application/json";
     }
 
+    /**
+     * Returns true if client in request demands JSON formatted response. Only valid value in request headers is 'application/json'
+     * @return bool
+     */
+    public function clientRequestsJSON(){
+        return $_SERVER['HTTP_ACCEPT'] == "application/json";
+    }
 
     /**
      * Try to convert default input of PHP to JSON object. Returns null if there

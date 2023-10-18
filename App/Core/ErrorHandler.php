@@ -17,8 +17,8 @@ class ErrorHandler implements IHandleError
             "showDetail" => Configuration::DEBUG_EXCEPTION_HANDLER
         ];
 
-        if ($app->getRequest()->isAjax()) {
-
+        // response error in JSON only if client wants to
+        if ($app->getRequest()->clientRequestsJSON()) {
             // to make less mess, this function is used to do recursive crawl down whole exception tree
             function recursiveTrace(\Throwable $t){
                 return array_merge([$t->getTrace()], $t->getPrevious() ? recursiveTrace($t->getPrevious()) : []);
