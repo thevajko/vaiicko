@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use stdClass;
+
 /**
  * Class Request
  * Object request wrapping HTTP request
@@ -39,6 +41,24 @@ class Request
     public function isAjax(): bool
     {
         return $this->ajax;
+    }
+
+    /**
+     * Returns true if HTTP request has defined content type as application/json
+     * @return bool true
+     */
+    public function isContentTypeJSON(){
+        return $_SERVER['CONTENT_TYPE'] == "application/json";
+    }
+
+
+    /**
+     * Try to convert default input of PHP to JSON object. Returns null if there
+     * is a parsing error
+     * @return stdClass|null
+     */
+    public function getRawBodyJSON() :  stdClass|null {
+        return json_decode(file_get_contents('php://input'));
     }
 
     /**
