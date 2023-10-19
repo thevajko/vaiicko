@@ -11,23 +11,25 @@ use App\Core\Responses\ViewResponse;
 class ErrorHandler implements IHandleError
 {
 
-    function handleError(App $app, HTTPException $exception) : Response {
+    function handleError(App $app, HTTPException $exception) : Response
+    {
         $data = [
             "exception" => $exception,
             "showDetail" => Configuration::DEBUG_EXCEPTION_HANDLER
         ];
 
-        if ($app->getRequest()->isAjax()) {
-
+        // response error in JSON only if client wants to
+        if ($app->getRequest()->clientRequestsJSON()) {
             // to make less mess, this function is used to do recursive crawl down whole exception tree
-            function recursiveTrace(\Throwable $t){
+            function recursiveTrace(\Throwable $t) : array
+            {
                 return array_merge([$t->getTrace()], $t->getPrevious() ? recursiveTrace($t->getPrevious()) : []);
             }
 
             return (new JsonResponse([
                 'code'   => $exception->getCode(),
                 'status' => $exception->getMessage(),
-                'stack'  => $exception->recursiveTrace($exception)
+                'stack'  => recursiveTrace($exception)
             ]))
                 ->setStatusCode($exception->getCode());
         } else {

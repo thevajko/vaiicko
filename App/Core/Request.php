@@ -17,8 +17,6 @@ class Request
     private array $server;
     private array $files;
 
-    private bool $ajax = false;
-
     /**
      * Request constructor
      */
@@ -29,8 +27,6 @@ class Request
         $this->request = $_REQUEST;
         $this->server = $_SERVER;
         $this->files = $_FILES;
-
-        $this->ajax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
     }
 
     /**
@@ -40,32 +36,36 @@ class Request
      */
     public function isAjax(): bool
     {
-        return $this->ajax;
+        return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
     }
 
     /**
-     * Returns true if HTTP request has defined content type as application/json
-     * @return bool true
+     * Returns true if HTTP request has defined content type as 'application/json'
+     * @return bool
      */
-    public function isContentTypeJSON(){
+    public function isContentTypeJSON(): bool
+    {
         return $_SERVER['CONTENT_TYPE'] == "application/json";
     }
 
+    /**
+     * Returns true if client in request demands JSON formatted response. Only valid value in request headers is 'application/json'
+     * @return bool
+     */
+    public function clientRequestsJSON(): bool
+    {
+        return $_SERVER['HTTP_ACCEPT'] == "application/json";
+    }
 
     /**
      * Try to convert default input of PHP to JSON object. Returns null if there
      * is a parsing error
-     * @return stdClass|null
-     * @throws HTTPException thrown if there is error in parson request body from JSON
+     * @return mixed
+     * @throws \JsonException
      */
-    public function getRawBodyJSON() :  stdClass|null {
-        return json_decode(
-            file_get_contents('php://input'),
-            null,
-            512,
-            JSON_THROW_ON_ERROR
-
-        );
+    public function getRawBodyJSON(): mixed
+    {
+        return json_decode(file_get_contents('php://input'), flags: JSON_THROW_ON_ERROR);
     }
 
     /**
