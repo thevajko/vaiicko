@@ -6,17 +6,17 @@ use DateTime;
 
 class Login extends Model
 {
-    protected string $login;
+    protected string $username;
     protected DateTime $lastAction;
 
-    public function getLogin(): string
+    public function getUsername(): string
     {
-        return $this->login;
+        return $this->username;
     }
 
-    public function setLogin(string $login): void
+    public function setUsername(string $username): void
     {
-        $this->login = $login;
+        $this->username = $username;
     }
 
     public function getLastAction(): DateTime
@@ -30,7 +30,7 @@ class Login extends Model
     }
 
     public static function OneByName($login) : Login|null {
-        $logged = Login::getAll('login like ?' [$login]);
+        $logged = Login::getAll('login like ?', [$login]);
         if (count($logged) < 1) {
             return null;
         }

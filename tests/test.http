@@ -8,18 +8,14 @@
 
 
 
-
 POST http://localhost:80/?c=authapi&a=login
 Content-Type: application/json
+Accept: application/json
 
-{
-  "login"    : 99,
-  "password" : 1233
-}
-
+"asdasasd"
 
 > {%
- client.test("Try login without needed parameters", function(){
+ client.test("Try login without any parameters", function(){
      client.assert(response.status == 400, "Required attribs not present in login request")
      client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json' but received '" + response.contentType.mimeType + "'");
  })
@@ -28,6 +24,43 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:80/?c=authapi&a=login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "login"    : "{{login}}",
+  "password" : "{{password}}aa"
+}
+
+> {%
+    client.test("Login with incorrect values", function(){
+        client.assert(response.status == 400, "Required attribs not present in login request")
+        client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json' but received '" + response.contentType.mimeType + "'");
+    })
+
+%}
+
+###
+
+POST http://localhost:80/?c=authapi&a=login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "login"    : "{{login}}",
+  "password" : "{{password}}"
+}
+
+> {%
+    client.test("Login with correct values", function(){
+        client.assert(response.status == 200, "Required attribs not present in login request")
+        client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json' but received '" + response.contentType.mimeType + "'");
+    })
+
+%}
+
+###
 
 #
 #POST http://localhost:80/?c=auth&a=login
