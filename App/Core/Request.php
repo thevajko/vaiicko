@@ -54,7 +54,7 @@ class Request
      */
     public function clientRequestsJSON(): bool
     {
-        return $_SERVER['HTTP_ACCEPT'] == "application/json";
+        return isset($_SERVER['HTTP_ACCEPT']) && $_SERVER['HTTP_ACCEPT'] == "application/json";
     }
 
     /**
