@@ -192,7 +192,9 @@ abstract class Model implements \JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return get_object_vars($this);
+        $properties = get_object_vars($this);
+        unset($properties["_dbId"]); //Remove internal object ID
+        return $properties;
     }
 
     /**
