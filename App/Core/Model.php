@@ -138,8 +138,9 @@ abstract class Model implements \JsonSerializable
                 $sql = "INSERT INTO `" . static::getTableName() . "` ($columns) VALUES ($params)";
                 $stmt = self::$connection->prepare($sql);
                 $stmt->execute($data);
-                if ($this->{static::getPkColumnName()} == null) {
+                if (!isset($this->{static::getPkColumnName()})) {
                     $this->{static::getPkColumnName()} = self::$connection->lastInsertId();
+                    $this->_dbId = $this->{static::getPkColumnName()};
                 }
             } else {
                 $arrColumns = array_map(fn($item) => ("`" . $item . '`=:' . $item), array_keys($data));
