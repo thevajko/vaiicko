@@ -70,7 +70,7 @@ abstract class AControllerBase
      * @param $data
      * @return JsonResponse
      */
-    public function json($data = null) : JsonResponse
+    public function json($data) : JsonResponse
     {
         return new JsonResponse($data);
     }
