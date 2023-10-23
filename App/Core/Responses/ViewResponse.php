@@ -36,7 +36,13 @@ class ViewResponse extends Response
     {
         $layout = Configuration::ROOT_LAYOUT;
         $data = $this->data;
+
+        //Insert view helpers
         $auth = $this->app->getAuth();
+        $url = function (string|array $destination, array $parameters = [], bool $absolute = false, bool $appendParameters = false) : string
+        {
+            return $this->app->getLinkGenerator()->url($destination, $parameters, $absolute, $appendParameters);
+        };
 
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->viewName . ".view.php";
 
