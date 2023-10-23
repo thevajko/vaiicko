@@ -35,7 +35,10 @@ class Configuration
      */
     public const DEBUG_QUERY = false;
 
-    public const DEBUG_EXCEPTION_HANDLER = true; //TODO ? Toz co je totok?
+    /**
+     * Show detailed stacktrace using default exception handler. Should be used only for development.
+     */
+    public const DEBUG_EXCEPTION_HANDLER = true;
     /**
      * Class used as authenticator. Must implement IAuthenticator
      */

@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use App\Config\Configuration;
+
 class HTTPException extends \Exception
 {
     /**
@@ -81,7 +83,7 @@ class HTTPException extends \Exception
     }
 
     public static function from(\Throwable $exception, int $statusCode = 500) : HTTPException {
-        return  new HTTPException($statusCode, $exception->getMessage(), $exception );
+        return  new HTTPException($statusCode, Configuration::DEBUG_EXCEPTION_HANDLER ? $exception->getMessage() : null, $exception );
     }
 
 }
