@@ -81,6 +81,9 @@ class App
                 }
             }
         } catch (\Throwable $exception) {
+            //Clears partially rendered content
+            ob_end_clean();
+
             // if not HTTP exception wrap it to one
             if (!($exception instanceof HTTPException)) {
                 $exception =  HTTPException::from($exception);

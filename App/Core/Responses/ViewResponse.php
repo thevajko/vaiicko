@@ -38,12 +38,16 @@ class ViewResponse extends Response
         $data = $this->data;
         $auth = $this->app->getAuth();
 
+        ob_start();
         require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->viewName . ".view.php";
 
         if ($layout != null) {
             $contentHTML = ob_get_clean();
             unset($data); //Unsets data, because data are not needed to be passed to layout
             require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->getLayoutFullName($layout);
+        }
+        else {
+            ob_end_flush();
         }
     }
 
