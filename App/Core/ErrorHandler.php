@@ -26,7 +26,7 @@ class ErrorHandler implements IHandleError
                 'status' => $exception->getMessage(),
             ];
 
-            if (Configuration::DEBUG_EXCEPTION_HANDLER) {
+            if (Configuration::SHOW_EXCEPTION_DETAILS) {
                 $data['stack'] = recursiveTrace($exception);
             }
 
@@ -35,7 +35,7 @@ class ErrorHandler implements IHandleError
         } else {
             $data = [
                 "exception" => $exception,
-                "showDetail" => Configuration::DEBUG_EXCEPTION_HANDLER
+                "showDetail" => Configuration::SHOW_EXCEPTION_DETAILS
             ];
 
             return (new ViewResponse($app, "_Error/error", $data))

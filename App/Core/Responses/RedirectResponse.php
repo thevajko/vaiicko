@@ -28,7 +28,7 @@ class RedirectResponse extends Response
      */
     protected function generate(): void
     {
-        if (!Configuration::DEBUG_QUERY) {
+        if (!Configuration::SHOW_SQL_QUERY) {
             header('Location: ' . $this->redirectUrl);
         } else {
             echo 'In SQL debug mode you have to <a href="' . $this->redirectUrl . '">follow redirect</a> manually.';

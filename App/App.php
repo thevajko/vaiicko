@@ -99,7 +99,7 @@ class App
         }
 
         // if SQL debugging in configuration is allowed, display all SQL queries
-        if (Configuration::DEBUG_QUERY) {
+        if (Configuration::SHOW_SQL_QUERY) {
             $queries = array_map(function ($q) {
                 $lines = explode("\n", $q);
                 return '<pre>' . (substr($lines[1], 0, 7) == 'Params:' ? 'Sent ' . $lines[0] : $lines[1]) . '</pre>';
