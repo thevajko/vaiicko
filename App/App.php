@@ -6,6 +6,7 @@ use App\Config\Configuration;
 use App\Core\HTTPException;
 use App\Core\IAuthenticator;
 use App\Core\DB\Connection;
+use App\Core\LinkGenerator;
 use App\Core\Request;
 use App\Core\Responses\RedirectResponse;
 use App\Core\Responses\Response;
@@ -28,6 +29,8 @@ class App
      */
     private Request $request;
 
+    private LinkGenerator $linkGenerator;
+
     private ?IAuthenticator $auth;
 
     /**
@@ -37,6 +40,7 @@ class App
     {
         $this->router = new Router();
         $this->request = new Request();
+        $this->linkGenerator = new LinkGenerator($this->request, $this->router);
 
         // Check if there is an authenticator
         if (defined('\\App\\Config\\Configuration::AUTH_CLASS')) {
@@ -124,4 +128,13 @@ class App
     {
         return $this->auth;
     }
+
+    /**
+     * @return LinkGenerator
+     */
+    public function getLinkGenerator(): LinkGenerator
+    {
+        return $this->linkGenerator;
+    }
+
 }

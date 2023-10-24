@@ -95,6 +95,14 @@ abstract class AControllerBase
     }
 
     /**
+     * @see LinkGenerator::url()
+     */
+    protected function url(string|array $destination, array $parameters = [], bool $absolute = false, bool $appendParameters = false) : string
+    {
+        return $this->app->getLinkGenerator()->url($destination, $parameters, $absolute, $appendParameters);
+    }
+
+    /**
      * Authorize action
      * @param string $action
      * @return bool
