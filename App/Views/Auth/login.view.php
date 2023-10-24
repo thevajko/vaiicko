@@ -1,6 +1,7 @@
 <?php
 $layout = 'auth';
 /** @var Array $data */
+/** @var \App\Core\LinkGenerator $link */
 ?>
 <div class="container">
     <div class="row">
@@ -11,7 +12,7 @@ $layout = 'auth';
                     <div class="text-center text-danger mb-3">
                         <?= @$data['message'] ?>
                     </div>
-                    <form class="form-signin" method="post" action="<?= \App\Config\Configuration::LOGIN_URL ?>">
+                    <form class="form-signin" method="post" action="<?=$link->url("login")?>">
                         <div class="form-label-group mb-3">
                             <input name="login" type="text" id="login" class="form-control" placeholder="Login"
                                    required autofocus>

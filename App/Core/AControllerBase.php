@@ -50,22 +50,6 @@ abstract class AControllerBase
     }
 
     /**
-     * Authorize action
-     * @param string $action
-     * @return bool
-     */
-    public function authorize(string $action)
-    {
-        return true;
-    }
-
-    /**
-     * Every controller should implement the method for index action at least
-     * @return Response
-     */
-    public abstract function index(): Response;
-
-    /**
      * Helper method for returning response type ViewResponse
      * @param null $data
      * @param null $viewName
@@ -109,4 +93,28 @@ abstract class AControllerBase
     {
         return $this->app->getRequest();
     }
+
+    /**
+     * @see LinkGenerator::url()
+     */
+    protected function url(string|array $destination, array $parameters = [], bool $absolute = false, bool $appendParameters = false) : string
+    {
+        return $this->app->getLinkGenerator()->url($destination, $parameters, $absolute, $appendParameters);
+    }
+
+    /**
+     * Authorize action
+     * @param string $action
+     * @return bool
+     */
+    public function authorize(string $action)
+    {
+        return true;
+    }
+
+    /**
+     * Every controller should implement the method for index action at least
+     * @return Response
+     */
+    public abstract function index(): Response;
 }

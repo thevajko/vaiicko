@@ -126,4 +126,20 @@ class Request
             return null;
         }
     }
+
+    /**
+     * Returns base url of this request
+     * http://localhost/myproject/
+     * @return string
+     */
+    public function getBaseUrl(): string
+    {
+        $path = $_SERVER['PHP_SELF'];
+        $hostName = $_SERVER['HTTP_HOST'];
+
+        //Gets prorocol
+        $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5))=='https'?'https':'http';
+
+        return $protocol.'://'.$hostName.$path;
+    }
 }

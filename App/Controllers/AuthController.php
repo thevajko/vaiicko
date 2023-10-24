@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Config\Configuration;
 use App\Core\AControllerBase;
 use App\Core\Responses\Response;
+use App\Core\Responses\ViewResponse;
 
 /**
  * Class AuthController
@@ -15,7 +16,7 @@ class AuthController extends AControllerBase
 {
     /**
      *
-     * @return \App\Core\Responses\RedirectResponse|\App\Core\Responses\Response
+     * @return Response
      */
     public function index(): Response
     {
@@ -24,7 +25,7 @@ class AuthController extends AControllerBase
 
     /**
      * Login a user
-     * @return \App\Core\Responses\RedirectResponse|\App\Core\Responses\ViewResponse
+     * @return Response
      */
     public function login(): Response
     {
@@ -33,7 +34,7 @@ class AuthController extends AControllerBase
         if (isset($formData['submit'])) {
             $logged = $this->app->getAuth()->login($formData['login'], $formData['password']);
             if ($logged) {
-                return $this->redirect('?c=admin');
+                return $this->redirect($this->url("admin.index"));
             }
         }
 
@@ -43,7 +44,7 @@ class AuthController extends AControllerBase
 
     /**
      * Logout a user
-     * @return \App\Core\Responses\ViewResponse
+     * @return ViewResponse
      */
     public function logout(): Response
     {
