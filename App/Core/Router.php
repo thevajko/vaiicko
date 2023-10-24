@@ -39,7 +39,7 @@ class Router
      * Returns a controller name from a URL (Home controller action by default)
      * @return string
      */
-    public function getControllerName() : string
+    public function getControllerName(): string
     {
         return (!isset($_GET['c']) || empty(trim(@$_GET['c']))) ? "Home" : trim(ucfirst(strtolower($_GET['c'])));
     }

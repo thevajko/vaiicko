@@ -20,55 +20,6 @@ abstract class Model implements \JsonSerializable
     private mixed $_dbId = null;
 
     /**
-     * Get array of column names from the associated model table
-     * @return array
-     * @throws \Exception
-     */
-    public static function getDbColumns(): array
-    {
-        if (self::$dbColumns != null) return self::$dbColumns;
-        self::connect();
-        try {
-            $sql = "DESCRIBE " . static::getTableName();
-            $stmt = self::$connection->prepare($sql);
-            $stmt->execute([]);
-            self::$dbColumns = array_column($stmt->fetchAll(), 'Field');
-            return self::$dbColumns;
-        } catch (PDOException $e) {
-            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
-        }
-    }
-
-    /**
-     * Get table name from model class name
-     * @return string
-     */
-    public static function getTableName(): string
-    {
-        $arr = explode("\\", get_called_class());
-        return Inflect::pluralize(strtolower(end($arr)));
-    }
-
-    /**
-     * Return default primary key column name
-     * @return string
-     */
-    public static function getPkColumnName() : string
-    {
-        return 'id';
-    }
-
-    /**
-     * Connect to DB
-     * @return null
-     * @throws \Exception
-     */
-    private static function connect(): void
-    {
-        self::$connection = Connection::connect();
-    }
-
-    /**
      * Return an array of models from DB
      * @param string $whereClause Additional where Statement
      * @param array $whereParams Parameters for where
@@ -90,6 +41,35 @@ abstract class Model implements \JsonSerializable
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
+    }
+
+    /**
+     * Connect to DB
+     * @return null
+     * @throws \Exception
+     */
+    private static function connect(): void
+    {
+        self::$connection = Connection::connect();
+    }
+
+    /**
+     * Get table name from model class name
+     * @return string
+     */
+    public static function getTableName(): string
+    {
+        $arr = explode("\\", get_called_class());
+        return Inflect::pluralize(strtolower(end($arr)));
+    }
+
+    /**
+     * Return default primary key column name
+     * @return string
+     */
+    public static function getPkColumnName(): string
+    {
+        return 'id';
     }
 
     /**
@@ -116,6 +96,15 @@ abstract class Model implements \JsonSerializable
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
+    }
+
+    /**
+     * Return DB connection, ready for custom developer use
+     * @return null
+     */
+    public static function getConnection()
+    {
+        return self::$connection;
     }
 
     /**
@@ -156,6 +145,26 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
+     * Get array of column names from the associated model table
+     * @return array
+     * @throws \Exception
+     */
+    public static function getDbColumns(): array
+    {
+        if (self::$dbColumns != null) return self::$dbColumns;
+        self::connect();
+        try {
+            $sql = "DESCRIBE " . static::getTableName();
+            $stmt = self::$connection->prepare($sql);
+            $stmt->execute([]);
+            self::$dbColumns = array_column($stmt->fetchAll(), 'Field');
+            return self::$dbColumns;
+        } catch (PDOException $e) {
+            throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
+        }
+    }
+
+    /**
      * Delete current model from DB
      * @throws \Exception If model not exists, throw an exception
      */
@@ -175,15 +184,6 @@ abstract class Model implements \JsonSerializable
         } catch (PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage(), 0, $e);
         }
-    }
-
-    /**
-     * Return DB connection, ready for custom developer use
-     * @return null
-     */
-    public static function getConnection()
-    {
-        return self::$connection;
     }
 
     /**

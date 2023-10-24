@@ -2,8 +2,6 @@
 
 namespace App\Core;
 
-use stdClass;
-
 /**
  * Class Request
  * Object request wrapping HTTP request

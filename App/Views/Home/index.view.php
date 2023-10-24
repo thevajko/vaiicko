@@ -5,7 +5,8 @@
                 <h2>Vaííčko MVC FW</h2>
                 <img src="public/images/vaiicko_logo.png">
                 <p>
-                    Gratulujeme vám, úspešne sa vám podarilo nainštalovať a spustiť framework <strong>Vaííčko</strong> <?= \App\Config\Configuration::FW_VERSION ?>!<br>
+                    Gratulujeme vám, úspešne sa vám podarilo nainštalovať a spustiť framework
+                    <strong>Vaííčko</strong> <?= \App\Config\Configuration::FW_VERSION ?>!<br>
                     Dúfame, že sa Vám pomocou totho frameworku vytvoríte nejakú skvelú aplikáciu.<br>
                 </p>
                 <p>

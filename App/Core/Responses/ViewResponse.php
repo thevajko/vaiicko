@@ -32,7 +32,7 @@ class ViewResponse extends Response
     /**
      * Render a view
      */
-    protected function generate() : void
+    protected function generate(): void
     {
         $layout = Configuration::ROOT_LAYOUT;
         $data = $this->data;
@@ -45,8 +45,7 @@ class ViewResponse extends Response
             $contentHTML = ob_get_clean();
             unset($data); //Unsets data, because data are not needed to be passed to layout
             require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->getLayoutFullName($layout);
-        }
-        else {
+        } else {
             ob_end_flush();
         }
     }
@@ -55,7 +54,7 @@ class ViewResponse extends Response
      * Finds full path of layout
      * @param string $layoutName
      */
-    private function getLayoutFullName($layoutName) : string
+    private function getLayoutFullName($layoutName): string
     {
         return str_ends_with($layoutName, '.layout.view.php') ? $layoutName : $layoutName . '.layout.view.php';
     }

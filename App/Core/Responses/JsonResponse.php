@@ -23,7 +23,7 @@ class JsonResponse extends Response
     /**
      * Render response for JSON data
      */
-    protected function generate() : void
+    protected function generate(): void
     {
         header('Content-Type: application/json');
         echo json_encode($this->data);

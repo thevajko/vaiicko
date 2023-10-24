@@ -11,18 +11,18 @@ use App\Core\Responses\ViewResponse;
 class ErrorHandler implements IHandleError
 {
 
-    function handleError(App $app, HTTPException $exception) : Response
+    function handleError(App $app, HTTPException $exception): Response
     {
         // response error in JSON only if client wants to
         if ($app->getRequest()->clientRequestsJSON()) {
             // to make less mess, this function is used to do recursive crawl down whole exception tree
-            function recursiveTrace(\Throwable $t) : array
+            function recursiveTrace(\Throwable $t): array
             {
                 return array_merge([$t->getTrace()], $t->getPrevious() ? recursiveTrace($t->getPrevious()) : []);
             }
 
             $data = [
-                'code'   => $exception->getCode(),
+                'code' => $exception->getCode(),
                 'status' => $exception->getMessage(),
             ];
 

@@ -26,12 +26,12 @@ class RedirectResponse extends Response
     /**
      * Redirect the request. If debugging is true, the request is not redirected (to allow see SQL log)
      */
-    protected function generate() : void
+    protected function generate(): void
     {
         if (!Configuration::DEBUG_QUERY) {
             header('Location: ' . $this->redirectUrl);
         } else {
-            echo 'In SQL debug mode you have to <a href="'. $this->redirectUrl  .'">follow redirect</a> manually.';
+            echo 'In SQL debug mode you have to <a href="' . $this->redirectUrl . '">follow redirect</a> manually.';
         }
     }
 }

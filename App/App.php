@@ -3,9 +3,9 @@
 namespace App;
 
 use App\Config\Configuration;
+use App\Core\DB\Connection;
 use App\Core\HTTPException;
 use App\Core\IAuthenticator;
-use App\Core\DB\Connection;
 use App\Core\Request;
 use App\Core\Responses\RedirectResponse;
 use App\Core\Responses\Response;
@@ -86,7 +86,7 @@ class App
 
             // if not HTTP exception wrap it to one
             if (!($exception instanceof HTTPException)) {
-                $exception =  HTTPException::from($exception);
+                $exception = HTTPException::from($exception);
             }
             // get handler instance
             $errorHandler = new (Configuration::ERROR_HANDLER_CLASS)();
@@ -96,7 +96,10 @@ class App
 
         // if SQL debugging in configuration is allowed, display all SQL queries
         if (Configuration::DEBUG_QUERY) {
-            $queries = array_map(function ($q) {$lines = explode("\n", $q); return '<pre>' . (substr($lines[1], 0, 7) == 'Params:'? 'Sent '.$lines[0] : $lines[1]) .'</pre>';} , Connection::getQueryLog());
+            $queries = array_map(function ($q) {
+                $lines = explode("\n", $q);
+                return '<pre>' . (substr($lines[1], 0, 7) == 'Params:' ? 'Sent ' . $lines[0] : $lines[1]) . '</pre>';
+            }, Connection::getQueryLog());
             echo implode(PHP_EOL . PHP_EOL, $queries);
         }
     }

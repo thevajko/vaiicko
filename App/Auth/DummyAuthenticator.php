@@ -43,7 +43,7 @@ class DummyAuthenticator implements IAuthenticator
     /**
      * Logout the user
      */
-    function logout() : void
+    function logout(): void
     {
         if (isset($_SESSION["user"])) {
             unset($_SESSION["user"]);

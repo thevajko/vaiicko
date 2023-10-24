@@ -14,7 +14,8 @@ abstract class Response
     /**
      * Sends response with headers to client
      */
-    public function send() : void {
+    public function send(): void
+    {
         http_response_code($this->statusCode);
         $this->generate();
     }
@@ -22,7 +23,7 @@ abstract class Response
     /**
      * Method needed to be implemented
      */
-    abstract protected function generate() : void;
+    abstract protected function generate(): void;
 
     /**
      * Set HTTP Status code of response

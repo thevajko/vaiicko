@@ -2,8 +2,6 @@
 
 namespace App\Core\Responses;
 
-use App\Core\HTTPException;
-
 /**
  * Class EmptyResponse
  * Empty response with no content

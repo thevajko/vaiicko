@@ -76,14 +76,15 @@ class HTTPException extends \Exception
         510 => 'Not Extended', // RFC 2774
         511 => 'Network Authentication Required', // RFC 6585
     ];
-    
+
     public function __construct(int $statusCode, $message = null, \Throwable $h = null)
     {
         parent::__construct($message ? $message : self::$statusCodeMessages[$statusCode], $statusCode, $h);
     }
 
-    public static function from(\Throwable $exception, int $statusCode = 500) : HTTPException {
-        return  new HTTPException($statusCode, Configuration::DEBUG_EXCEPTION_HANDLER ? $exception->getMessage() : null, $exception );
+    public static function from(\Throwable $exception, int $statusCode = 500): HTTPException
+    {
+        return new HTTPException($statusCode, Configuration::DEBUG_EXCEPTION_HANDLER ? $exception->getMessage() : null, $exception);
     }
 
 }

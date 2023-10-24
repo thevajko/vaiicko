@@ -13,10 +13,9 @@ use PDOException;
  */
 class Connection
 {
-    private $db;
     private static $instance;
-
     private static $log = [];
+    private $db;
 
     /**
      * Constructor for DB connection
@@ -48,6 +47,25 @@ class Connection
     }
 
     /**
+     * Append a new SQL command to query log
+     * @param $query
+     * @return void
+     */
+    public static function appendQueryLog($query)
+    {
+        self::$log[] = $query;
+    }
+
+    /**
+     * Get query log
+     * @return array
+     */
+    public static function getQueryLog(): array
+    {
+        return self::$log;
+    }
+
+    /**
      * Overridden version of prepare method (for debugging purposes)
      * @param $sql
      * @return DebugStatement
@@ -63,16 +81,6 @@ class Connection
     }
 
     /**
-     * Append a new SQL command to query log
-     * @param $query
-     * @return void
-     */
-    public static function appendQueryLog($query)
-    {
-        self::$log[] = $query;
-    }
-
-    /**
      * Call all other methods from PDOConnection
      * @param $name
      * @param $arguments
@@ -81,14 +89,5 @@ class Connection
     public function __call($name, $arguments)
     {
         return $this->db->{$name}(...$arguments);
-    }
-
-    /**
-     * Get query log
-     * @return array
-     */
-    public static function getQueryLog(): array
-    {
-        return self::$log;
     }
 }
