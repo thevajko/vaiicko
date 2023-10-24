@@ -1,7 +1,7 @@
 <?php
 /** @var string $contentHTML */
 /** @var \App\Core\IAuthenticator $auth */
-/** @var callable $url */
+/** @var \App\Core\LinkGenerator $link */
 ?>
 <!DOCTYPE html>
 <html lang="sk">
@@ -21,20 +21,20 @@
 <body>
 <nav class="navbar navbar-expand-sm bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="<?=$url("home.index")?>">
+        <a class="navbar-brand" href="<?=$link->url("home.index")?>">
             <img src="public/images/vaiicko_logo.png" title="<?= \App\Config\Configuration::APP_NAME ?>"
                  title="<?= \App\Config\Configuration::APP_NAME ?>">
         </a>
         <ul class="navbar-nav me-auto">
             <li class="nav-item">
-                <a class="nav-link" href="<?=$url("home.contact")?>">Kontakt</a>
+                <a class="nav-link" href="<?=$link->url("home.contact")?>">Kontakt</a>
             </li>
         </ul>
         <?php if ($auth->isLogged()) { ?>
             <span class="navbar-text">Prihlásený používateľ: <b><?= $auth->getLoggedUserName() ?></b></span>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?=$url("auth.logout")?>">Odhlásenie</a>
+                    <a class="nav-link" href="<?=$link->url("auth.logout")?>">Odhlásenie</a>
                 </li>
             </ul>
         <?php } else { ?>

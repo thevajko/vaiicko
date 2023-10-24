@@ -1,6 +1,6 @@
 <?php
 /** @var Array $data */
-/** @var callable $url */
+/** @var \App\Core\LinkGenerator $link */
 ?>
 <div class="row">
     <div class="col">
@@ -19,6 +19,6 @@
 </div>
 <div class="row mt-3">
     <div class="col">
-        <a href="<?=$url("home.index")?>">Späť na hlavnú stránku</a>
+        <a href="<?=$link->url("home.index")?>">Späť na hlavnú stránku</a>
     </div>
 </div>
