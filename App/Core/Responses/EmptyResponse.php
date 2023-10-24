@@ -2,6 +2,8 @@
 
 namespace App\Core\Responses;
 
+use App\Core\HTTPException;
+
 /**
  * Class EmptyResponse
  * Empty response with no content
@@ -11,7 +13,7 @@ class EmptyResponse extends Response
 {
     public function __construct()
     {
-        $this->setStatusCode(201);
+        $this->setStatusCode(204);
     }
 
 
