@@ -20,10 +20,10 @@
         <div class="col text-center">
             <h4>Autori</h4>
             <div>
-                <a href="mailto:Patrik.Hrkut@fri.uniza.sk">Ing. Patrik Hrkút, PhD.</a><br>
+                <a href="mailto:Patrik.Hrkut@fri.uniza.sk">doc. Ing. Patrik Hrkút, PhD.</a><br>
                 <a href="mailto:Michal.Duracik@fri.uniza.sk">Ing. Michal Ďuračík, PhD.</a><br>
                 <a href="mailto:Matej.Mesko@fri.uniza.sk">Ing. Matej Meško, PhD.</a><br><br>
-                &copy; 2020-2022 Fakulta riadenia a informatiky, Katedra softvérových technológií
+                &copy; 2020-<?= date('Y') ?> Žilinská univerzita v Žiline, Fakulta riadenia a informatiky, Katedra softvérových technológií
             </div>
         </div>
     </div>
