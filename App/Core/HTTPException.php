@@ -84,7 +84,7 @@ class HTTPException extends \Exception
 
     public static function from(\Throwable $exception, int $statusCode = 500): HTTPException
     {
-        return new HTTPException($statusCode, Configuration::SHOW_EXCEPTION_DETAILS ? $exception->getMessage() : null, $exception);
+        return new HTTPException($statusCode, null, $exception);
     }
 
 }

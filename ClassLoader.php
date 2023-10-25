@@ -16,7 +16,7 @@ class ClassLoader
             // check if file with class exists
             if (file_exists($file)) {
                 // if do include it
-                include $file;
+                require $file;
             } else {
                 // if not throw exception
                 throw new Exception("Class {$class_name} file {$file} was not found.");
