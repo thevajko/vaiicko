@@ -17,7 +17,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: overtrue/phplint@6.0.0
-    - uses: php-actions/composer@v6
     - uses: php-actions/phpcs@v1
       with:
         php_version: 8.2
