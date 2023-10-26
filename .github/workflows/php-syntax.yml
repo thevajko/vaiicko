@@ -20,4 +20,5 @@ jobs:
     - uses: php-actions/phpcs@v1
       with:
         php_version: 8.2
-        path: App/          
+        path: App/        
+        standard: PSR12
