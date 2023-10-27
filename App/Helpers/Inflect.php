@@ -59,7 +59,7 @@ namespace App\Helpers;
 
 class Inflect
 {
-    static $plural = array(
+    public static $plural = array(
         '/(quiz)$/i' => "$1zes",
         '/^(ox)$/i' => "$1en",
         '/([m|l])ouse$/i' => "$1ice",
@@ -81,7 +81,7 @@ class Inflect
         '/$/' => "s"
     );
 
-    static $singular = array(
+    public static $singular = array(
         '/(quiz)zes$/i' => "$1",
         '/(matr)ices$/i' => "$1ix",
         '/(vert|ind)ices$/i' => "$1ex",
@@ -112,7 +112,7 @@ class Inflect
         '/s$/i' => ""
     );
 
-    static $irregular = array(
+    public static $irregular = array(
         'move' => 'moves',
         'foot' => 'feet',
         'goose' => 'geese',
@@ -124,7 +124,7 @@ class Inflect
         'valve' => 'valves'
     );
 
-    static $uncountable = array(
+    public static $uncountable = array(
         'sheep',
         'fish',
         'deer',
@@ -139,7 +139,7 @@ class Inflect
     public static function singularize($string)
     {
         // save some time in the case that singular and plural are the same
-        if (in_array(strtolower($string), self::$uncountable))
+        if (in_array(strtolower($string), Inflect::$uncountable))
             return $string;
 
         // check for irregular plural forms
