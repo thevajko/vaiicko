@@ -14,7 +14,5 @@ while ($data["showDetail"] && $exception->getPrevious() != null) { ?>
     in file <strong><?= $exception->getPrevious()->getFile() ?></strong>
     at line <strong><?= $exception->getPrevious()->getLine() ?></strong>
     <pre>Stack trace:<br><?= $exception->getPrevious()->getTraceAsString() ?></pre>
-    <?php
-    $exception = $exception->getPrevious(); ?>
-<?php
-} ?>
+    <?php  $exception = $exception->getPrevious(); ?>
+<?php } ?>

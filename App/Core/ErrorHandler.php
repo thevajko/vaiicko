@@ -10,7 +10,6 @@ use App\Core\Responses\ViewResponse;
 
 class ErrorHandler implements IHandleError
 {
-
     public function handleError(App $app, HTTPException $exception): Response
     {
         // response error in JSON only if client wants to
