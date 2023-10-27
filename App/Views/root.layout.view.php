@@ -1,4 +1,5 @@
 <?php
+
 /** @var string $contentHTML */
 /** @var \App\Core\IAuthenticator $auth */
 /** @var \App\Core\LinkGenerator $link */
