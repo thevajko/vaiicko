@@ -15,10 +15,20 @@ class ErrorHandler implements IHandleError
     {
         // response error in JSON only if client wants to
         if ($app->getRequest()->clientRequestsJSON()) {
-            // to make less mess, this function is used to do recursive crawl down whole exception tree
-            function recursiveTrace(\Throwable $t): array
+
+            function getExceptionStack(\Throwable $t): array
             {
-                return array_merge([$t->getTrace()], $t->getPrevious() ? recursiveTrace($t->getPrevious()) : []);
+                $stack = [];
+                while ($t != null) {
+                    $ar = [];
+                    $ar['message'] = $t->getMessage();
+                    $ar['trace'] = $t->getTraceAsString();
+                    $stack[] = $ar;
+
+                    $t = $t->getPrevious();
+                }
+
+                return $stack;
             }
 
             $data = [
@@ -27,7 +37,7 @@ class ErrorHandler implements IHandleError
             ];
 
             if (Configuration::SHOW_EXCEPTION_DETAILS) {
-                $data['stack'] = recursiveTrace($exception);
+                $data['stack'] = getExceptionStack($exception);
             }
 
             return (new JsonResponse($data))
