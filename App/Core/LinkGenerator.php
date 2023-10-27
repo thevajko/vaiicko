@@ -19,16 +19,16 @@ class LinkGenerator
     /**
      * Returns url to specific controller / action
      * Usage:
-     * url("home.index)                                             //HomeController, action index
-     * url("index")                                                 //Current controller and index action
-     * url("home.index", ["param1" => 1, "param2" => true])         //HomeController, action index
-     * url("index", ["param1" => 1, "param2" => true])              //Current controller and index action
-     * url(["param1" => 1, "param2" => true])                       //Current controller and current action with specific parameters
-     * url("home.index", ["param1" => 1, "param2" => true], true)   //Absolute url http://localhost/?c=aaa&b=ccc
+     * url("home.index)                                           //HomeController, action index
+     * url("index")                                               //Current controller and index action
+     * url("home.index", ["param1" => 1, "param2" => true])       //HomeController, action index
+     * url("index", ["param1" => 1, "param2" => true])            //Current controller and index action
+     * url(["param1" => 1, "param2" => true])                     //Current controller and current action with parameters
+     * url("home.index", ["param1" => 1, "param2" => true], true) //Absolute url http://localhost/?c=aaa&b=ccc
      * @param string|array $destination [controller.]action
      * @param mixed $parameters
      * @param bool $absolute Returns url as absolute with domain name
-     * @param bool $appendParameters Take current parameters from request and appends another parameters to it.ň
+     * @param bool $appendParameters Take current parameters from request and appends another parameters to it
      * @return string
      * @throws \Exception
      */
@@ -60,6 +60,4 @@ class LinkGenerator
 
         return $url . http_build_query($args);
     }
-
-
 }

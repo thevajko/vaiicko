@@ -23,14 +23,11 @@ class App
      * @var Router
      */
     private $router;
-
     /**
      * @var Request
      */
     private Request $request;
-
     private LinkGenerator $linkGenerator;
-
     private ?IAuthenticator $auth;
 
     /**
@@ -139,5 +136,4 @@ class App
     {
         return $this->linkGenerator;
     }
-
 }

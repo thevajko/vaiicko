@@ -2,6 +2,7 @@
 /** @var string $contentHTML */
 /** @var \App\Core\IAuthenticator $auth */
 ?>
+
 <!DOCTYPE html>
 <html lang="sk">
 <head>

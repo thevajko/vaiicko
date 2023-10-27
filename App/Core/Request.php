@@ -34,7 +34,8 @@ class Request
      */
     public function isAjax(): bool
     {
-        return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+        return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
     }
 
     /**
@@ -47,7 +48,8 @@ class Request
     }
 
     /**
-     * Returns true if client in request demands JSON formatted response. Only valid value in request headers is 'application/json'
+     * Returns true if client in request demands JSON formatted response.
+     * Only valid value in request headers is 'application/json'.
      * @return bool
      */
     public function clientRequestsJSON(): bool
@@ -120,7 +122,7 @@ class Request
     {
         if (isset($_POST[$key])) {
             return $_POST[$key];
-        } else if (isset($_GET[$key])) {
+        } elseif (isset($_GET[$key])) {
             return $_GET[$key];
         } else {
             return null;
@@ -138,8 +140,8 @@ class Request
         $hostName = $_SERVER['HTTP_HOST'];
 
         //Gets prorocol
-        $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5))=='https'?'https':'http';
+        $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"], 0, 5)) == 'https' ? 'https' : 'http';
 
-        return $protocol.'://'.$hostName.$path;
+        return $protocol . '://' . $hostName . $path;
     }
 }
