@@ -22,4 +22,4 @@ jobs:
         php_version: 8.2
         path: App/        
         standard: PSR12
-        args: "-n"
+        args: "--runtime-set ignore_warnings_on_exit 1"
