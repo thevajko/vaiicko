@@ -26,11 +26,12 @@ abstract class Model implements \JsonSerializable
      * @return static[]
      * @throws \Exception
      */
-    static public function getAll(string $whereClause = '', array $whereParams = [], $orderBy = ''): array
+    public static function getAll(string $whereClause = '', array $whereParams = [], $orderBy = ''): array
     {
         self::connect();
         try {
-            $sql = "SELECT * FROM `" . static::getTableName() . "`" . ($whereClause == '' ? '' : " WHERE $whereClause") . ($orderBy == '' ? '' : " ORDER BY $orderBy");
+            $sql = "SELECT * FROM `" . static::getTableName() . "`" . ($whereClause == '' ? '' : " WHERE $whereClause")
+                . ($orderBy == '' ? '' : " ORDER BY $orderBy");
             $stmt = self::$connection->prepare($sql);
             $stmt->execute($whereParams);
             $models = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
@@ -78,9 +79,11 @@ abstract class Model implements \JsonSerializable
      * @return static|null
      * @throws \Exception
      */
-    static public function getOne($id): ?static
+    public static function getOne($id): ?static
     {
-        if ($id == null) return null;
+        if ($id == null) {
+            return null;
+        }
 
         self::connect();
         try {
@@ -134,7 +137,8 @@ abstract class Model implements \JsonSerializable
             } else {
                 $arrColumns = array_map(fn($item) => ("`" . $item . '`=:' . $item), array_keys($data));
                 $columns = implode(',', $arrColumns);
-                $sql = "UPDATE `" . static::getTableName() . "` SET $columns WHERE `" . static::getPkColumnName() . "`=:__pk";
+                $sql = "UPDATE `" . static::getTableName() . "` SET $columns WHERE `" . static::getPkColumnName() .
+                    "`=:__pk";
                 $stmt = self::$connection->prepare($sql);
                 $data["__pk"] = $this->_dbId;
                 $stmt->execute($data);
@@ -151,7 +155,9 @@ abstract class Model implements \JsonSerializable
      */
     public static function getDbColumns(): array
     {
-        if (self::$dbColumns != null) return self::$dbColumns;
+        if (self::$dbColumns != null) {
+            return self::$dbColumns;
+        }
         self::connect();
         try {
             $sql = "DESCRIBE " . static::getTableName();

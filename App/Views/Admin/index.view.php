@@ -1,4 +1,6 @@
-<?php /** @var \App\Core\IAuthenticator $auth */ ?>
+<?php
+
+/** @var \App\Core\IAuthenticator $auth */ ?>
 
 <div class="container-fluid">
     <div class="row">

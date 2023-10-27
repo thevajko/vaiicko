@@ -10,5 +10,5 @@ use App\Core\Responses\Response;
  */
 interface IHandleError
 {
-    function handleError(App $app, HTTPException $exception): Response;
+    public function handleError(App $app, HTTPException $exception): Response;
 }

@@ -50,6 +50,22 @@ abstract class AControllerBase
     }
 
     /**
+     * Authorize action
+     * @param string $action
+     * @return bool
+     */
+    public function authorize(string $action)
+    {
+        return true;
+    }
+
+    /**
+     * Every controller should implement the method for index action at least
+     * @return Response
+     */
+    abstract public function index(): Response;
+
+    /**
      * Helper method for returning response type ViewResponse
      * @param null $data
      * @param null $viewName
@@ -58,9 +74,12 @@ abstract class AControllerBase
     protected function html($data = null, $viewName = null): ViewResponse
     {
         if ($viewName == null) {
-            $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $this->app->getRouter()->getAction();
+            $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR .
+                $this->app->getRouter()->getAction();
         } else {
-            $viewName = is_string($viewName) ? ($this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $viewName) : ($viewName['0'] . DIRECTORY_SEPARATOR . $viewName['1']);
+            $viewName = is_string($viewName) ?
+                ($this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $viewName) :
+                ($viewName['0'] . DIRECTORY_SEPARATOR . $viewName['1']);
         }
         return new ViewResponse($this->app, $viewName, $data);
     }
@@ -97,24 +116,12 @@ abstract class AControllerBase
     /**
      * @see LinkGenerator::url()
      */
-    protected function url(string|array $destination, array $parameters = [], bool $absolute = false, bool $appendParameters = false) : string
-    {
+    protected function url(
+        string|array $destination,
+        array $parameters = [],
+        bool $absolute = false,
+        bool $appendParameters = false
+    ): string {
         return $this->app->getLinkGenerator()->url($destination, $parameters, $absolute, $appendParameters);
     }
-
-    /**
-     * Authorize action
-     * @param string $action
-     * @return bool
-     */
-    public function authorize(string $action)
-    {
-        return true;
-    }
-
-    /**
-     * Every controller should implement the method for index action at least
-     * @return Response
-     */
-    public abstract function index(): Response;
 }

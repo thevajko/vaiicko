@@ -2,8 +2,6 @@
 
 namespace App\Core;
 
-use App\Config\Configuration;
-
 class HTTPException extends \Exception
 {
     /**
@@ -86,5 +84,4 @@ class HTTPException extends \Exception
     {
         return new HTTPException($statusCode, null, $exception);
     }
-
 }
