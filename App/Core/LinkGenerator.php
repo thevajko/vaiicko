@@ -32,12 +32,18 @@ class LinkGenerator
      * @return string
      * @throws \Exception
      */
-    public function url(string|array $destination, array $parameters = [], bool $absolute = false, bool $appendParameters = false): string
-    {
+    public function url(
+        string|array $destination,
+        array $parameters = [],
+        bool $absolute = false,
+        bool $appendParameters = false
+    ): string {
         if (is_array($destination)) {
             if ($parameters != []) {
                 $caller = debug_backtrace()[0];
-                throw new \Exception("Wrong parameters combination in url() call at {$caller['file']}:{$caller['line']}");
+                throw new \Exception(
+                    "Wrong parameters combination in url() call at {$caller['file']}:{$caller['line']}"
+                );
             }
 
             $parameters = $destination;

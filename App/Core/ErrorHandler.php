@@ -15,7 +15,6 @@ class ErrorHandler implements IHandleError
     {
         // response error in JSON only if client wants to
         if ($app->getRequest()->clientRequestsJSON()) {
-
             function getExceptionStack(\Throwable $t): array
             {
                 $stack = [];

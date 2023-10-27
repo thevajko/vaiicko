@@ -35,7 +35,11 @@ class Connection
     {
         try {
             if (self::$instance == null) {
-                $db = new PDO('mysql:dbname=' . Configuration::DB_NAME . ';host=' . Configuration::DB_HOST, Configuration::DB_USER, Configuration::DB_PASS);
+                $db = new PDO(
+                    'mysql:dbname=' . Configuration::DB_NAME . ';host=' . Configuration::DB_HOST,
+                    Configuration::DB_USER,
+                    Configuration::DB_PASS
+                );
                 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
                 self::$instance = new self($db);
