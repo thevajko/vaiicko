@@ -11,7 +11,6 @@ class Request
 {
     private array $get;
     private array $post;
-    private array $request;
     private array $server;
     private array $files;
 
@@ -22,7 +21,6 @@ class Request
     {
         $this->get = $_GET;
         $this->post = $_POST;
-        $this->request = $_REQUEST;
         $this->server = $_SERVER;
         $this->files = $_FILES;
     }
