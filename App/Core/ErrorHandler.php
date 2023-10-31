@@ -13,7 +13,7 @@ class ErrorHandler implements IHandleError
     public function handleError(App $app, HTTPException $exception): Response
     {
         // response error in JSON only if client wants to
-        if ($app->getRequest()->clientRequestsJSON()) {
+        if ($app->getRequest()->wantsJson()) {
             function getExceptionStack(\Throwable $t): array
             {
                 $stack = [];

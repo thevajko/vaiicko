@@ -29,10 +29,10 @@ class AuthController extends ControllerBase
      */
     public function login(): Response
     {
-        $formData = $this->app->getRequest()->getPost();
+        $request = $this->getRequest();
         $logged = null;
-        if (isset($formData['submit'])) {
-            $logged = $this->app->getAuth()->login($formData['login'], $formData['password']);
+        if ($request->hasValue('submit')) {
+            $logged = $this->app->getAuth()->login($request->value('login'), $request->value('password'));
             if ($logged) {
                 return $this->redirect($this->url("admin.index"));
             }

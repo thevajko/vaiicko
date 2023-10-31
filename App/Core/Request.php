@@ -39,12 +39,12 @@ class Request
     }
 
     /**
-     * Returns true if HTTP request has defined content type as 'application/json'
+     * Returns true if HTTP request has json content
      * @return bool
      */
-    public function isContentTypeJSON(): bool
+    public function isJson(): bool
     {
-        return $_SERVER['CONTENT_TYPE'] == "application/json";
+        return isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == "application/json";
     }
 
     /**
@@ -52,81 +52,91 @@ class Request
      * Only valid value in request headers is 'application/json'.
      * @return bool
      */
-    public function clientRequestsJSON(): bool
+    public function wantsJson(): bool
     {
         return isset($_SERVER['HTTP_ACCEPT']) && $_SERVER['HTTP_ACCEPT'] == "application/json";
     }
 
     /**
-     * Try to convert default input of PHP to JSON object. Returns null if there
-     * is a parsing error
+     * Reads request body as json object
      * @return mixed
      * @throws \JsonException
      */
-    public function getRawBodyJSON(): mixed
+    public function json(): mixed
     {
         return json_decode(file_get_contents('php://input'), flags: JSON_THROW_ON_ERROR);
     }
 
     /**
-     * Getter for GET variables
-     * @return array
+     * Check if request contains value
+     * @param string $key
+     * @return bool
      */
-    public function getGet(): array
+    public function hasValue(string $key): bool
     {
-        return $this->get;
+        return isset($this->post[$key]) || isset($this->get[$key]);
     }
 
     /**
-     * Getter for POST variables
-     * @return array
+     * Returns query parameter from request, if key not specified, returns array with all parameters
+     * @param string|null $key
+     * @return mixed
      */
-    public function getPost(): array
+    public function get(?string $key = null): mixed
     {
-        return $this->post;
+        if ($key == null) {
+            return $this->get;
+        }
+        return (isset($this->get[$key])) ? $this->get[$key] : null;
     }
 
     /**
-     * Getter for both GET and POST variables
-     * @return array
+     * Returns post parameter from request, if key not specified, returns array with all parameters
+     * @param string|null $key
+     * @return mixed
      */
-    public function getRequest(): array
+    public function post(?string $key = null): mixed
     {
-        return $this->request;
+        if ($key == null) {
+            return $this->post;
+        }
+        return (isset($this->post[$key])) ? $this->post[$key] : null;
     }
 
     /**
-     * Getter for SERVER variables (set by web server)
+     * Returns SERVER (set by web server) variable from request, if key not specified, returns array with all variables
+     * @param string|null $key
      * @return array
      */
-    public function getServer(): array
+    public function server(?string $key = null): mixed
     {
-        return $this->server;
+        if ($key == null) {
+            return $this->server;
+        }
+        return (isset($this->server[$key])) ? $this->server[$key] : null;
     }
 
     /**
-     * Getter for FILES variables
-     * @return array
+     * Returns FILE from request, if key not specified, returns array with all files
+     * @param string|null $key
+     * @return mixed
      */
-    public function getFiles(): array
+    public function file(?string $key = null): mixed
     {
-        return $this->files;
+        if ($key == null) {
+            return $this->files;
+        }
+        return (isset($this->files[$key])) ? $this->files[$key] : null;
     }
 
     /**
      * Return a value for given key from request (order: POST, GET)
-     * @param $key
+     * @param string $key
      * @return mixed|null
      */
-    public function getValue($key)
+    public function value(string $key): mixed
     {
-        if (isset($_POST[$key])) {
-            return $_POST[$key];
-        } elseif (isset($_GET[$key])) {
-            return $_GET[$key];
-        } else {
-            return null;
-        }
+        return $this->post($key) ?? $this->get($key);
     }
 
     /**
