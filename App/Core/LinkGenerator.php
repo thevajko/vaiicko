@@ -62,8 +62,8 @@ class LinkGenerator
             "a" => $action != "index" ? $action : null
         ]);
 
-        $url = $absolute ? $this->request->getBaseUrl() : "?";
+        $basePath = $absolute ? $this->request->getBaseUrl() : "";
 
-        return $url . http_build_query($args);
+        return $basePath . "?" . http_build_query($args);
     }
 }
