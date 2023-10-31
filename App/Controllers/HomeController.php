@@ -17,7 +17,7 @@ class HomeController extends ControllerBase
      * @param $action
      * @return bool
      */
-    public function authorize($action)
+    public function authorize($action): bool
     {
         return true;
     }
