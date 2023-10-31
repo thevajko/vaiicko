@@ -13,7 +13,7 @@ use App\Core\Responses\ViewResponse;
  * Basic controller class, predecessor of all controllers
  * @package App\Core
  */
-abstract class AControllerBase
+abstract class ControllerBase
 {
     /**
      * Reference to APP object instance

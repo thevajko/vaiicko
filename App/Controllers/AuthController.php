@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Config\Configuration;
-use App\Core\AControllerBase;
+use App\Core\ControllerBase;
 use App\Core\Responses\Response;
 use App\Core\Responses\ViewResponse;
 
@@ -12,7 +12,7 @@ use App\Core\Responses\ViewResponse;
  * Controller for authentication actions
  * @package App\Controllers
  */
-class AuthController extends AControllerBase
+class AuthController extends ControllerBase
 {
     /**
      *

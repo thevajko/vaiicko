@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Core\AControllerBase;
+use App\Core\ControllerBase;
 use App\Core\Responses\Response;
 
 /**
@@ -10,7 +10,7 @@ use App\Core\Responses\Response;
  * Example class of a controller
  * @package App\Controllers
  */
-class HomeController extends AControllerBase
+class HomeController extends ControllerBase
 {
     /**
      * Authorize controller actions
