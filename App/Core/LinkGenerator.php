@@ -56,7 +56,7 @@ class LinkGenerator
         list($controller, $action) = explode(".", $destination);
 
         //Builds query args
-        $args = $appendParameters ? $this->request->getGet() : [];
+        $args = $appendParameters ? $this->request->get() : [];
         $args = array_merge($args, $parameters, [
             "c" => $controller,
             "a" => $action != "index" ? $action : null
