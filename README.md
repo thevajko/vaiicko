@@ -11,8 +11,7 @@ navštívte [WIKI stránky](https://github.com/thevajko/vaiicko/wiki/00-%C3%9Avo
 
 # Docker
 
-Framework ma v adresári `<root>/docker` základnú konfiguráciu pre spustenie a debug web aplikácie. Všetky potrebné služby sú v `docker-compose.yml`. Po ich
-spustení sa vytvorí:
+Framework ma v adresári `<root>/docker` základnú konfiguráciu pre spustenie a debug web aplikácie. Všetky potrebné služby sú v `docker-compose.yml`. Po ich spustení sa vytvorí:
 
 - __WWW document root__ je nastavený adresár riešenia, čiže web bude dostupný na adrese [http://localhost/](http://localhost/). Server má pridaný modul pre
   ladenie móde" (`xdebug.start_with_request=yes`).
