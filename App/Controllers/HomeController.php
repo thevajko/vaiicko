@@ -39,42 +39,4 @@ class HomeController extends AControllerBase
     {
         return $this->html();
     }
-
-    public function myPage(): Response
-    {
-        return $this->html();
-    }
-
-    public function hello(): Response
-    {
-        return $this->html(
-            [
-                'name' => 'Patrik'
-            ]
-        );
-    }
-
-    public function greeting(): Response
-    {
-        $name = $this->request()->getGet()['name'];
-        return $this->html(
-            [
-                'name' => $name
-            ]
-        );
-    }
-
-    public function hi(): Response
-    {
-        return $this->redirect($this->url('hello'));
-    }
-
-    public function list(): Response
-    {
-        return $this->html(
-            [
-                'list' => ['Peter', 'Zuzana', 'Ján', 'Eduard', 'Petra', 'Jozef', 'Adam', 'Zdena']
-            ]
-        );
-    }
 }
