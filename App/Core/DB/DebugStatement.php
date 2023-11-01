@@ -27,7 +27,7 @@ class DebugStatement
      * @param $params
      * @return bool
      */
-    public function execute($params)
+    public function execute($params = null)
     {
         $result = $this->stmt->execute($params);
         ob_start();
