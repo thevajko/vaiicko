@@ -50,8 +50,8 @@ class Request
      */
     public function isAjax(): bool
     {
-        return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+        return $this->server('HTTP_X_REQUESTED_WITH') != null &&
+            strtolower($this->server('HTTP_X_REQUESTED_WITH'))  == 'xmlhttprequest';
     }
 
     /**
@@ -60,7 +60,7 @@ class Request
      */
     public function isJson(): bool
     {
-        return isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == "application/json";
+        return $this->server('CONTENT_TYPE') == "application/json";
     }
 
     /**
@@ -70,7 +70,7 @@ class Request
      */
     public function wantsJson(): bool
     {
-        return isset($_SERVER['HTTP_ACCEPT']) && $_SERVER['HTTP_ACCEPT'] == "application/json";
+        return $this->server('HTTP_ACCEPT')  == "application/json";
     }
 
     /**
@@ -162,11 +162,11 @@ class Request
      */
     public function getBaseUrl(): string
     {
-        $path = $_SERVER['PHP_SELF'];
-        $hostName = $_SERVER['HTTP_HOST'];
+        $path = $this->server('PHP_SELF');
+        $hostName = $this->server('HTTP_HOST');
 
         //Gets prorocol
-        $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"], 0, 5)) == 'https' ? 'https' : 'http';
+        $protocol = strtolower(substr($this->server('SERVER_PROTOCOL'), 0, 5)) == 'https' ? 'https' : 'http';
 
         return $protocol . '://' . $hostName . $path;
     }
