@@ -26,6 +26,24 @@ class Request
     }
 
     /**
+     * Is request method GET
+     * @return bool
+     */
+    public function isGet(): bool
+    {
+        return $this->server('REQUEST_METHOD') == 'GET';
+    }
+
+    /**
+     * Is request method POST
+     * @return bool
+     */
+    public function isPost(): bool
+    {
+        return $this->server('REQUEST_METHOD') == 'POST';
+    }
+
+    /**
      * Is request AJAX?
      * This method works only, if you set the HTTP_X_REQUESTED_WITH header set to xmlhttprequest in JS ajax call
      * @return bool
