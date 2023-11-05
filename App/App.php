@@ -103,11 +103,9 @@ class App
                 foreach ($lines as $line) {
                     if (preg_match("/^Sent SQL: \[\d+\]/", $line)) {
                         $query = $line;
-                    }
-                    else if (preg_match("/^Params:  \d+/", $line)) {
+                    } else if (preg_match("/^Params:  \d+/", $line)) {
                         break;
-                    }
-                    else {
+                    } else {
                         $query .= $line . "\n";
                     }
                 }
