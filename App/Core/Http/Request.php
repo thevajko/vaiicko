@@ -13,6 +13,7 @@ class Request
     private array $post;
     private array $server;
     private array $files;
+    private array $cookies;
     private Session $session;
 
     /**
@@ -24,6 +25,7 @@ class Request
         $this->post = $_POST;
         $this->server = $_SERVER;
         $this->files = $_FILES;
+        $this->cookies = $_COOKIE;
         //Todo mozno zapinat session cez config?
         session_start();
         $this->session = new Session($_SESSION);
@@ -157,6 +159,19 @@ class Request
     public function value(string $key): mixed
     {
         return $this->post($key) ?? $this->get($key);
+    }
+
+    /**
+     * Returns cookie value
+     * @param string|null $key
+     * @return array
+     */
+    public function cookie(?string $key = null): mixed
+    {
+        if ($key == null) {
+            return $this->cookies;
+        }
+        return (isset($this->cookies[$key])) ? $this->cookies[$key] : null;
     }
 
     /**
