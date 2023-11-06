@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Http;
 
 class HTTPException extends \Exception
 {

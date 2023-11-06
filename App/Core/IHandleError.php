@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\App;
+use App\Core\Http\HTTPException;
 use App\Core\Responses\Response;
 
 /**

@@ -4,6 +4,7 @@ namespace App\Core;
 
 use App\App;
 use App\Config\Configuration;
+use App\Core\Http\HTTPException;
 use App\Core\Responses\JsonResponse;
 use App\Core\Responses\Response;
 use App\Core\Responses\ViewResponse;

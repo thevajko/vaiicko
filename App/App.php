@@ -3,11 +3,11 @@
 namespace App;
 
 use App\Config\Configuration;
-use App\Core\HTTPException;
-use App\Core\IAuthenticator;
 use App\Core\DB\Connection;
+use App\Core\Http\HTTPException;
+use App\Core\Http\Request;
+use App\Core\IAuthenticator;
 use App\Core\LinkGenerator;
-use App\Core\Request;
 use App\Core\Responses\RedirectResponse;
 use App\Core\Responses\Response;
 use App\Core\Router;

@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\App;
+use App\Core\Http\Request;
 use App\Core\Responses\JsonResponse;
 use App\Core\Responses\RedirectResponse;
 use App\Core\Responses\Response;

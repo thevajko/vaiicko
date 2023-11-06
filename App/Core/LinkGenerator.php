@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use App\Core\Http\Request;
+
 /**
  * Helper class to generate url links
  */

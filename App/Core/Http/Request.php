@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Http;
 
 /**
  * Class Request
  * Object request wrapping HTTP request
- * @package App\Core
+ * @package App\Core\Http
  */
 class Request
 {
@@ -135,14 +135,14 @@ class Request
     /**
      * Returns FILE from request, if key not specified, returns array with all files
      * @param string|null $key
-     * @return mixed
+     * @return ?UploadedFile|UploadedFile[]
      */
-    public function file(?string $key = null): mixed
+    public function file(?string $key = null): UploadedFile|array|null
     {
         if ($key == null) {
-            return $this->files;
+            return array_map(fn($file) => new UploadedFile($file), $this->files);
         }
-        return (isset($this->files[$key])) ? $this->files[$key] : null;
+        return (isset($this->files[$key])) ? new UploadedFile($this->files[$key]) : null;
     }
 
     /**
