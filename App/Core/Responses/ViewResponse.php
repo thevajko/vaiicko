@@ -36,28 +36,33 @@ class ViewResponse extends Response
     {
         $layout = Configuration::ROOT_LAYOUT;
 
-        //Insert view helpers
-        $auth = $this->app->getAuth();
-        $link = $this->app->getLinkGenerator();
-
-        //Extract variables from controller
-        extract($this->data, EXTR_SKIP);
+        //create view helpers
+        $viewHelpers = [
+            'auth' => $this->app->getAuth(),
+            'link' => $this->app->getLinkGenerator(),
+        ];
 
         ob_start();
-        require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->viewName . ".view.php";
+        //Renders view file
+        $this->renderView($layout, $viewHelpers + $this->data, $this->viewName . ".view.php");
 
+        //Renders layout
         if ($layout != null) {
             $contentHTML = ob_get_clean();
-            //Unsets data, because data are not needed to be passed to layout
-            foreach (array_keys($this->data) as $array_key) {
-                if (!in_array($array_key, ["auth", "link", "layout"])) {
-                    unset($$array_key);
-                }
-            }
-            require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->getLayoutFullName($layout);
+            $layoutData = $viewHelpers + ['contentHTML' => $contentHTML];
+            $this->renderView($layout, $layoutData, $this->getLayoutFullName($layout));
         } else {
             ob_end_flush();
         }
+    }
+
+    private function renderView(string &$layout, array $data, $viewPath): void
+    {
+        //Extract variables from controller
+        extract($data, EXTR_SKIP);
+
+        //Include view file
+        require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $viewPath;
     }
 
     /**
