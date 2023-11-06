@@ -99,7 +99,17 @@ class App
         if (Configuration::SHOW_SQL_QUERY) {
             $queries = array_map(function ($q) {
                 $lines = explode("\n", $q);
-                return '<pre>' . (substr($lines[1], 0, 7) == 'Params:' ? 'Sent ' . $lines[0] : $lines[1]) . '</pre>';
+                $query = "Sent ";
+                foreach ($lines as $line) {
+                    if (preg_match("/^Sent SQL: \[\d+\]/", $line)) {
+                        $query = $line;
+                    } else if (preg_match("/^Params:  \d+/", $line)) {
+                        break;
+                    } else {
+                        $query .= $line . "\n";
+                    }
+                }
+                return '<pre>' . trim($query) . '</pre>';
             }, Connection::getQueryLog());
             echo implode(PHP_EOL . PHP_EOL, $queries);
         }
