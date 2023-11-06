@@ -13,16 +13,16 @@ use App\Config\Configuration;
 class ViewResponse extends Response
 {
     private App $app;
-    private $viewName;
-    private $data;
+    private string $viewName;
+    private array $data;
 
     /**
      * Constructor
-     * @param $app
-     * @param $viewName
-     * @param $data
+     * @param App $app
+     * @param string $viewName
+     * @param array $data
      */
-    public function __construct($app, $viewName, $data)
+    public function __construct(App $app, string $viewName, array $data)
     {
         $this->app = $app;
         $this->viewName = $viewName;
@@ -35,22 +35,34 @@ class ViewResponse extends Response
     protected function generate(): void
     {
         $layout = Configuration::ROOT_LAYOUT;
-        $data = $this->data;
 
-        //Insert view helpers
-        $auth = $this->app->getAuth();
-        $link = $this->app->getLinkGenerator();
+        //create view helpers
+        $viewHelpers = [
+            'auth' => $this->app->getAuth(),
+            'link' => $this->app->getLinkGenerator(),
+        ];
 
         ob_start();
-        require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->viewName . ".view.php";
+        //Renders view file
+        $this->renderView($layout, $viewHelpers + $this->data, $this->viewName . ".view.php");
 
+        //Renders layout
         if ($layout != null) {
             $contentHTML = ob_get_clean();
-            unset($data); //Unsets data, because data are not needed to be passed to layout
-            require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $this->getLayoutFullName($layout);
+            $layoutData = $viewHelpers + ['contentHTML' => $contentHTML];
+            $this->renderView($layout, $layoutData, $this->getLayoutFullName($layout));
         } else {
             ob_end_flush();
         }
+    }
+
+    private function renderView(string &$layout, array $data, $viewPath): void
+    {
+        //Extract variables from controller
+        extract($data, EXTR_SKIP);
+
+        //Include view file
+        require "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $viewPath;
     }
 
     /**

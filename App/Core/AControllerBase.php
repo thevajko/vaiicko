@@ -67,11 +67,11 @@ abstract class AControllerBase
 
     /**
      * Helper method for returning response type ViewResponse
-     * @param null $data
-     * @param null $viewName
+     * @param array $data Associative array with view data
+     * @param string|null $viewName
      * @return ViewResponse
      */
-    protected function html($data = null, $viewName = null): ViewResponse
+    protected function html(array $data = [], string $viewName = null): ViewResponse
     {
         if ($viewName == null) {
             $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR .
