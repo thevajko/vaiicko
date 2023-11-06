@@ -34,11 +34,10 @@ class LinkGenerator
      */
     public function url(
         string|array $destination,
-        array        $parameters = [],
-        bool         $absolute = false,
-        bool         $appendParameters = false
-    ): string
-    {
+        array $parameters = [],
+        bool $absolute = false,
+        bool $appendParameters = false
+    ): string {
         if (is_array($destination)) {
             if ($parameters != []) {
                 $caller = debug_backtrace()[0];
