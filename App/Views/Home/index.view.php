@@ -7,11 +7,11 @@
                 <p>
                     Gratulujeme vám, úspešne sa vám podarilo nainštalovať a spustiť framework
                     <strong>Vaííčko</strong> <?= \App\Config\Configuration::FW_VERSION ?>!<br>
-                    Dúfame, že sa Vám pomocou totho frameworku vytvoríte nejakú skvelú aplikáciu.<br>
+                    Dúfame, že sa Vám pomocou tohto frameworku vytvoríte nejakú skvelú aplikáciu.<br>
                 </p>
                 <p>
                     Tento jednoduchý framework bol vytvorený pre lepšie pochopenie architektúry MVC.<br>
-                    Je určený pre študentov predmetu <em>vývoj aplikcií pre internet a intranet</em>, ale nielen im.
+                    Je určený pre študentov predmetu <em>vývoj aplikácií pre internet a intranet</em>, ale nielen im.
                 </p>
             </div>
         </div>

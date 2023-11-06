@@ -58,14 +58,11 @@ class LinkGenerator
         list($controller, $action) = explode(".", $destination);
 
         //Builds query args
-        $args = $appendParameters ? $this->request->get() : [];
-        $args = array_merge($args, $parameters, [
-            "c" => $controller,
-            "a" => $action != "index" ? $action : null
-        ]);
+        $args = $appendParameters ? $this->request->getGet() : [];
+        $args = ["c" => lcfirst($controller), "a" => $action != "index" ? $action : null] + $parameters + $args;
 
-        $url = $absolute ? $this->request->getBaseUrl() : "?";
+        $basePath = $absolute ? $this->request->getBaseUrl() : "";
 
-        return $url . http_build_query($args);
+        return $basePath . "?" . http_build_query($args);
     }
 }
