@@ -34,10 +34,11 @@ class LinkGenerator
      */
     public function url(
         string|array $destination,
-        array $parameters = [],
-        bool $absolute = false,
-        bool $appendParameters = false
-    ): string {
+        array        $parameters = [],
+        bool         $absolute = false,
+        bool         $appendParameters = false
+    ): string
+    {
         if (is_array($destination)) {
             if ($parameters != []) {
                 $caller = debug_backtrace()[0];
@@ -57,10 +58,7 @@ class LinkGenerator
 
         //Builds query args
         $args = $appendParameters ? $this->request->getGet() : [];
-        $args = array_merge($args, $parameters, [
-            "c" => $controller,
-            "a" => $action != "index" ? $action : null
-        ]);
+        $args = ["c" => $controller, "a" => $action != "index" ? $action : null] + $parameters + $args;
 
         $basePath = $absolute ? $this->request->getBaseUrl() : "";
 
