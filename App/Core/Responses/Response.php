@@ -38,8 +38,7 @@ abstract class Response
 
 
     /**
-     * Set response cookies @see setcookie()
-     * @param string $name
+     * Set response cookies @param string $name
      * @param $value
      * @param $expires_or_options
      * @param $path
@@ -47,6 +46,7 @@ abstract class Response
      * @param $secure
      * @param $httponly
      * @return bool
+     * @see setcookie()
      */
     public function setCookie(
         string $name,
@@ -55,8 +55,8 @@ abstract class Response
         $path = "",
         $domain = "",
         $secure = false,
-        $httponly = false): bool
-    {
+        $httponly = false
+    ): bool {
         return setcookie($name, $value, $expires_or_options, $path, $domain, $secure, $httponly);
     }
 }

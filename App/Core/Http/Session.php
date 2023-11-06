@@ -4,7 +4,6 @@ namespace App\Core\Http;
 
 class Session
 {
-
     private array $sessionData;
 
     public function __construct(&$sessionData)
@@ -47,11 +46,9 @@ class Session
     {
         if ($key != null) {
             unset($this->sessionData[$key]);
-        }
-        else {
+        } else {
             session_unset();
             session_destroy();
         }
-
     }
 }
