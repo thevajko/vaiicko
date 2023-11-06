@@ -58,7 +58,7 @@ class LinkGenerator
 
         //Builds query args
         $args = $appendParameters ? $this->request->getGet() : [];
-        $args = ["c" => $controller, "a" => $action != "index" ? $action : null] + $parameters + $args;
+        $args = ["c" => lcfirst($controller), "a" => $action != "index" ? $action : null] + $parameters + $args;
 
         $basePath = $absolute ? $this->request->getBaseUrl() : "";
 
