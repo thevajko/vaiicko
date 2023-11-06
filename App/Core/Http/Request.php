@@ -13,6 +13,7 @@ class Request
     private array $post;
     private array $server;
     private array $files;
+    private Session $session;
 
     /**
      * Request constructor
@@ -23,6 +24,9 @@ class Request
         $this->post = $_POST;
         $this->server = $_SERVER;
         $this->files = $_FILES;
+        //Todo mozno zapinat session cez config?
+        session_start();
+        $this->session = new Session($_SESSION);
     }
 
     /**
