@@ -14,8 +14,6 @@ class Request
     private array $server;
     private array $files;
     private array $cookies;
-    private Session $session;
-
     /**
      * Request constructor
      */
@@ -26,9 +24,6 @@ class Request
         $this->server = $_SERVER;
         $this->files = $_FILES;
         $this->cookies = $_COOKIE;
-        //Todo mozno zapinat session cez config?
-        session_start();
-        $this->session = new Session($_SESSION);
     }
 
     /**
@@ -57,7 +52,7 @@ class Request
     public function isAjax(): bool
     {
         return $this->server('HTTP_X_REQUESTED_WITH') != null &&
-            strtolower($this->server('HTTP_X_REQUESTED_WITH'))  == 'xmlhttprequest';
+            strtolower($this->server('HTTP_X_REQUESTED_WITH')) == 'xmlhttprequest';
     }
 
     /**
@@ -76,7 +71,7 @@ class Request
      */
     public function wantsJson(): bool
     {
-        return $this->server('HTTP_ACCEPT')  == "application/json";
+        return $this->server('HTTP_ACCEPT') == "application/json";
     }
 
     /**

@@ -4,15 +4,19 @@ namespace App\Core\Http;
 
 class Session
 {
-    private array $sessionData;
+    private ?array $sessionData = null;
 
-    public function __construct(&$sessionData)
+    /**
+     * Starts a new session or opens the current session
+     */
+    public function __construct()
     {
-        $this->sessionData = &$sessionData;
+        session_start();
+        $this->sessionData = &$_SESSION;
     }
 
     /**
-     * Gets value from session
+     * Gets value from session variable
      * @param string $key
      * @param mixed|null $default Default value, if session not exists
      * @return mixed
@@ -26,7 +30,7 @@ class Session
     }
 
     /**
-     * Set session value
+     * Set session value if variable exist, if not, create a new variable
      * @param string $key
      * @param mixed $value
      * @return void
@@ -37,18 +41,56 @@ class Session
     }
 
     /**
-     * Clears session value, if key is specified, only specific key will be cleared.
-     * If key is not specified, whole session will be destroyed.
+     * Removes session variable
      * @param string|null $key
      * @return void
      */
-    public function clear(?string $key = null): void
+    public function remove(string $key): void
     {
-        if ($key != null) {
+        if (isset($this->sessionData[$key])) {
             unset($this->sessionData[$key]);
-        } else {
-            session_unset();
-            session_destroy();
         }
+    }
+
+    /**
+     * Return true, if $key exists in session, otherwise returns false
+     * @param string $key
+     * @return bool
+     */
+    public function hasKey(string $key): bool
+    {
+        return isset($this->sessionData[$key]);
+    }
+
+    /**
+     * Clears all session variables
+     * @return void
+     */
+    public function clear(): bool
+    {
+        return session_unset();
+    }
+
+    /**
+     * Destroys session properly
+     * @return bool
+     */
+    public function destroy(): bool
+    {
+        session_unset();
+
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+        return session_destroy();
     }
 }

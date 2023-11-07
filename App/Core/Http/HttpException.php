@@ -2,7 +2,7 @@
 
 namespace App\Core\Http;
 
-class HTTPException extends \Exception
+class HttpException extends \Exception
 {
     /**
      * List of possible HTTP status codes
@@ -80,8 +80,8 @@ class HTTPException extends \Exception
         parent::__construct($message ? $message : self::$statusCodeMessages[$statusCode], $statusCode, $h);
     }
 
-    public static function from(\Throwable $exception, int $statusCode = 500): HTTPException
+    public static function from(\Throwable $exception, int $statusCode = 500): HttpException
     {
-        return new HTTPException($statusCode, null, $exception);
+        return new HttpException($statusCode, null, $exception);
     }
 }

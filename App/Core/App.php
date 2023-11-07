@@ -1,16 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Core;
 
 use App\Config\Configuration;
 use App\Core\DB\Connection;
-use App\Core\Http\HTTPException;
+use App\Core\Http\HttpException;
 use App\Core\Http\Request;
-use App\Core\IAuthenticator;
-use App\Core\LinkGenerator;
+use App\Core\Http\Session;
 use App\Core\Responses\RedirectResponse;
 use App\Core\Responses\Response;
-use App\Core\Router;
 
 /**
  * Class App
@@ -29,6 +27,7 @@ class App
     private Request $request;
     private LinkGenerator $linkGenerator;
     private ?IAuthenticator $auth;
+    private ?Session $session;
 
     /**
      * App constructor
@@ -76,7 +75,7 @@ class App
                 }
             } else {
                 if ($this->auth->isLogged() || !defined('\\App\\Config\\Configuration::LOGIN_URL')) {
-                    throw new HTTPException(403);
+                    throw new HttpException(403);
                 } else {
                     (new RedirectResponse(Configuration::LOGIN_URL))->send();
                 }
@@ -86,8 +85,8 @@ class App
             ob_end_clean();
 
             // if not HTTP exception wrap it to one
-            if (!($exception instanceof HTTPException)) {
-                $exception = HTTPException::from($exception);
+            if (!($exception instanceof HttpException)) {
+                $exception = HttpException::from($exception);
             }
             // get handler instance
             $errorHandler = new (Configuration::ERROR_HANDLER_CLASS)();
@@ -116,6 +115,7 @@ class App
     }
 
     /**
+     * Gets router
      * @return Router
      */
     public function getRouter(): Router
@@ -124,6 +124,7 @@ class App
     }
 
     /**
+     * Gets request
      * @return Request
      */
     public function getRequest(): Request
@@ -132,6 +133,7 @@ class App
     }
 
     /**
+     * Gets current authenticator
      * @return IAuthenticator|null
      */
     public function getAuth(): ?IAuthenticator
@@ -140,10 +142,24 @@ class App
     }
 
     /**
+     * Gets instance of LinkGenerator
      * @return LinkGenerator
      */
     public function getLinkGenerator(): LinkGenerator
     {
         return $this->linkGenerator;
+    }
+
+    /**
+     * Gets the session, if exists, if not created a new session
+     * @return Session
+     */
+    public function getSession(): Session
+    {
+        if (is_null($this->session)) {
+            return $this->session = new Session();
+        } else {
+            return $this->session;
+        }
     }
 }

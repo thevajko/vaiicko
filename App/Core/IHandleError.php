@@ -2,8 +2,7 @@
 
 namespace App\Core;
 
-use App\App;
-use App\Core\Http\HTTPException;
+use App\Core\Http\HttpException;
 use App\Core\Responses\Response;
 
 /**
@@ -11,5 +10,5 @@ use App\Core\Responses\Response;
  */
 interface IHandleError
 {
-    public function handleError(App $app, HTTPException $exception): Response;
+    public function handleError(App $app, HttpException $exception): Response;
 }

@@ -42,7 +42,7 @@ class UploadedFile
     }
 
     /**
-     * Returns the size, in bytes, of the uploaded file.
+     * The size, in bytes, of the uploaded file
      * @return int
      */
     public function getSize(): int
@@ -51,7 +51,7 @@ class UploadedFile
     }
 
     /**
-     * Returns the temporary filename of the file in which the uploaded file was stored on the server.
+     * Returns the temporary filename of the file in which the uploaded file was stored on the server
      * @return string
      */
     public function getFileTempPath(): string
@@ -60,13 +60,13 @@ class UploadedFile
     }
 
     /**
-     * Returns the size, in bytes, of the uploaded file.
+     * Returns the error code associated with this file upload
      * @see https://www.php.net/manual/en/features.file-upload.errors.php
      * @return int
      */
     public function getError(): int
     {
-        return $this->fileData['size'];
+        return $this->fileData['error'];
     }
 
     /**
@@ -90,9 +90,10 @@ class UploadedFile
     }
 
     /**
-     * Stores file on server @see move_uploaded_file()
+     * Stores file on server
      * @param $fileName string full path to file on server
      * @return bool
+     * @see move_uploaded_file()
      */
     public function store(string $fileName): bool
     {

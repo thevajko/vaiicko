@@ -2,6 +2,8 @@
 
 namespace App\Auth;
 
+use App\Core\App;
+use App\Core\Http\HttpException;
 use App\Core\IAuthenticator;
 
 /**
@@ -14,17 +16,20 @@ class DummyAuthenticator implements IAuthenticator
     public const LOGIN = "admin";
     public const PASSWORD_HASH = '$2y$10$GRA8D27bvZZw8b85CAwRee9NH5nj4CQA6PDFMc90pN9Wi4VAWq3yq'; // admin
     public const USERNAME = "Admin";
+    private App $app;
+    private \App\Core\Http\Session $session;
 
     /**
      * DummyAuthenticator constructor
      */
-    public function __construct()
+    public function __construct(App $app)
     {
-        session_start();
+        $this->app = $app;
+        $this->session = $this->app->getSession();
     }
 
     /**
-     * Verify, if the user is in DB and has his password is correct
+     * Verifies, if the user is in DB and has his password is correct
      * @param $login
      * @param $password
      * @return bool
@@ -33,7 +38,7 @@ class DummyAuthenticator implements IAuthenticator
     public function login($login, $password): bool
     {
         if ($login == self::LOGIN && password_verify($password, self::PASSWORD_HASH)) {
-            $_SESSION['user'] = self::USERNAME;
+            $this->session->set('user', self::USERNAME);
             return true;
         } else {
             return false;
@@ -45,23 +50,21 @@ class DummyAuthenticator implements IAuthenticator
      */
     public function logout(): void
     {
-        if (isset($_SESSION["user"])) {
-            unset($_SESSION["user"]);
-            session_destroy();
-        }
+        $this->session->destroy();
     }
 
     /**
-     * Get the name of the logged-in user
+     * Gets the name of the logged-in user
      * @return string
      */
     public function getLoggedUserName(): string
     {
-        return isset($_SESSION['user']) ? $_SESSION['user'] : throw new \Exception("User not logged in");
+        return $this->session->hasKey('user') ? $this->session->get('user') :
+            throw new \Exception("User not logged in");
     }
 
     /**
-     * Get the context of the logged-in user
+     * Gets the context of the logged-in user
      * @return string
      */
     public function getLoggedUserContext(): mixed
@@ -70,20 +73,20 @@ class DummyAuthenticator implements IAuthenticator
     }
 
     /**
-     * Return if the user is authenticated or not
+     * Returns if the user is authenticated or not
      * @return bool
      */
     public function isLogged(): bool
     {
-        return isset($_SESSION['user']) && $_SESSION['user'] != null;
+        return $this->session->hasKey('user');
     }
 
     /**
-     * Return the id of the logged-in user
+     * Returns the id of the logged-in user, in this case null
      * @return mixed
      */
     public function getLoggedUserId(): mixed
     {
-        return $_SESSION['user'];
+        return null;
     }
 }

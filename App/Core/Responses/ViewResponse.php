@@ -2,8 +2,8 @@
 
 namespace App\Core\Responses;
 
-use App\App;
 use App\Config\Configuration;
+use App\Core\App;
 
 /**
  * Class ViewResponse

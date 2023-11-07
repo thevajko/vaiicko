@@ -2,7 +2,7 @@
 
 $layout = null; //TODO dat toto nastavenie layoutu do dokumentacie!
 /** @var array $data */
-/** @var \App\Core\Http\HTTPException $exception */
+/** @var \App\Core\Http\HttpException $exception */
 $exception = $data["exception"];
 ?>
 
