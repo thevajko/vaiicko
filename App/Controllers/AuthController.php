@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Config\Configuration;
-use App\Core\AControllerBase;
+use App\Core\ControllerBase;
 use App\Core\Responses\Response;
 use App\Core\Responses\ViewResponse;
 
@@ -12,7 +12,7 @@ use App\Core\Responses\ViewResponse;
  * Controller for authentication actions
  * @package App\Controllers
  */
-class AuthController extends AControllerBase
+class AuthController extends ControllerBase
 {
     /**
      *
@@ -29,10 +29,10 @@ class AuthController extends AControllerBase
      */
     public function login(): Response
     {
-        $formData = $this->app->getRequest()->getPost();
+        $request = $this->getRequest();
         $logged = null;
-        if (isset($formData['submit'])) {
-            $logged = $this->app->getAuth()->login($formData['login'], $formData['password']);
+        if ($request->hasValue('submit')) {
+            $logged = $this->app->getAuth()->login($request->value('login'), $request->value('password'));
             if ($logged) {
                 return $this->redirect($this->url("admin.index"));
             }

@@ -4,6 +4,7 @@ namespace App\Core;
 
 use App\App;
 use App\Config\Configuration;
+use App\Core\Http\HTTPException;
 use App\Core\Responses\JsonResponse;
 use App\Core\Responses\Response;
 use App\Core\Responses\ViewResponse;
@@ -13,7 +14,7 @@ class ErrorHandler implements IHandleError
     public function handleError(App $app, HTTPException $exception): Response
     {
         // response error in JSON only if client wants to
-        if ($app->getRequest()->clientRequestsJSON()) {
+        if ($app->getRequest()->wantsJson()) {
             function getExceptionStack(\Throwable $t): array
             {
                 $stack = [];

@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\App;
+use App\Core\Http\Request;
 use App\Core\Responses\JsonResponse;
 use App\Core\Responses\RedirectResponse;
 use App\Core\Responses\Response;
@@ -13,7 +14,7 @@ use App\Core\Responses\ViewResponse;
  * Basic controller class, predecessor of all controllers
  * @package App\Core
  */
-abstract class AControllerBase
+abstract class ControllerBase
 {
     /**
      * Reference to APP object instance
@@ -50,11 +51,11 @@ abstract class AControllerBase
     }
 
     /**
-     * Authorize action
-     * @param string $action
+     * Authorize controller action
+     * @param string $action action name
      * @return bool
      */
-    public function authorize(string $action)
+    public function authorize(string $action): bool
     {
         return true;
     }
@@ -108,12 +109,13 @@ abstract class AControllerBase
      * Helper method for request
      * @return Request
      */
-    protected function request(): Request
+    protected function getRequest(): Request
     {
         return $this->app->getRequest();
     }
 
     /**
+     * @throws \Exception
      * @see LinkGenerator::url()
      */
     protected function url(

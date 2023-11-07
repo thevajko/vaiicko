@@ -35,4 +35,28 @@ abstract class Response
         $this->statusCode = $statusCode;
         return $this;
     }
+
+
+    /**
+     * Set response cookies @param string $name
+     * @param $value
+     * @param $expires_or_options
+     * @param $path
+     * @param $domain
+     * @param $secure
+     * @param $httponly
+     * @return bool
+     * @see setcookie()
+     */
+    public function setCookie(
+        string $name,
+        $value = "",
+        $expires_or_options = 0,
+        $path = "",
+        $domain = "",
+        $secure = false,
+        $httponly = false
+    ): bool {
+        return setcookie($name, $value, $expires_or_options, $path, $domain, $secure, $httponly);
+    }
 }

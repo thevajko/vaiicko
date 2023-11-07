@@ -23,15 +23,35 @@ abstract class Model implements \JsonSerializable
      * Return an array of models from DB
      * @param string $whereClause Additional where Statement
      * @param array $whereParams Parameters for where
+     * @param string|null $orderBy
+     * @param int|null $limit
+     * @param int|null $offset
      * @return static[]
      * @throws \Exception
      */
-    public static function getAll(string $whereClause = '', array $whereParams = [], $orderBy = ''): array
-    {
+    public static function getAll(
+        ?string $whereClause = null,
+        array $whereParams = [],
+        ?string $orderBy = null,
+        ?int $limit = null,
+        ?int $offset = null
+    ): array {
         self::connect();
         try {
-            $sql = "SELECT * FROM `" . static::getTableName() . "`" . ($whereClause == '' ? '' : " WHERE $whereClause")
-                . ($orderBy == '' ? '' : " ORDER BY $orderBy");
+            $sql = "SELECT * FROM `" . static::getTableName() . "`";
+            if ($whereClause != null) {
+                $sql .= " WHERE $whereClause";
+            }
+            if ($orderBy != null) {
+                $sql .= " ORDER BY $orderBy";
+            }
+            if ($limit != null) {
+                $sql .= " LIMIT $limit";
+            }
+            if ($offset != null) {
+                $sql .= " OFFSET $offset";
+            }
+
             $stmt = self::$connection->prepare($sql);
             $stmt->execute($whereParams);
             $models = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
