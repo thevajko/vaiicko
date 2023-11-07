@@ -31,7 +31,7 @@ class Connection
      * @return Connection
      * @throws \Exception
      */
-    public static function connect()
+    public static function getInstance()
     {
         try {
             if (self::$instance == null) {
