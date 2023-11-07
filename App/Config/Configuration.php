@@ -40,6 +40,11 @@ class Configuration
     public const SHOW_SQL_QUERY = false;
 
     /**
+     * Conversion from camel case DB column names to camel case name
+     */
+    public const CONVERT_DB_NAMES_TO_CAMEL_CASE = true;
+
+    /**
      * Show detailed stacktrace using default exception handler. Should be used only for development.
      */
     public const SHOW_EXCEPTION_DETAILS = true;
