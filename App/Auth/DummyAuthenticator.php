@@ -29,7 +29,7 @@ class DummyAuthenticator implements IAuthenticator
     }
 
     /**
-     * Verifies, if the user is in DB and has his password is correct
+     * Verifies if the login is self::LOGIN and his password is self::PASSWORD
      * @param $login
      * @param $password
      * @return bool
@@ -54,8 +54,9 @@ class DummyAuthenticator implements IAuthenticator
     }
 
     /**
-     * Gets the name of the logged-in user
+     * Returns the name of the logged-in user
      * @return string
+     * @throws \Exception
      */
     public function getLoggedUserName(): string
     {
@@ -64,7 +65,7 @@ class DummyAuthenticator implements IAuthenticator
     }
 
     /**
-     * Gets the context of the logged-in user
+     * Returns the context of the logged-in user
      * @return string
      */
     public function getLoggedUserContext(): mixed

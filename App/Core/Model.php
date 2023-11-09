@@ -5,6 +5,7 @@ namespace App\Core;
 use App\Config\Configuration;
 use App\Core\DB\Connection;
 use App\Core\DB\IDbConvention;
+use App\Core\Http\Request;
 use PDO;
 use PDOException;
 
@@ -47,6 +48,21 @@ abstract class Model implements \JsonSerializable
     protected static function getColumnsMap(): array
     {
         return [];
+    }
+
+    /**
+     * Set model property values to values from request, only corresponding names are matched
+     * @param Request $request Request
+     * @return void
+     */
+    public function setFromRequest(Request $request): void
+    {
+        $data = $request->isPost() ? $request->post() : $request->get();
+        foreach ($data as $key => $value) {
+            if (property_exists(get_class($this), $key)) {
+                $this->{$key} = $value;
+            }
+        }
     }
 
     /**

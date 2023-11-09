@@ -4,7 +4,7 @@ namespace App\Core\Http;
 
 /**
  * Class Request
- * Object request wrapping HTTP request
+ * The class wraps HTTP request
  * @package App\Core\Http
  */
 class Request
@@ -27,7 +27,7 @@ class Request
     }
 
     /**
-     * Is request method GET
+     * Is GET the request method?
      * @return bool
      */
     public function isGet(): bool
@@ -36,7 +36,7 @@ class Request
     }
 
     /**
-     * Is request method POST
+     * Is POST the request method?
      * @return bool
      */
     public function isPost(): bool
@@ -85,7 +85,7 @@ class Request
     }
 
     /**
-     * Check if request contains value
+     * Checks if request contains a value
      * @param string $key
      * @return bool
      */

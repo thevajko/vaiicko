@@ -50,7 +50,8 @@ class Configuration
      */
     public const SHOW_EXCEPTION_DETAILS = true;
     /**
-     * Class used as authenticator. Must implement IAuthenticator
+     * Class used as authenticator. Must implement IAuthenticator.
+     * Comment out, if no authentication is needed in the application
      */
     public const AUTH_CLASS = DummyAuthenticator::class;
     /**
