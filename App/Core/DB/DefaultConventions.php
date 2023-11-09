@@ -12,7 +12,6 @@ use App\Helpers\Inflect;
  */
 class DefaultConventions implements IDbConvention
 {
-
     /**
      * Returns pluralized name of the DB table
      * This method can be overwritten in a descendant of the class Model

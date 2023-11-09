@@ -13,7 +13,6 @@ use App\Helpers\Inflect;
  */
 class SnakeConventions implements IDbConvention
 {
-
     /**
      * Returns snake case pluralized name of the DB table
      * This method can be overwritten in a descendant of the class Model
