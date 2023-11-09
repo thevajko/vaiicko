@@ -3,6 +3,7 @@
 namespace App\Config;
 
 use App\Auth\DummyAuthenticator;
+use App\Core\Db\DefaultConventions;
 use App\Core\ErrorHandler;
 
 /**
@@ -40,9 +41,9 @@ class Configuration
     public const SHOW_SQL_QUERY = false;
 
     /**
-     * Conversion from camel case DB column names to camel case name
+     * Conversion class for DB names See PHPDoc in class for more information
      */
-    public const CONVERT_DB_NAMES_TO_CAMEL_CASE = true;
+    public const DB_CONVENTIONS_CLASS = DefaultConventions::class;
 
     /**
      * Show detailed stacktrace using default exception handler. Should be used only for development.
