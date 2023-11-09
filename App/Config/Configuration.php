@@ -3,6 +3,7 @@
 namespace App\Config;
 
 use App\Auth\DummyAuthenticator;
+use App\Core\Db\DefaultConventions;
 use App\Core\ErrorHandler;
 
 /**
@@ -38,6 +39,11 @@ class Configuration
      * Add all SQL queries after app output
      */
     public const SHOW_SQL_QUERY = false;
+
+    /**
+     * Conversion class for DB names See PHPDoc in class for more information
+     */
+    public const DB_CONVENTIONS_CLASS = DefaultConventions::class;
 
     /**
      * Show detailed stacktrace using default exception handler. Should be used only for development.
