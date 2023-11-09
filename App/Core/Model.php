@@ -97,11 +97,11 @@ abstract class Model implements \JsonSerializable
 
     /**
      * Returns one model from DB by a primary key
-     * @param $id Primary Primary key value
+     * @param mixed $id Primary key value
      * @return static|null
      * @throws \Exception
      */
-    public static function getOne($id): ?static
+    public static function getOne(mixed $id): ?static
     {
         if ($id == null) {
             return null;
@@ -119,6 +119,29 @@ abstract class Model implements \JsonSerializable
                 $model->_dbId = $model->getIdValue();
             }
             return $model;
+        } catch (PDOException $exception) {
+            throw new \Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
+        }
+    }
+
+    /**
+     * Returns count of models in DB
+     * @param string|null $whereClause WHERE clause content
+     * @param array $whereParams WHERE parameters
+     * @return int
+     * @throws \Exception Returns exception, if there is a problem with SQL query
+     */
+    public static function getCount(?string $whereClause = null, array $whereParams = []): int
+    {
+        try {
+            $sql = "SELECT COUNT(*) FROM `" . static::getTableName() . "`";
+            if ($whereClause != null) {
+                $sql .= " WHERE $whereClause";
+            }
+
+            $stmt = Connection::getInstance()->prepare($sql);
+            $stmt->execute($whereParams);
+            return (int)$stmt->fetchColumn();
         } catch (PDOException $exception) {
             throw new \Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
         }
