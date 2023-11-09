@@ -4,6 +4,7 @@ namespace App\Core;
 
 use App\Config\Configuration;
 use App\Core\DB\Connection;
+use App\Core\DB\DataSet;
 use App\Core\DB\IDbConvention;
 use App\Core\Http\Request;
 use PDO;
@@ -20,6 +21,7 @@ abstract class Model implements \JsonSerializable
     private static array $dbColumns = [];
     private static IDbConvention $dbConventions;
     private mixed $_dbId = null;
+    private ?DataSet $_dataSet = null;
     /**
      * Returns table name from model class name
      * This method can be overwritten in a descendant of the class Model for custom table name
@@ -83,7 +85,7 @@ abstract class Model implements \JsonSerializable
         ?int $offset = null
     ): array {
         try {
-            $sql = "SELECT " . self::getDBColumnNamesList() . " FROM `" . static::getTableName() . "`";
+            $sql = "SELECT " . static::getDBColumnNamesList() . " FROM `" . static::getTableName() . "`";
             if ($whereClause != null) {
                 $sql .= " WHERE $whereClause";
             }
@@ -100,9 +102,11 @@ abstract class Model implements \JsonSerializable
             $stmt = Connection::getInstance()->prepare($sql);
             $stmt->execute($whereParams);
             $models = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
+            $dataSet = new DataSet($models);
             /** @var static $model */
             foreach ($models as $model) {
                 $model->_dbId = $model->getIdValue();
+                $model->_dataSet = $dataSet;
             }
             return $models;
         } catch (PDOException $exception) {
@@ -123,7 +127,7 @@ abstract class Model implements \JsonSerializable
         }
 
         try {
-            $sql = "SELECT " . self::getDBColumnNamesList() . " FROM `" . static::getTableName() . "` WHERE `" .
+            $sql = "SELECT " . static::getDBColumnNamesList() . " FROM `" . static::getTableName() . "` WHERE `" .
                 static::getPkColumnName() . "`=?";
             $stmt = Connection::getInstance()->prepare($sql);
             $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
@@ -225,6 +229,56 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
+     * Loads referenced entity of type $modelClass using default property.
+     * @param string $modelClass Model to load
+     * @param string|null $refColumn Change DB column name used to load referenced property
+     * @return mixed
+     */
+    public function getOneRelated(string $modelClass, ?string $refColumn = null) {
+        $refColumn ??= static::getConventions()->getFkColumn($modelClass);
+
+        if ($this->_dataSet == null) {
+            return $modelClass::getOne($this->{static::toPropertyName($refColumn)});
+        } else {
+            return $this->_dataSet->getOneRelated(
+                $modelClass,
+                self::toPropertyName($refColumn),
+                fn($e) => $e->{self::toPropertyName($refColumn)},
+                fn($e) => $e->getIdValue(),
+                $modelClass::getPkColumnName(),
+                $this->{self::toPropertyName($refColumn)},
+            );
+        }
+    }
+
+    /**
+     * Loads entity of type $modelClass witch reference this entity.
+     * @param string $modelClass Model to load
+     * @param string|null $refColumn Db column name used to reference this entity
+     * @param string|null $where Additional conditions to restrict loaded references
+     * @param array $whereParams
+     * @return mixed
+     */
+    public function getAllRelated(string $modelClass, ?string $refColumn = null, ?string $where = null, array $whereParams = []) {
+        $refColumn ??= self::getConventions()->getFkColumn(static::class);
+
+        if ($this->_dataSet == null) {
+            return $modelClass::getAll(
+                "WHERE $refColumn = ?" . ($where != null ? " AND ($where)" : ""),
+                array_merge([$this->getIdValue()], $whereParams));
+        } else {
+            return $this->_dataSet->getAllRelated(
+                $modelClass,
+                $refColumn,
+                $where,
+                $whereParams,
+                fn ($e) => $e->getIdValue(),
+                fn ($e) => $e->{self::toPropertyName($refColumn)},
+                $this->getIdValue());
+        }
+    }
+
+    /**
      * Default implementation of JSON serialize method. Returns all properties from model
      * @return array
      */
@@ -232,6 +286,7 @@ abstract class Model implements \JsonSerializable
     {
         $properties = get_object_vars($this);
         unset($properties["_dbId"]); //Remove internal object ID
+        unset($properties["_dataSet"]); //Remove dataset
         return $properties;
     }
 
@@ -263,7 +318,7 @@ abstract class Model implements \JsonSerializable
     private function getIdValue(): mixed
     {
         $pk = static::getPkColumnName();
-        return $this->{self::toPropertyName($pk)};
+        return $this->{static::toPropertyName($pk)};
     }
 
     /**
@@ -275,7 +330,7 @@ abstract class Model implements \JsonSerializable
     {
         $dbColumns = [];
         foreach (static::getDbColumns() as $columnName) {
-            $name = self::toPropertyName($columnName);
+            $name = static::toPropertyName($columnName);
             if ($name != $columnName) {
                 $dbColumns[] = "`$columnName` AS {$name}";
             } else {
@@ -306,9 +361,9 @@ abstract class Model implements \JsonSerializable
      */
     private static function getConventions(): IDbConvention
     {
-        if (!isset(self::$dbConventions)) {
-            self::$dbConventions = new (Configuration::DB_CONVENTIONS_CLASS)();
+        if (!isset(static::$dbConventions)) {
+            static::$dbConventions = new (Configuration::DB_CONVENTIONS_CLASS)();
         }
-        return self::$dbConventions;
+        return static::$dbConventions;
     }
 }
