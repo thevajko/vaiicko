@@ -22,6 +22,7 @@ abstract class Model implements \JsonSerializable
     private static IDbConvention $dbConventions;
     private mixed $_dbId = null;
     private ?DataSet $_dataSet = null;
+
     /**
      * Returns table name from model class name
      * This method can be overwritten in a descendant of the class Model for custom table name
@@ -234,7 +235,8 @@ abstract class Model implements \JsonSerializable
      * @param string|null $refColumn Change DB column name used to load referenced property
      * @return mixed
      */
-    public function getOneRelated(string $modelClass, ?string $refColumn = null) {
+    public function getOneRelated(string $modelClass, ?string $refColumn = null)
+    {
         $refColumn ??= static::getConventions()->getFkColumn($modelClass);
 
         if ($this->_dataSet == null) {
@@ -259,22 +261,29 @@ abstract class Model implements \JsonSerializable
      * @param array $whereParams
      * @return mixed
      */
-    public function getAllRelated(string $modelClass, ?string $refColumn = null, ?string $where = null, array $whereParams = []) {
+    public function getAllRelated(
+        string $modelClass,
+        ?string $refColumn = null,
+        ?string $where = null,
+        array $whereParams = []
+    ) {
         $refColumn ??= self::getConventions()->getFkColumn(static::class);
 
         if ($this->_dataSet == null) {
             return $modelClass::getAll(
                 "WHERE $refColumn = ?" . ($where != null ? " AND ($where)" : ""),
-                array_merge([$this->getIdValue()], $whereParams));
+                array_merge([$this->getIdValue()], $whereParams)
+            );
         } else {
             return $this->_dataSet->getAllRelated(
                 $modelClass,
                 $refColumn,
                 $where,
                 $whereParams,
-                fn ($e) => $e->getIdValue(),
-                fn ($e) => $e->{self::toPropertyName($refColumn)},
-                $this->getIdValue());
+                fn($e) => $e->getIdValue(),
+                fn($e) => $e->{self::toPropertyName($refColumn)},
+                $this->getIdValue()
+            );
         }
     }
 

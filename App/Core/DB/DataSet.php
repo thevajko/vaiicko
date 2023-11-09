@@ -30,8 +30,8 @@ class DataSet
         callable $propertyAccessor,
         callable $idPropertyAccessor,
         string $pk,
-        mixed $id): mixed
-    {
+        mixed $id
+    ): mixed {
         $cacheKey = $modelClass . '<|' . $fk;
         if (!isset($this->dataCache[$cacheKey])) {
             $this->dataCache[$cacheKey] = [];
@@ -64,14 +64,17 @@ class DataSet
         array $whereParams,
         callable $idPropertyAccessor,
         callable $referencedPropertyAccessor,
-        mixed $id): array
-    {
+        mixed $id
+    ): array {
         $cacheKey = $modelClass . '|>' . $fk;
         if (!isset($this->dataCache[$cacheKey])) {
             $this->dataCache[$cacheKey] = [];
             $ids = array_values(array_unique(array_map($idPropertyAccessor, $this->entities)));
             if (count($ids) > 0) {
-                $data = $modelClass::getAll("`$fk` IN ({$this->generatePlaceholders(count($ids))}) ". ($where != null ? " AND ($where)" : ""), array_merge($ids, $whereParams));
+                $data = $modelClass::getAll(
+                    "`$fk` IN ({$this->generatePlaceholders(count($ids))}) " . ($where != null ? " AND ($where)" : ""),
+                    array_merge($ids, $whereParams)
+                );
                 foreach ($data as $row) {
                     if (!isset($this->dataCache[$cacheKey][$referencedPropertyAccessor($row)])) {
                         $this->dataCache[$cacheKey][$referencedPropertyAccessor($row)] = [];
