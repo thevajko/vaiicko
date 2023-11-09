@@ -17,9 +17,8 @@ use PDOException;
 abstract class Model implements \JsonSerializable
 {
     private static ?array $dbColumns = null;
-    private mixed $_dbId = null;
     private static IDbConvention $dbConventions;
-
+    private mixed $_dbId = null;
     /**
      * Returns table name from model class name
      * This method can be overwritten in a descendant of the class Model for custom table name
