@@ -306,7 +306,7 @@ abstract class Model implements \JsonSerializable
      */
     private static function getConventions(): IDbConvention
     {
-        if (is_null(self::$dbConventions)) {
+        if (!isset(self::$dbConventions)) {
             self::$dbConventions = new (Configuration::DB_CONVENTIONS_CLASS)();
         }
         return self::$dbConventions;

@@ -21,7 +21,7 @@ class SnakeConventions implements IDbConvention
      */
     public function getTableName(string $className): string
     {
-        $arr = explode("\\", get_called_class());
+        $arr = explode("\\", $className);
         $tableName = Inflect::pluralize(strtolower(end($arr)));
         return $this->toSnakeCase($tableName);
     }

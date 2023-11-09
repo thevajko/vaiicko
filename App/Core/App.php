@@ -41,7 +41,7 @@ class App
         // Check if there is an authenticator
         if (defined('\\App\\Config\\Configuration::AUTH_CLASS')) {
             //$authClass = Configuration::AUTH_CLASS;
-            $this->auth = new (Configuration::AUTH_CLASS)();
+            $this->auth = new (Configuration::AUTH_CLASS)($this);
         } else {
             $this->auth = null;
         }
@@ -156,7 +156,7 @@ class App
      */
     public function getSession(): Session
     {
-        if (is_null($this->session)) {
+        if (!isset($this->session)) {
             return $this->session = new Session();
         } else {
             return $this->session;
