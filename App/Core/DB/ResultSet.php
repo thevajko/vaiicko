@@ -2,10 +2,10 @@
 
 namespace App\Core\DB;
 
-class DataSet
+class ResultSet
 {
     private array $entities;
-    private array $dataCache = [];
+    private array $relatedEntities = [];
 
     /**
      * @param array $entities
@@ -18,7 +18,7 @@ class DataSet
     /**
      * @param string $modelClass Model class to load
      * @param string $fk DB column name in entity used to load referenced model
-     * @param callable $propertyAccessor Callback to access model property used to load referenced entity
+     * @param callable $fkPropertyAccessor Callback to access model property used to load referenced entity
      * @param callable $idPropertyAccessor Callback to get id of loaded entity
      * @param string $pk Primary key of loaded entity
      * @param mixed $id Id of entity to load
@@ -27,24 +27,24 @@ class DataSet
     public function getOneRelated(
         string $modelClass,
         string $fk,
-        callable $propertyAccessor,
+        callable $fkPropertyAccessor,
         callable $idPropertyAccessor,
         string $pk,
         mixed $id
     ): mixed {
-        $cacheKey = $modelClass . '<|' . $fk;
-        if (!isset($this->dataCache[$cacheKey])) {
-            $this->dataCache[$cacheKey] = [];
-            $ids = array_values(array_unique(array_map($propertyAccessor, $this->entities)));
+        $relationKey = $modelClass . '<|' . $fk;
+        if (!isset($this->relatedEntities[$relationKey])) {
+            $this->relatedEntities[$relationKey] = [];
+            $ids = array_values(array_unique(array_map($fkPropertyAccessor, $this->entities)));
             if (count($ids) > 0) {
                 $data = $modelClass::getAll("`$pk` IN ({$this->generatePlaceholders(count($ids))})", $ids);
                 foreach ($data as $row) {
-                    $this->dataCache[$cacheKey][$idPropertyAccessor($row)] = $row;
+                    $this->relatedEntities[$relationKey][$idPropertyAccessor($row)] = $row;
                 }
             }
         }
 
-        return $this->dataCache[$cacheKey][$id] ?? null;
+        return $this->relatedEntities[$relationKey][$id] ?? null;
     }
 
     /**
@@ -66,9 +66,9 @@ class DataSet
         callable $referencedPropertyAccessor,
         mixed $id
     ): array {
-        $cacheKey = $modelClass . '|>' . $fk;
-        if (!isset($this->dataCache[$cacheKey])) {
-            $this->dataCache[$cacheKey] = [];
+        $relationKey = $modelClass . '|>' . $fk;
+        if (!isset($this->relatedEntities[$relationKey])) {
+            $this->relatedEntities[$relationKey] = [];
             $ids = array_values(array_unique(array_map($idPropertyAccessor, $this->entities)));
             if (count($ids) > 0) {
                 $data = $modelClass::getAll(
@@ -76,15 +76,15 @@ class DataSet
                     array_merge($ids, $whereParams)
                 );
                 foreach ($data as $row) {
-                    if (!isset($this->dataCache[$cacheKey][$referencedPropertyAccessor($row)])) {
-                        $this->dataCache[$cacheKey][$referencedPropertyAccessor($row)] = [];
+                    if (!isset($this->relatedEntities[$relationKey][$referencedPropertyAccessor($row)])) {
+                        $this->relatedEntities[$relationKey][$referencedPropertyAccessor($row)] = [];
                     }
-                    $this->dataCache[$cacheKey][$referencedPropertyAccessor($row)][] = $row;
+                    $this->relatedEntities[$relationKey][$referencedPropertyAccessor($row)][] = $row;
                 }
             }
         }
 
-        return $this->dataCache[$cacheKey][$id] ?? [];
+        return $this->relatedEntities[$relationKey][$id] ?? [];
     }
 
     private function generatePlaceholders($count): string

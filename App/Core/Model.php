@@ -4,7 +4,7 @@ namespace App\Core;
 
 use App\Config\Configuration;
 use App\Core\DB\Connection;
-use App\Core\DB\DataSet;
+use App\Core\DB\ResultSet;
 use App\Core\DB\IDbConvention;
 use App\Core\Http\Request;
 use PDO;
@@ -21,7 +21,7 @@ abstract class Model implements \JsonSerializable
     private static array $dbColumns = [];
     private static IDbConvention $dbConventions;
     private mixed $_dbId = null;
-    private ?DataSet $_dataSet = null;
+    private ?ResultSet $_resultSet = null;
 
     /**
      * Returns table name from model class name
@@ -103,11 +103,11 @@ abstract class Model implements \JsonSerializable
             $stmt = Connection::getInstance()->prepare($sql);
             $stmt->execute($whereParams);
             $models = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
-            $dataSet = new DataSet($models);
+            $dataSet = new ResultSet($models);
             /** @var static $model */
             foreach ($models as $model) {
                 $model->_dbId = $model->getIdValue();
-                $model->_dataSet = $dataSet;
+                $model->_resultSet = $dataSet;
             }
             return $models;
         } catch (PDOException $exception) {
@@ -137,6 +137,7 @@ abstract class Model implements \JsonSerializable
             $model = $stmt->fetch() ?: null;
             if ($model != null) {
                 $model->_dbId = $model->getIdValue();
+                $model->_resultSet = new ResultSet([$model]);
             }
             return $model;
         } catch (PDOException $exception) {
@@ -238,19 +239,14 @@ abstract class Model implements \JsonSerializable
     public function getOneRelated(string $modelClass, ?string $refColumn = null)
     {
         $refColumn ??= static::getConventions()->getFkColumn($modelClass);
-
-        if ($this->_dataSet == null) {
-            return $modelClass::getOne($this->{static::toPropertyName($refColumn)});
-        } else {
-            return $this->_dataSet->getOneRelated(
-                $modelClass,
-                self::toPropertyName($refColumn),
-                fn($e) => $e->{self::toPropertyName($refColumn)},
-                fn($e) => $e->getIdValue(),
-                $modelClass::getPkColumnName(),
-                $this->{self::toPropertyName($refColumn)},
-            );
-        }
+        return $this->_resultSet->getOneRelated(
+            $modelClass,
+            self::toPropertyName($refColumn),
+            fn($e) => $e->{self::toPropertyName($refColumn)},
+            fn($e) => $e->getIdValue(),
+            $modelClass::getPkColumnName(),
+            $this->{self::toPropertyName($refColumn)},
+        );
     }
 
     /**
@@ -268,23 +264,15 @@ abstract class Model implements \JsonSerializable
         array $whereParams = []
     ) {
         $refColumn ??= self::getConventions()->getFkColumn(static::class);
-
-        if ($this->_dataSet == null) {
-            return $modelClass::getAll(
-                "WHERE $refColumn = ?" . ($where != null ? " AND ($where)" : ""),
-                array_merge([$this->getIdValue()], $whereParams)
-            );
-        } else {
-            return $this->_dataSet->getAllRelated(
-                $modelClass,
-                $refColumn,
-                $where,
-                $whereParams,
-                fn($e) => $e->getIdValue(),
-                fn($e) => $e->{self::toPropertyName($refColumn)},
-                $this->getIdValue()
-            );
-        }
+        return $this->_resultSet->getAllRelated(
+            $modelClass,
+            $refColumn,
+            $where,
+            $whereParams,
+            fn($e) => $e->getIdValue(),
+            fn($e) => $e->{self::toPropertyName($refColumn)},
+            $this->getIdValue()
+        );
     }
 
     /**
@@ -295,7 +283,7 @@ abstract class Model implements \JsonSerializable
     {
         $properties = get_object_vars($this);
         unset($properties["_dbId"]); //Remove internal object ID
-        unset($properties["_dataSet"]); //Remove dataset
+        unset($properties["_resultSet"]); //Remove resultset
         return $properties;
     }
 
