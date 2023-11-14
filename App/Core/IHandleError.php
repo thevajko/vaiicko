@@ -3,7 +3,7 @@
 namespace App\Core;
 
 use App\Core\Http\HttpException;
-use App\Core\Responses\Response;
+use App\Core\Http\Responses\Response;
 
 /**
  * Must be implemented in custom error handler

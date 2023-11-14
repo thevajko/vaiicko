@@ -4,8 +4,8 @@ namespace App\Controllers;
 
 use App\Config\Configuration;
 use App\Core\ControllerBase;
-use App\Core\Responses\Response;
-use App\Core\Responses\ViewResponse;
+use App\Core\Http\Responses\Response;
+use App\Core\Http\Responses\ViewResponse;
 
 /**
  * Class AuthController

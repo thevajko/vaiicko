@@ -4,9 +4,9 @@ namespace App\Core;
 
 use App\Config\Configuration;
 use App\Core\Http\HttpException;
-use App\Core\Responses\JsonResponse;
-use App\Core\Responses\Response;
-use App\Core\Responses\ViewResponse;
+use App\Core\Http\Responses\JsonResponse;
+use App\Core\Http\Responses\Response;
+use App\Core\Http\Responses\ViewResponse;
 
 class ErrorHandler implements IHandleError
 {

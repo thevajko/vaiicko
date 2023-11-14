@@ -1,6 +1,7 @@
 <?php
 
-$layout = null; //TODO dat toto nastavenie layoutu do dokumentacie!
+$layout = null;
+
 /** @var array $data */
 /** @var \App\Core\Http\HttpException $exception */
 $exception = $data["exception"];

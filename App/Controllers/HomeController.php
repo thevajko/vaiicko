@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\ControllerBase;
-use App\Core\Responses\Response;
+use App\Core\Http\Responses\Response;
 
 /**
  * Class HomeController
@@ -24,7 +24,7 @@ class HomeController extends ControllerBase
 
     /**
      * Example of an action (authorization needed)
-     * @return \App\Core\Responses\Response|\App\Core\Responses\ViewResponse
+     * @return \App\Core\Http\Responses\Response|\App\Core\Http\Responses\ViewResponse
      */
     public function index(): Response
     {
@@ -33,7 +33,7 @@ class HomeController extends ControllerBase
 
     /**
      * Example of an action accessible without authorization
-     * @return \App\Core\Responses\ViewResponse
+     * @return \App\Core\Http\Responses\ViewResponse
      */
     public function contact(): Response
     {

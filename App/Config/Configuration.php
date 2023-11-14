@@ -17,7 +17,7 @@ class Configuration
      * App name
      */
     public const APP_NAME = 'Vaííčko MVC FW';
-    public const FW_VERSION = '2.2';
+    public const FW_VERSION = '3.0 alfa';
 
     /**
      * DB settings

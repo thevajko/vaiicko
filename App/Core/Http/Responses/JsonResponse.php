@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Responses;
+namespace App\Core\Http\Responses;
 
 /**
  * Class JsonResponse
