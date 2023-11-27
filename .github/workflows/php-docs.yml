@@ -1,8 +1,7 @@
-name: documentation
-
+name: Generate PHPDocs
 on:
   push:
-    branches: [ "**" ] #[main]
+    branches: [master]
 
   # Allow running the workflow manually from the Actions tab
   workflow_dispatch:
@@ -26,14 +25,6 @@ jobs:
         uses: actions/checkout@v3
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v1
-      - name: Cache phpDocumentor build files
-        id: phpdocumentor-cache
-        uses: actions/cache@v3
-        with:
-          path: .phpdoc/cache
-          key: ${{ runner.os }}-phpdocumentor-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-phpdocumentor-
       - name: Build with phpDocumentor
         run: docker run --rm --volume "$(pwd):/data" phpdoc/phpdoc:3 run -vv --target docs --cache-folder .phpdoc/cache --template default
       - name: Upload artifact to GitHub Pages
