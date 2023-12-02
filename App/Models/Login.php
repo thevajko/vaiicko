@@ -38,5 +38,17 @@ class Login extends Model
         $this->password = $password;
     }
 
-
+    public static function getByLogin(string $login) : ?Login
+    {
+        //login is unique, should never return more than 1
+        $logins = self::getAll('login=?', [$login]);
+        if (empty($logins))
+        {
+            return null;
+        }
+        else
+        {
+            return $logins[0];
+        }
+    }
 }
