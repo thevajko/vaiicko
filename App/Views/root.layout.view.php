@@ -38,6 +38,7 @@
                 <li class="nav-item"><a href="<?= $link->url("home.rocnik10")?>" class="nav-link">10.ročník</a></li>
                 <?php if (!$auth->isLogged()) : ?>
                 <li class="nav-item"><a href="<?= $link->url("auth.registracia")?>" class="nav-link">Registrácia</a></li>
+                <li class="nav-item"><a href="<?= \App\Config\Configuration::LOGIN_URL ?>" class="nav-link">Prihlásenie</a></li>
                 <?php endif;?>
             </ul>
             <form class="d-flex float-right">
