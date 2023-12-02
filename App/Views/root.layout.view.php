@@ -23,23 +23,25 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="<?= $link->url("home.index")?>">
-        <img src="public/images/logos/mf100_Logo_30x30.png" width="30" height="30" class="d-inline-block align-top" alt="Logo of MF100">
-        Malofatranská stovka
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item"><a href="<?= $link->url("home.index")?>" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="<?= $link->url("home.podakovanie")?>" class="nav-link">Poďakovanie</a></li>
-            <li class="nav-item"><a href="<?= $link->url("home.10-rocnik")?>" class="nav-link">10.ročník</a></li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input id="searchBox" class="form-control mr-sm-2" type="search" placeholder="Vyhľadajte" aria-label="Search">
-            <button id="searchButton" class="btn btn-outline-success my-2 my-sm-0" type="submit">Hľadaj</button>
-        </form>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="<?= $link->url("home.index")?>">
+            <img src="public/images/logos/mf100_Logo_30x30.png" width="30" height="30" class="d-inline-block align-top" alt="Logo of MF100">
+            Malofatranská stovka
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a href="<?= $link->url("home.index")?>" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="<?= $link->url("home.podakovanie")?>" class="nav-link">Poďakovanie</a></li>
+                <li class="nav-item"><a href="<?= $link->url("home.10-rocnik")?>" class="nav-link">10.ročník</a></li>
+            </ul>
+            <form class="form-inline float-right">
+                <input id="searchBox" class="form-control mr-sm-2" type="search" placeholder="Vyhľadajte" aria-label="Search">
+                <button id="searchButton" class="btn btn-outline-success my-2 my-sm-0" type="submit">Hľadaj</button>
+            </form>
+        </div>
     </div>
 </nav>
 <div class="container-fluid mt-3">
