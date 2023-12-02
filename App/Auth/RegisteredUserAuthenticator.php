@@ -21,7 +21,7 @@ class RegisteredUserAuthenticator extends DummyAuthenticator
         {
             return false;
         }
-        else if ($login == $loggedUser && password_verify($password, $loggedUser->getPassword())) {
+        else if (password_verify($password, $loggedUser->getPassword())) {
             $_SESSION['user'] = $loggedUser->getLogin();
             return true;
         } else {
