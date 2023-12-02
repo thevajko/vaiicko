@@ -97,7 +97,6 @@
                                     </div>
                                     <span id="error" class="alert alert-danger" hidden></span>
                                     <div class="d-flex justify-content-end pt-3">
-                                        <button id="resetButton" type="button" class="btn btn-light btn-lg">Vymazať</button>
                                         <button id="submitButton" type="submit" class="btn btn-warning btn-lg ms-2">Registrovať</button>
                                     </div>
                                 </div>
