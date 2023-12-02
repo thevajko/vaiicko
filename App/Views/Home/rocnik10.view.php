@@ -1,7 +1,7 @@
 <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
     <div class="col-md-5 p-lg-5 mx-auto my-5">
-        <h1 class="display-4 font-weight-normal">10. Ročník</h1>
-        <p class="lead font-weight-normal">10. ročník Malofatranskej stovky sa uskutoční <br> 29. - 30. júna 2024.</p>
+        <h1 class="header">10. Ročník</h1>
+        <p class="lead fw-normal">10. ročník Malofatranskej stovky sa uskutoční <br> 29. - 30. júna 2024.</p>
         <a class="btn btn-outline-secondary" href="https://www.youtube.com/watch?v=DMHxEmNdOMg&t=3s" target="_blank">MALOFATRANSKÁ STOVKA - krátka pozvánka </a>
     </div>
     <div class="product-device box-shadow d-none d-md-block"></div>
@@ -11,18 +11,18 @@
 <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
     <div class="outside bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
         <div class="my-3 py-3">
-            <h2 class="display-5">GPS zariadenie</h2>
-            <p class="lead"> Možnosť prenájmu GPS zariadenia pre sledovanie pohybu.</p>
+            <h2 class="fw-normal">GPS zariadenie</h2>
+            <p class="lead fw-normal"> Možnosť prenájmu GPS zariadenia pre sledovanie pohybu.</p>
         </div>
         <div class="content bg-light box-shadow mx-auto text-dark">
-            <div class="images row align-items-center">
+            <div class="images align-items-center">
                 <a class="" href="https://www.vysledkovyservis.sk/" target="_blank">
-                    <img class="img-fluid" src="/images/logos/partners/VysledkovyServis_Logo.png"
+                    <img class="img-fluid" src="public/images/logos/partners/VysledkovyServis_Logo.png"
                          alt="">
                 </a>
-                <img class="img-fluid" src="../images/GPSZariadenie.png" alt="Gps zariadenie">
+                <img class="img-fluid" src="public/images/GPSZariadenie.png" alt="Gps zariadenie">
             </div>
-            <div class="features row">
+            <div class="features">
                 <ul>
                     <li>
                         Zapožičanie GPS zariadenia poskytuje niekoľko výhod, ktoré urobia Váš zážitok z účasti na MF100
@@ -45,8 +45,8 @@
 
     <div class="outside bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
         <div class="my-3 p-3">
-            <h2 class="display-5">Zľavy</h2>
-            <p class="lead">Zľavy zo štartovného na základe ITRA Performance Index (kategória GENERAL)</p>
+            <h2 class="fw-normal">Zľavy</h2>
+            <p class="lead fw-normal">Zľavy zo štartovného na základe ITRA Performance Index (kategória GENERAL)</p>
         </div>
         <div class="content bg-dark box-shadow mx-auto text-light">
             <h3>Muži</h3>
@@ -78,15 +78,15 @@
 <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
     <div class="outside bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
         <div class="my-3 p-3">
-            <h2 class="display-5">FUNKČNÁ ČELENKA</h2>
-            <p class="lead">Funkčná jednovrstvová čelenka s rezanými okrajmi a jemne počesaným bielym vnútrom. </p>
+            <h2 class="fw-normal">FUNKČNÁ ČELENKA</h2>
+            <p class="lead fw-normal">Funkčná jednovrstvová čelenka s rezanými okrajmi a jemne počesaným bielym vnútrom. </p>
         </div>
         <div class="content bg-light box-shadow mx-auto text-dark">
-            <div class="images row align-items-center">
-                <img class="row img-fluid" src="../images/Sportcool2Celenky.jpg" alt="Dve celenky sportcool">
-                <img class="row img-fluid" src="../images/SportcoolCelenkaDetail.jpg" alt="Detail na celenku Sportcool">
+            <div class="images align-items-center">
+                <img class="img-fluid" src="public/images/Sportcool2Celenky.jpg" alt="Dve celenky sportcool">
+                <img class="img-fluid" src="public/images/SportcoolCelenkaDetail.jpg" alt="Detail na celenku Sportcool">
             </div>
-            <div class="features row">
+            <div class="features">
                 <ul>
                     <li>
                         Je vyrobená zo strečového materiálu, ktorý poskytuje optimálnu tepelnú reguláciu a
@@ -100,7 +100,7 @@
                     </li>
                     <li>
                         <a href="https://sportcool.sk/" target="_blank">
-                            <img class="img-fluid" src="../images/logos/partners/Sportcool_Logo.jpg" alt="Sportcool logo">
+                            <img class="img-fluid" src="public/images/logos/partners/Sportcool_Logo.jpg" alt="Sportcool logo">
                         </a>
                     </li>
                 </ul>
@@ -110,15 +110,15 @@
 
     <div class="outside bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
         <div class="my-3 py-3">
-            <h2 class="display-5">FUNKČNÁ ČIAPKA</h2>
-            <p class="lead">Ľahká funkčná čiapka s dvojvrstvovým lemom a jemne počesaným vnútrom. </p>
+            <h2 class="fw-normal">FUNKČNÁ ČIAPKA</h2>
+            <p class="lead fw-normal">Ľahká funkčná čiapka s dvojvrstvovým lemom a jemne počesaným vnútrom. </p>
         </div>
         <div class="content bg-light box-shadow mx-auto text-dark">
-            <div class="images row align-items-center">
-                <img class="row img-fluid" src="../images/Sportcool2Ciapky.jpg" alt="Dve celenky sportcool">
-                <img class="row img-fluid" src="../images/SportcoolCiapkaDetail.jpg" alt="Detail na celenku Sportcool">
+            <div class="images align-items-center">
+                <img class="img-fluid" src="public/images/Sportcool2Ciapky.jpg" alt="Dve celenky sportcool">
+                <img class="img-fluid" src="public/images/SportcoolCiapkaDetail.jpg" alt="Detail na celenku Sportcool">
             </div>
-            <div class="features row">
+            <div class="features">
                 <ul>
                     <li>
                         Je vyrobená zo strečového materiálu, ktorý poskytuje optimálnu tepelnú reguláciu a
@@ -129,7 +129,7 @@
                     </li>
                     <li>
                         <a href="https://sportcool.sk/" target="_blank">
-                            <img class="img-fluid" src="../images/logos/partners/Sportcool_Logo.jpg" alt="Sportcool logo">
+                            <img class="img-fluid" src="public/images/logos/partners/Sportcool_Logo.jpg" alt="Sportcool logo">
                         </a>
                     </li>
                 </ul>

@@ -1,10 +1,15 @@
 h1 {
-    margin: 5% 2%;
-    font-size: 3em;
     color: green;
     text-align: center;
     justify-content: center;
+    font-size: 3em;
 }
+
+h2 {
+    text-align: center;
+    justify-content: center;
+}
+
 p a {
     color: mediumseagreen;
     text-decoration: underline;
@@ -25,15 +30,6 @@ p a {
 .partners {
     margin-right: 1%;
     margin-left: 1%;
-}
-
-h2 {
-    padding: 3% 2%;
-    background-color: lightgrey;
-    font-size: 1.3em;
-    text-align: center;
-    justify-content: center;
-    width: 100%;
 }
 
 .bg-light h2 {
