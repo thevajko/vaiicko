@@ -127,34 +127,34 @@
 
         <div class="row">
             <a class="col" href="https://www.hsvf.sk/" target="_blank">
-                <img class="img-fluid w-100" src="../images/logos/partners/HorskaSluzbaVelkaFatra_Logo.jpg"
+                <img class="img-fluid w-100" src="public/images/logos/partners/HorskaSluzbaVelkaFatra_Logo.jpg"
                      alt="Logo Horskej Sluzby Velka Fatra">
             </a>
 
             <a class="col" href="http://www.horskasluzba.com/" target="_blank">
-                <img class="img-fluid w-100" src="../images/logos/partners/HorskaSluzbaMalaFatra_Logo.png"
+                <img class="img-fluid w-100" src="public/images/logos/partners/HorskaSluzbaMalaFatra_Logo.png"
                      alt="Logo Horskej Sluzby Mala Fatra">
             </a>
             <div class="col">
                 <a class="row" href="https://www.obecfackov.sk/" target="_blank">
-                    <img class="img-fluid w-100"  src="../images/logos/partners/ObecFackov_Logo.jpg"
+                    <img class="img-fluid w-100"  src="public/images/logos/partners/ObecFackov_Logo.jpg"
                          alt="">
                 </a>
 
                 <a class="row" href="https://www.lipovec.sk/" target="_blank">
-                    <img class="img-fluid w-100" src="../images/logos/partners/ObecLipovec_Logo.jpg"
+                    <img class="img-fluid w-100" src="public/images/logos/partners/ObecLipovec_Logo.jpg"
                          alt="">
                 </a>
             </div>
         </div>
         <div class="row">
             <a class="col" href="https://trailcentrum.sk/" target="_blank">
-                <img class="img-fluid" src="../images/logos/partners/TrailCentrum_Logo.jpg"
+                <img class="img-fluid" src="public/images/logos/partners/TrailCentrum_Logo.jpg"
                      alt="">
             </a>
 
             <a class="col" href="https://www.svetbehu.cz/" target="_blank">
-                <img class="img-fluid" src="../images/logos/partners/SvetBehu_Logo.png"
+                <img class="img-fluid" src="public/images/logos/partners/SvetBehu_Logo.png"
                      alt="">
             </a>
         </div>
