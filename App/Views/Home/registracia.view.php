@@ -1,4 +1,4 @@
-<script src="public/js/formCheck.js"></script>
+<script src="public/js/formCheck.js" defer></script>
 <section class="h-100 bg-dark">
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
@@ -74,7 +74,7 @@
 
                                         <div class="col-md-6 mb-4">
                                             <div class="form-outline">
-                                                <input type="text" id="postalCode" class="form-control form-control-lg" required/>
+                                                <input type="text" pattern="\d{3}[ ]?\d{2}" id="postalCode" class="form-control form-control-lg" required/>
                                                 <label class="form-label" for="postalCode">PSČ</label>
                                             </div>
                                         </div>
@@ -95,7 +95,7 @@
                                         <input type="password" id="passwordRepeat" class="form-control form-control-lg" required/>
                                         <label class="form-label" for="passwordRepeat">Zopakujte heslo</label>
                                     </div>
-
+                                    <span id="error" class="alert alert-danger" hidden></span>
                                     <div class="d-flex justify-content-end pt-3">
                                         <button id="resetButton" type="button" class="btn btn-light btn-lg">Vymazať</button>
                                         <button id="submitButton" type="submit" class="btn btn-warning btn-lg ms-2">Registrovať</button>
