@@ -6,7 +6,7 @@ CREATE TABLE logins
     PRIMARY KEY (id)
 );
 
-CREATE TABLE personalDetails
+CREATE TABLE personaldetails
 (
     id         int(11)      NOT NULL AUTO_INCREMENT,
     email      varchar(254) NOT NULL UNIQUE,
@@ -31,7 +31,7 @@ CREATE TABLE runners
     foreign key (logins_id)
         references logins (id),
     foreign key (personalDetails_id)
-        references logins (id)
+        references personaldetails (id)
 );
 
 CREATE TABLE admins
@@ -50,3 +50,8 @@ CREATE TABLE admins
 #
 # insert into admins(logins_id)
 # values (1);
+
+# drop table admins;
+# drop table runners;
+# drop table personaldetails;
+# drop table logins;
