@@ -35,7 +35,7 @@ class HomeController extends AControllerBase
      * Example of an action accessible without authorization
      * @return \App\Core\Responses\ViewResponse
      */
-    public function contact(): Response
+    public function rocnik10(): Response
     {
         return $this->html();
     }

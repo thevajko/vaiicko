@@ -35,7 +35,7 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a href="<?= $link->url("home.index")?>" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="<?= $link->url("home.podakovanie")?>" class="nav-link">Poďakovanie</a></li>
-                <li class="nav-item"><a href="<?= $link->url("home.10-rocnik")?>" class="nav-link">10.ročník</a></li>
+                <li class="nav-item"><a href="<?= $link->url("home.rocnik10")?>" class="nav-link">10.ročník</a></li>
             </ul>
             <form class="d-flex float-right">
                 <input id="searchBox" class="form-control me-2" type="search" placeholder="Vyhľadajte" aria-label="Search">
