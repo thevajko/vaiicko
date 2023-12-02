@@ -8,8 +8,8 @@
     <!-- Main content -->
     <div class="row">
         <div class="logos col-3 d-none d-sm-block">
-            <img class="img-fluid row" src="../images/logos/ITRA_Logo.png" alt="Logo spoločnosti ITRA">
-            <img class="img-fluid row" src="../images/logos/SlovakUltraTrail_Logo.png" alt="Logo spoločnosti Sovak Ultra Trail">
+            <img class="img-fluid row" src="public/images/logos/ITRA_Logo.png" alt="Logo spoločnosti ITRA">
+            <img class="img-fluid row" src="public/images/logos/SlovakUltraTrail_Logo.png" alt="Logo spoločnosti Sovak Ultra Trail">
         </div>
         <div class="col">
             <div class="header row justify-content-md-center">
