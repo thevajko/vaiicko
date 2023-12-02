@@ -1,7 +1,7 @@
 CREATE TABLE logins
 (
     id       int(11)      NOT NULL AUTO_INCREMENT,
-    login    varchar(254) NOT NULL,
+    login    varchar(254) NOT NULL UNIQUE,
     password varchar(100) NOT NULL,
     PRIMARY KEY (id)
 );
@@ -9,7 +9,7 @@ CREATE TABLE logins
 CREATE TABLE personalDetails
 (
     id         int(11)      NOT NULL AUTO_INCREMENT,
-    email      varchar(254) NOT NULL,
+    email      varchar(254) NOT NULL UNIQUE,
     name       varchar(35)  NOT NULL,
     surname    varchar(35)  NOT NULL,
     gender     varchar(10)  NOT NULL,
