@@ -1,7 +1,71 @@
-.navbar {
-    border-bottom: 1px solid grey;
+h1 {
+    margin: 5% 2%;
+    font-size: 3em;
+    color: green;
+    text-align: center;
+    justify-content: center;
+}
+p a {
+    color: mediumseagreen;
+    text-decoration: underline;
 }
 
-.navbar-brand img {
-    width: 50px;
+.description {
+    margin: 2%;
+}
+.volunteers {
+    margin-right: 1%;
+    margin-left: 1%;
+}
+
+.partners {
+    margin-right: 1%;
+    margin-left: 1%;
+}
+
+h2 {
+    padding: 3% 2%;
+    background-color: lightgrey;
+    font-size: 1.3em;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.bg-light h2 {
+    color: green;
+}
+
+.content a {
+    color: mediumseagreen;
+    text-decoration: underline;
+}
+
+.features {
+    padding: 1em;
+    text-align: start;
+}
+
+.content {
+    padding: 1em;
+    width: auto;
+    height: auto;
+    border-radius: 21px 21px 0 0;
+}
+
+.outside {
+    width: auto;
+}
+
+.images {
+    padding: 1em;
+    justify-content: center;
+}
+
+.images img {
+    padding: 1em;
+}
+
+.bg-dark {
+    background-color: green !important;
 }
