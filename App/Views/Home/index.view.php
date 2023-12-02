@@ -1,7 +1,7 @@
-<div class="container">
+<div class="container-fluid">
     <!-- Video -->
     <div class="row">
-        <div class="promotional_video embed-responsive embed-responsive-16by9">
+        <div class="promotional_video embed-responsive embed-responsive-16by9 ratio ratio-16x9">
             <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/DMHxEmNdOMg?rel=0" ></iframe>
         </div>
     </div>
