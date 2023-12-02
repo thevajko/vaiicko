@@ -45,8 +45,8 @@ CREATE TABLE admins
         references logins (id)
 );
 
-insert into logins(login, password)
-values ('admin', 'admin');
-
-insert into admins(logins_id)
-values (1);
+# insert into logins(login, password)
+# values ('admin', 'admin');
+#
+# insert into admins(logins_id)
+# values (1);
