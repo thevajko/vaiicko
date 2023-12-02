@@ -8,6 +8,9 @@ use App\Core\HTTPException;
 use App\Core\LinkGenerator;
 use App\Core\Responses\Response;
 use App\Core\Responses\ViewResponse;
+use App\Models\Login;
+use App\Models\PersonalDetail;
+use App\Models\Runner;
 use DateTime;
 use Exception;
 
@@ -67,20 +70,41 @@ class AuthController extends AControllerBase
     public function register() : Response
     {
         $formData = $this->app->getRequest()->getPost();
-        if ($this->checkForm($formData)
-        ) {
-            $name = $formData['name'];
-            $surname = $formData['surname'];
-            $gender = $formData['gender'];
-            $birthDate = $formData['birthDate'];
-            $street = $formData['street'];
-            $city = $formData['city'];
-            $postalCode = $formData['postalCode'];
-            $email = $formData['email'];
-            $password = $formData['password'];
+        if ($this->checkForm($formData))
+        {
+            $name = strip_tags($formData['name']);
+            $surname = strip_tags($formData['surname']);
+            $gender = strip_tags($formData['gender']);
+            $birthDate = DateTime::createFromFormat('Y-m-d', $formData['birthDate']);
+            $street = strip_tags($formData['street']);
+            $city = strip_tags($formData['city']);
+            $postalCode = str_replace(" ", "", $formData['postalCode']);
+            $email = strip_tags($formData['email']);
+            $password = htmlspecialchars($formData['password']);
+
+            $login = new Login();
+            $login->setLogin($email);
+            $login->setPassword(password_hash($password, PASSWORD_DEFAULT));
+            $login->save();
+
+            $personalDetail = new PersonalDetail();
+            $personalDetail->setName($name);
+            $personalDetail->setSurname($surname);
+            $personalDetail->setGender($gender);
+            $personalDetail->setBirthDate($birthDate);
+            $personalDetail->setStreet($street);
+            $personalDetail->setCity($city);
+            $personalDetail->setPostalCode($postalCode);
+            $personalDetail->setEmail($email);
+            $personalDetail->save();
+
+            $runner = new Runner();
+            $runner->setLoginsId($login->getId());
+            $runner->setPersonalDetailsId($personalDetail->getId());
+            $runner->save();
         }
         else {
-            throw new HTTPException(400, "Missing parameter");
+            throw new HTTPException(400, "Bad request");
         }
 
         return $this->html(LinkGenerator::url("auth.login"));
