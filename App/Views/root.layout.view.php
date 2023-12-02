@@ -23,7 +23,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="home.html">
+    <a class="navbar-brand" href="<?= $link->url("home.index")?>">
         <img src="public/images/logos/mf100_Logo_30x30.png" width="30" height="30" class="d-inline-block align-top" alt="Logo of MF100">
         Malofatranská stovka
     </a>
@@ -32,7 +32,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active"><a href="<?= $link->url("home.index")?>" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="<?= $link->url("home.index")?>" class="nav-link">Home</a></li>
             <li class="nav-item"><a href="<?= $link->url("home.podakovanie")?>" class="nav-link">Poďakovanie</a></li>
             <li class="nav-item"><a href="<?= $link->url("home.10-rocnik")?>" class="nav-link">10.ročník</a></li>
         </ul>
