@@ -1,3 +1,7 @@
+<?php
+/** @var \App\Core\LinkGenerator $link */
+?>
+
 <script src="public/js/formCheck.js" defer></script>
 <section class="h-100 bg-dark">
     <div class="container py-5 h-100">
@@ -11,7 +15,7 @@
                                  style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
                         </div>
                         <div class="col-xl-6">
-                            <form id="runnerForm" class="row g-3 needs-validation">
+                            <form id="runnerForm" class="row g-3 needs-validation" method="post" action="<?= $link->url("register") ?>">
                                 <div class="card-body p-md-5 text-black">
                                     <h3 class="mb-5 text-uppercase">Registácia bežca</h3>
 
@@ -97,7 +101,7 @@
                                     </div>
                                     <span id="error" class="alert alert-danger" hidden></span>
                                     <div class="d-flex justify-content-end pt-3">
-                                        <button id="submitButton" type="submit" class="btn btn-warning btn-lg ms-2">Registrovať</button>
+                                        <button name="submit" id="submitButton" type="submit" class="btn btn-warning btn-lg ms-2">Registrovať</button>
                                     </div>
                                 </div>
                             </form>

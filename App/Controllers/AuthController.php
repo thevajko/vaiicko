@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Config\Configuration;
 use App\Core\AControllerBase;
+use App\Core\DB\Connection;
 use App\Core\HTTPException;
 use App\Core\LinkGenerator;
 use App\Core\Responses\Response;
@@ -82,32 +83,31 @@ class AuthController extends AControllerBase
             $email = strip_tags($formData['email']);
             $password = htmlspecialchars($formData['password']);
 
-            $login = new Login();
-            $login->setLogin($email);
-            $login->setPassword(password_hash($password, PASSWORD_DEFAULT));
-            $login->save();
+            $newLogin = new Login();
+            $newLogin->setLogin($email);
+            $newLogin->setPassword(password_hash($password, PASSWORD_DEFAULT));
+            $newLogin->save();
 
-            $personalDetail = new PersonalDetail();
-            $personalDetail->setName($name);
-            $personalDetail->setSurname($surname);
-            $personalDetail->setGender($gender);
-            $personalDetail->setBirthDate($birthDate);
-            $personalDetail->setStreet($street);
-            $personalDetail->setCity($city);
-            $personalDetail->setPostalCode($postalCode);
-            $personalDetail->setEmail($email);
-            $personalDetail->save();
+            $newPersonalDetail = new PersonalDetail();
+            $newPersonalDetail->setName($name);
+            $newPersonalDetail->setSurname($surname);
+            $newPersonalDetail->setGender($gender);
+            $newPersonalDetail->setBirthDate($birthDate);
+            $newPersonalDetail->setStreet($street);
+            $newPersonalDetail->setCity($city);
+            $newPersonalDetail->setPostalCode($postalCode);
+            $newPersonalDetail->setEmail($email);
+            $newPersonalDetail->save();
 
             $runner = new Runner();
-            $runner->setLoginsId($login->getId());
-            $runner->setPersonalDetailsId($personalDetail->getId());
+            $runner->setLoginsId($newLogin->getId());
+            $runner->setPersonalDetailsId($newPersonalDetail->getId());
             $runner->save();
         }
         else {
             throw new HTTPException(400, "Bad request");
         }
-
-        return $this->html(LinkGenerator::url("auth.login"));
+        return $this->redirect($this->url("auth.login"));
     }
 
     private function checkForm($formData) : bool
@@ -127,8 +127,7 @@ class AuthController extends AControllerBase
             return false;
         }
 
-        if (empty($formData['submit'])
-            || empty($formData['name'])
+        if (empty($formData['name'])
             || empty($formData['surname'])
             || empty($formData['gender'])
             || empty($formData['birthDate'])
@@ -143,7 +142,7 @@ class AuthController extends AControllerBase
         }
 
         $gender = $formData['gender'];
-        if ($gender != "female" || $gender != "male" || $gender != "other")
+        if ($gender !== "female" && $gender !== "male" && $gender !== "other")
         {
             return false;
         }
