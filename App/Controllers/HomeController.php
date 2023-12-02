@@ -45,8 +45,4 @@ class HomeController extends AControllerBase
         return $this->html();
     }
 
-    public function registracia() : Response
-    {
-        return $this->html();
-    }
 }
