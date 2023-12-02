@@ -18,13 +18,13 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-4">
                                             <div class="form-outline">
-                                                <input type="text" id="name" class="form-control form-control-lg" required/>
+                                                <input name="name" type="text" id="name" class="form-control form-control-lg" required/>
                                                 <label class="form-label" for="name">Meno</label>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-4">
                                             <div class="form-outline">
-                                                <input type="text" id="surname" class="form-control form-control-lg" required/>
+                                                <input name="surname" type="text" id="surname" class="form-control form-control-lg" required/>
                                                 <label class="form-label" for="surname">Priezvisko</label>
                                             </div>
                                         </div>
@@ -35,46 +35,46 @@
                                         <h6 class="mb-0 me-4">Pohlavie: </h6>
 
                                         <div class="form-check form-check-inline mb-0 me-4">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="femaleGender"
-                                                   value="option1" required/>
+                                            <input name="gender" class="form-check-input" type="radio" id="femaleGender"
+                                                   value="female" required/>
                                             <label class="form-check-label" for="femaleGender">Žena</label>
                                         </div>
 
                                         <div class="form-check form-check-inline mb-0 me-4">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="maleGender"
-                                                   value="option2" required/>
+                                            <input name="gender" class="form-check-input" type="radio" id="maleGender"
+                                                   value="male" required/>
                                             <label class="form-check-label" for="maleGender">Muž</label>
                                         </div>
 
                                         <div class="form-check form-check-inline mb-0">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="otherGender"
-                                                   value="option3" required/>
+                                            <input name="gender" class="form-check-input" type="radio" id="otherGender"
+                                                   value="other" required/>
                                             <label class="form-check-label" for="otherGender">Iné</label>
                                         </div>
 
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input type="date" id="birthDate" class="form-control form-control-lg" required/>
+                                        <input name="birthDate" type="date" id="birthDate" class="form-control form-control-lg" required/>
                                         <label class="form-label" for="birthDate">Dátum narodenia</label>
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input type="text" id="street" class="form-control form-control-lg" required/>
+                                        <input name="street" type="text" id="street" class="form-control form-control-lg" required/>
                                         <label class="form-label" for="street">Ulica</label>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6 mb-4">
                                             <div class="form-outline">
-                                                <input type="text" id="city" class="form-control form-control-lg" required/>
+                                                <input name="city" type="text" id="city" class="form-control form-control-lg" required/>
                                                 <label class="form-label" for="city">Mesto</label>
                                             </div>
                                         </div>
 
                                         <div class="col-md-6 mb-4">
                                             <div class="form-outline">
-                                                <input type="text" pattern="\d{3}[ ]?\d{2}" id="postalCode" class="form-control form-control-lg" required/>
+                                                <input name="postalCode" type="text" pattern="\d{3}[ ]?\d{2}" id="postalCode" class="form-control form-control-lg" required/>
                                                 <label class="form-label" for="postalCode">PSČ</label>
                                             </div>
                                         </div>
@@ -82,12 +82,12 @@
 
 
                                     <div class="form-outline mb-4">
-                                        <input type="email" id="email" class="form-control form-control-lg" required/>
+                                        <input name="email" type="email" id="email" class="form-control form-control-lg" required/>
                                         <label class="form-label" for="email">Email</label>
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input type="password" id="password" class="form-control form-control-lg" required/>
+                                        <input name="password" type="password" id="password" class="form-control form-control-lg" required/>
                                         <label class="form-label" for="password">Heslo</label>
                                     </div>
 
