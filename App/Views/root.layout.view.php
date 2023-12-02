@@ -37,9 +37,9 @@
                 <li class="nav-item"><a href="<?= $link->url("home.podakovanie")?>" class="nav-link">Poďakovanie</a></li>
                 <li class="nav-item"><a href="<?= $link->url("home.10-rocnik")?>" class="nav-link">10.ročník</a></li>
             </ul>
-            <form class="form-inline float-right">
-                <input id="searchBox" class="form-control mr-sm-2" type="search" placeholder="Vyhľadajte" aria-label="Search">
-                <button id="searchButton" class="btn btn-outline-success my-2 my-sm-0" type="submit">Hľadaj</button>
+            <form class="d-flex float-right">
+                <input id="searchBox" class="form-control me-2" type="search" placeholder="Vyhľadajte" aria-label="Search">
+                <button id="searchButton" class="btn btn-outline-success" type="submit">Hľadaj</button>
             </form>
         </div>
     </div>
