@@ -11,42 +11,21 @@
                                  style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
                         </div>
                         <div class="col-xl-6">
-                            <form class="row g-3 needs-validation">
+                            <form id="runnerForm" class="row g-3 needs-validation">
                                 <div class="card-body p-md-5 text-black">
                                     <h3 class="mb-5 text-uppercase">Registácia bežca</h3>
 
                                     <div class="row">
                                         <div class="col-md-6 mb-4">
                                             <div class="form-outline">
-                                                <input type="text" id="meno" class="form-control form-control-lg" required/>
-                                                <label class="form-label" for="meno">Meno</label>
+                                                <input type="text" id="name" class="form-control form-control-lg" required/>
+                                                <label class="form-label" for="name">Meno</label>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-4">
                                             <div class="form-outline">
-                                                <input type="text" id="priezvisko" class="form-control form-control-lg" required/>
-                                                <label class="form-label" for="priezvisko">Priezvisko</label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-outline mb-4">
-                                        <input type="text" id="ulica" class="form-control form-control-lg" required/>
-                                        <label class="form-label" for="ulica">Ulica</label>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-outline">
-                                                <input type="text" id="mesto" class="form-control form-control-lg" required/>
-                                                <label class="form-label" for="mesto">Mesto</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-outline">
-                                                <input type="text" id="psc" class="form-control form-control-lg" required/>
-                                                <label class="form-label" for="psc">PSČ</label>
+                                                <input type="text" id="surname" class="form-control form-control-lg" required/>
+                                                <label class="form-label" for="surname">Priezvisko</label>
                                             </div>
                                         </div>
                                     </div>
@@ -56,33 +35,70 @@
                                         <h6 class="mb-0 me-4">Pohlavie: </h6>
 
                                         <div class="form-check form-check-inline mb-0 me-4">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="zena"
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="femaleGender"
                                                    value="option1" required/>
-                                            <label class="form-check-label" for="zena">Žena</label>
+                                            <label class="form-check-label" for="femaleGender">Žena</label>
                                         </div>
 
                                         <div class="form-check form-check-inline mb-0 me-4">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="muz"
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="maleGender"
                                                    value="option2" required/>
-                                            <label class="form-check-label" for="muz">Muž</label>
+                                            <label class="form-check-label" for="maleGender">Muž</label>
                                         </div>
 
                                         <div class="form-check form-check-inline mb-0">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="ine"
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="otherGender"
                                                    value="option3" required/>
-                                            <label class="form-check-label" for="ine">Iné</label>
+                                            <label class="form-check-label" for="otherGender">Iné</label>
                                         </div>
 
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input type="text" id="email" class="form-control form-control-lg" required/>
+                                        <input type="date" id="birthDate" class="form-control form-control-lg" required/>
+                                        <label class="form-label" for="birthDate">Dátum narodenia</label>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <input type="text" id="street" class="form-control form-control-lg" required/>
+                                        <label class="form-label" for="street">Ulica</label>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <input type="text" id="city" class="form-control form-control-lg" required/>
+                                                <label class="form-label" for="city">Mesto</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <input type="text" id="postalCode" class="form-control form-control-lg" required/>
+                                                <label class="form-label" for="postalCode">PSČ</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-outline mb-4">
+                                        <input type="email" id="email" class="form-control form-control-lg" required/>
                                         <label class="form-label" for="email">Email</label>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <input type="password" id="password" class="form-control form-control-lg" required/>
+                                        <label class="form-label" for="password">Heslo</label>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <input type="password" id="passwordRepeat" class="form-control form-control-lg" required/>
+                                        <label class="form-label" for="passwordRepeat">Zopakujte heslo</label>
                                     </div>
 
                                     <div class="d-flex justify-content-end pt-3">
                                         <button id="resetButton" type="button" class="btn btn-light btn-lg">Vymazať</button>
-                                        <button id="submitButton" type="submit" class="btn btn-warning btn-lg ms-2">Potvrdiť</button>
+                                        <button id="submitButton" type="submit" class="btn btn-warning btn-lg ms-2">Registrovať</button>
                                     </div>
                                 </div>
                             </form>
