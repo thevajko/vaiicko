@@ -39,4 +39,9 @@ class HomeController extends AControllerBase
     {
         return $this->html();
     }
+
+    public function podakovanie() : Response
+    {
+        return $this->html();
+    }
 }
