@@ -176,7 +176,7 @@ abstract class Model implements \JsonSerializable
     public static function getDbColumns(): array
     {
         if (self::$dbColumns != null) {
-            return self::$dbColumns;
+            //return self::$dbColumns;
         }
         self::connect();
         try {
