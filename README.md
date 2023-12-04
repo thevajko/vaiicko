@@ -7,7 +7,7 @@ najmenší a najjednoduchší.
 # Návod a dokumentácia
 
 Kód frameworku je kompletne okomentovaný. V prípade, že na pochopenie potrebujete dodatočné informácie,
-navštívte [WIKI stránky](https://github.com/thevajko/vaiicko/wiki/00-%C3%9Avodn%C3%A9-inform%C3%A1cie).
+navštívte [WIKI stránky](https://github.com/thevajko/vaiicko/wiki).
 
 # Docker
 
