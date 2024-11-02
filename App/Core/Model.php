@@ -250,6 +250,31 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
+     * Executes a raw SQL query and returns the result.
+     *
+     * This method is designed to run custom SQL queries that may not fit the standard CRUD operations provided
+     * by the model. It prepares and executes the query securely using parameter binding to prevent SQL injection.
+     *
+     * @param string $sql The raw SQL query to be executed.
+     * @param array $bindParams An associative array of parameters to bind to the SQL query.
+     *                          Keys should match the named placeholders in the SQL statement.
+     * @return array The result set as an array of associative arrays, with each associative array
+     *               representing a row from the result. If no rows are returned, an empty array is returned.
+     * @throws Exception If there is an error executing the SQL query, an Exception is thrown with
+     *                   the PDOException's message for easier debugging.
+     */
+    public static function executeRawSQL(string $sql, array $bindParams = []): array
+    {
+        try {
+            $stmt = Connection::getInstance()->prepare($sql);
+            $stmt->execute($bindParams);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $exception) {
+            throw new Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
+        }
+    }
+
+    /**
      * Default implementation of the JSON serialize method. Converts the model's properties to an array for JSON
      * serialization, excluding the internal `_dbId` property.
      *

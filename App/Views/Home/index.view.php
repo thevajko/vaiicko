@@ -3,7 +3,7 @@
         <div class="col mt-5">
             <div class="text-center">
                 <h2>Vaííčko MVC FW</h2>
-                <h3>Verzia <?= \App\Config\Configuration::FW_VERSION ?></h3>
+                <h3>Version <?= \App\Config\Configuration::FW_VERSION ?></h3>
                 <img src="public/images/vaiicko_logo.png">
                 <p>
                     Congratulations, you have successfully installed and run the framework

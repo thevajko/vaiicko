@@ -21,7 +21,7 @@ use PDOException;
  */
 class Connection
 {
-    private static Connection $instance;
+    private static ?Connection $instance = null;
     private static array $log = [];
     private PDO $db;
 
@@ -31,7 +31,7 @@ class Connection
      *
      * @param PDO $db The PDO instance representing the database connection.
      */
-    public function __construct($db)
+    public function __construct(PDO $db)
     {
         $this->db = $db;
     }
