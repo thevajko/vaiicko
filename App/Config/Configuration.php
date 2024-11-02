@@ -17,14 +17,14 @@ use App\Core\ErrorHandler;
 class Configuration
 {
     /**
-     * Application name displayed in the UI and logs.
+     * Application name.
      */
     public const APP_NAME = 'Vaííčko MVC FW';
 
     /**
      * Version of the framework being used.
      */
-    public const FW_VERSION = '2.2';
+    public const FW_VERSION = '3.0 RC1';
 
     /**
      * Database connection settings.

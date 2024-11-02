@@ -6,9 +6,9 @@ use App\Config\Configuration;
 use App\Core\DB\Connection;
 use App\Core\Http\HttpException;
 use App\Core\Http\Request;
+use App\Core\Http\Responses\RedirectResponse;
+use App\Core\Http\Responses\Response;
 use App\Core\Http\Session;
-use App\Core\Responses\RedirectResponse;
-use App\Core\Responses\Response;
 
 /**
  * Class App

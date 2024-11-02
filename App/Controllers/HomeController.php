@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\ControllerBase;
-use App\Core\Responses\Response;
+use App\Core\Http\Responses\Response;
 
 /**
  * Class HomeController
