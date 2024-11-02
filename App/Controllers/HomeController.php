@@ -44,7 +44,8 @@ class HomeController extends ControllerBase
     /**
      * Displays the contact page.
      *
-     * This action serves the HTML view for the contact page, which is accessible to all users without any authorization.
+     * This action serves the HTML view for the contact page, which is accessible to all users without any
+     * authorization.
      *
      * @return Response The response object containing the rendered HTML for the contact page.
      */

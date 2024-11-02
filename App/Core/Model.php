@@ -98,7 +98,7 @@ abstract class Model implements \JsonSerializable
         ?string $orderBy = null,
         ?int $limit = null,
         ?int $offset = null
-    ): array  {
+    ): array {
         try {
             $sql = "SELECT " . self::getDBColumnNamesList() . " FROM `" . static::getTableName() . "`";
             if ($whereClause !== null) {
