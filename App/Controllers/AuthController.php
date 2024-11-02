@@ -6,17 +6,25 @@ use App\Config\Configuration;
 use App\Core\ControllerBase;
 use App\Core\Responses\Response;
 use App\Core\Responses\ViewResponse;
+use Exception;
 
 /**
  * Class AuthController
- * Controller for authentication actions
+ *
+ * This controller handles authentication actions such as login, logout, and redirection to the login page. It manages
+ * user sessions and interactions with the authentication system.
+ *
  * @package App\Controllers
  */
 class AuthController extends ControllerBase
 {
     /**
+     * Redirects to the login page.
      *
-     * @return Response
+     * This action serves as the default landing point for the authentication section of the application, directing
+     * users to the login URL specified in the configuration.
+     *
+     * @return Response The response object for the redirection to the login page.
      */
     public function index(): Response
     {
@@ -24,8 +32,15 @@ class AuthController extends ControllerBase
     }
 
     /**
-     * Login a user
-     * @return Response
+     * Authenticates a user and processes the login request.
+     *
+     * This action handles user login attempts. If the login form is submitted, it attempts to authenticate the user
+     * with the provided credentials. Upon successful login, the user is redirected to the admin dashboard.
+     * If authentication fails, an error message is displayed on the login page.
+     *
+     * @return Response The response object which can either redirect on success or render the login view with
+     *                  an error message on failure.
+     * @throws Exception If the parameter for the URL generator is invalid throws an exception.
      */
     public function login(): Response
     {
@@ -43,8 +58,12 @@ class AuthController extends ControllerBase
     }
 
     /**
-     * Logout a user
-     * @return ViewResponse
+     * Logs out the current user.
+     *
+     * This action terminates the user's session and redirects them to a view. It effectively clears any authentication
+     * tokens or session data associated with the user.
+     *
+     * @return ViewResponse The response object that renders the logout view.
      */
     public function logout(): Response
     {

@@ -2,29 +2,44 @@
 
 /**
  * Class ClassLoader
- * Just for automated class loading by namespace
+ * Provides an automated class loading mechanism based on namespaces.
+ *
+ * This class facilitates the dynamic loading of PHP classes by using the PSR-4 autoloading standard, which maps
+ * namespaces to directory structures. It registers a custom autoload function that automatically includes
+ * the PHP file corresponding to the class being instantiated.
  */
 class ClassLoader
 {
-    public static function Boot()
+    /**
+     * Bootstraps the class loader by registering the autoload function.
+     *
+     * This method sets up an anonymous function with `spl_autoload_register` that converts class names
+     * (with namespaces) into file paths, ensuring that the file structure mirrors the namespace structure. If the
+     * required class file is found, it is included; if not, an exception is thrown.
+     *
+     * @throws Exception If the class file cannot be found.
+     */
+    public static function Boot(): void
     {
         spl_autoload_register(function ($class_name) {
-            // input param is full name of the required class
-            // there must be the same dir structure as namespace to make this work correctly
-            // first we must convert namespace separators to dir separators of current system
+            // Convert namespace separators to directory separators for the current OS
             $file = str_replace('\\', DIRECTORY_SEPARATOR, $class_name) . '.php';
-            // check if file with class exists
+
+            // Check if the file corresponding to the class exists
             if (file_exists($file)) {
-                // if do include it
+                // Include the class file if it exists
                 require $file;
             } else {
-                // if not throw exception
+                // Throw an exception if the class file is not found
                 throw new Exception("Class {$class_name} file {$file} was not found.");
             }
         });
     }
-
 }
 
-// register class loading
-ClassLoader::Boot();
+try {
+    // Register the class loader to enable automatic class loading
+    ClassLoader::Boot();
+} catch (Exception $e) {
+    die('Error initializing class loader: ' . $e->getMessage());
+}

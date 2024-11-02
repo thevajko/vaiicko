@@ -5,26 +5,28 @@
                 <h2>Vaííčko MVC FW</h2>
                 <img src="public/images/vaiicko_logo.png">
                 <p>
-                    Gratulujeme vám, úspešne sa vám podarilo nainštalovať a spustiť framework
+                    Congratulations, you have successfully installed and run the framework
                     <strong>Vaííčko</strong> <?= \App\Config\Configuration::FW_VERSION ?>!<br>
-                    Dúfame, že sa Vám pomocou tohto frameworku vytvoríte nejakú skvelú aplikáciu.<br>
+                    We hope that you will create a great application using this framework.<br>
                 </p>
                 <p>
-                    Tento jednoduchý framework bol vytvorený pre lepšie pochopenie architektúry MVC.<br>
-                    Je určený pre študentov predmetu <em>vývoj aplikácií pre internet a intranet</em>, ale nielen im.
+                    This simple framework was created for teaching purposes and to better understand how the MVC
+                    architecture works.<br>
+                    It is intended for students of the subject <em>web application development</em>, but not only
+                    for them.
                 </p>
             </div>
         </div>
     </div>
     <div class="row mt-3">
         <div class="col text-center">
-            <h4>Autori</h4>
+            <h4>Authors</h4>
             <div>
                 <a href="mailto:Patrik.Hrkut@fri.uniza.sk">doc. Ing. Patrik Hrkút, PhD.</a><br>
                 <a href="mailto:Michal.Duracik@fri.uniza.sk">Ing. Michal Ďuračík, PhD.</a><br>
                 <a href="mailto:Matej.Mesko@fri.uniza.sk">Ing. Matej Meško, PhD.</a><br><br>
-                &copy; 2020-<?= date('Y') ?> Žilinská univerzita v Žiline, Fakulta riadenia a informatiky, Katedra
-                softvérových technológií
+                &copy; 2020-<?= date('Y') ?> University of Žilina, Faculty of Management Science and Informatics,
+                Department of Software Technologies
             </div>
         </div>
     </div>

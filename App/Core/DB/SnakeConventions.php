@@ -5,19 +5,26 @@ namespace App\Core\DB;
 use App\Helpers\Inflect;
 
 /**
- * Implementation of these conventions:
- * - model property names are camel cased and DB column names are converted to snake case
- * - DB column names are snake cased and model property names are converted to camel case
- * - table name are pluralized from model names and converted to snake case
- * - primary key column names are id
+ * Class SnakeConventions
+ * Implementation of naming conventions that adhere to the snake_case format for database operations.
+ *
+ * This class follows these conventions:
+ * - Model property names are camel-cased while database column names are converted to snake_case.
+ * - Database column names are in snake_case, and model property names are converted to camelCase.
+ * - Table names are pluralized from model names and converted to snake_case.
+ * - The primary key column name is consistently 'id'.
+ *
+ * @package App\Core\DB
  */
 class SnakeConventions implements IDbConvention
 {
     /**
-     * Returns snake case pluralized name of the DB table
-     * This method can be overwritten in a descendant of the class Model
-     * @param string $className Class name of a model
-     * @return string
+     * Returns the pluralized name of the database table in snake_case format.
+     *
+     * This method can be overridden in a subclass of the Model class.
+     *
+     * @param string $className The fully qualified class name of the model.
+     * @return string The snake_case pluralized name of the corresponding database table.
      */
     public function getTableName(string $className): string
     {
@@ -27,10 +34,12 @@ class SnakeConventions implements IDbConvention
     }
 
     /**
-     * Returns the name of primary key, returns 'id'
-     * This method can be overwritten in a descendant of the class Model
-     * @param string $className Class name of a model
-     * @return string
+     * Returns the name of the primary key for the model.
+     *
+     * This method can be overridden in a subclass of the Model class.
+     *
+     * @param string $className The fully qualified class name of the model.
+     * @return string The primary key column name, which defaults to 'id'.
      */
     public function getPkColumnName(string $className): string
     {
@@ -38,9 +47,10 @@ class SnakeConventions implements IDbConvention
     }
 
     /**
-     * Returns the DB column name, the name is converted to snake case
-     * @param string $propertyName Name of a model property
-     * @return string
+     * Converts a model property name to the corresponding database column name in snake_case format.
+     *
+     * @param string $propertyName The name of the model property.
+     * @return string The database column name in snake_case.
      */
     public function toDbColumnName(string $propertyName): string
     {
@@ -48,9 +58,10 @@ class SnakeConventions implements IDbConvention
     }
 
     /**
-     * Returns the model property name, the name is converted to camel case
-     * @param string $columnName Name of a DB column name
-     * @return string
+     * Converts a database column name to the corresponding model property name in camelCase format.
+     *
+     * @param string $columnName The name of the database column.
+     * @return string The model property name in camelCase.
      */
     public function toPropertyName(string $columnName): string
     {
@@ -58,10 +69,11 @@ class SnakeConventions implements IDbConvention
     }
 
     /**
-     * Converts string from snake case to camel case
-     * @param string $input Input string to convert
-     * @param string $separator Separator (snake character), usually _
-     * @return string
+     * Converts a string from snake_case to camelCase.
+     *
+     * @param string $input The input string in snake_case format.
+     * @param string $separator The separator used in the input string, typically an underscore (_).
+     * @return string The converted string in camelCase format.
      */
     private function toCamelCase(string $input, string $separator = '_'): string
     {
@@ -69,9 +81,10 @@ class SnakeConventions implements IDbConvention
     }
 
     /**
-     * Converts string from camel case to snake case
-     * @param string $input Input string to convert
-     * @return string
+     * Converts a string from camelCase to snake_case.
+     *
+     * @param string $input The input string in camelCase format.
+     * @return string The converted string in snake_case format.
      */
     private function toSnakeCase(string $input): string
     {

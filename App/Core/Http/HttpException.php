@@ -2,12 +2,22 @@
 
 namespace App\Core\Http;
 
+/**
+ * Custom exception class for handling HTTP-related errors.
+ *
+ * This class extends PHP's built-in `Exception` to provide more informative error handling with standard HTTP status
+ * codes and messages. It's designed for use in web applications to simplify the management of HTTP errors.
+ */
 class HttpException extends \Exception
 {
     /**
-     * List of possible HTTP status codes
-     * Grabbed from https://gist.github.com/henriquemoody/6580488
-     * @var array|string[]
+     * Maps HTTP status codes to their standard reason phrases.
+     *
+     * This list includes commonly used HTTP status codes and some less common ones, such as WebDAV and specific
+     * RFC codes, to support a wide range of HTTP responses.
+     *  Grabbed from https://gist.github.com/henriquemoody/6580488
+     *
+     * @var array<int, string> Associative array of status codes and messages
      */
     private static array $statusCodeMessages = [
         100 => 'Continue',
@@ -75,11 +85,31 @@ class HttpException extends \Exception
         511 => 'Network Authentication Required', // RFC 6585
     ];
 
-    public function __construct(int $statusCode, $message = null, \Throwable $h = null)
+    /**
+     * Constructs a new HttpException.
+     *
+     * @param int $statusCode The HTTP status code associated with the exception
+     * @param null $message Custom error message (if not provided, a standard message is used)
+     * @param \Throwable|null $previous Optional previous exception for exception chaining
+     */
+    public function __construct(int $statusCode, $message = null, \Throwable $previous = null)
     {
-        parent::__construct($message ? $message : self::$statusCodeMessages[$statusCode], $statusCode, $h);
+        parent::__construct($message ? $message : self::$statusCodeMessages[$statusCode],
+            $statusCode,
+            $previous
+        );
     }
 
+    /**
+     * Creates an HttpException from an existing throwable.
+     *
+     * This is useful for converting generic exceptions into standardized HTTP errors, often with a default status
+     * code of 500 (Internal Server Error).
+     *
+     * @param \Throwable $exception The original exception to be wrapped
+     * @param int $statusCode The HTTP status code to use (default: 500)
+     * @return HttpException The wrapped exception
+     */
     public static function from(\Throwable $exception, int $statusCode = 500): HttpException
     {
         return new HttpException($statusCode, null, $exception);

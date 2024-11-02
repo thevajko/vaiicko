@@ -8,54 +8,68 @@ use App\Core\ErrorHandler;
 
 /**
  * Class Configuration
- * Main configuration for the application
+ *
+ * This class holds the main configuration settings for the application, including application name, framework version,
+ * database connection settings, authentication, error handling, and other runtime configurations.
+ *
  * @package App\Config
  */
 class Configuration
 {
     /**
-     * App name
+     * Application name displayed in the UI and logs.
      */
     public const APP_NAME = 'Vaííčko MVC FW';
+
+    /**
+     * Version of the framework being used.
+     */
     public const FW_VERSION = '2.2';
 
     /**
-     * DB settings
+     * Database connection settings.
      */
-    public const DB_HOST = 'db';  // see docker/docker-compose.yml
-    public const DB_NAME = 'vaiicko_db'; // see docker/.env
-    public const DB_USER = 'vaiicko_user'; // see docker/.env
-    public const DB_PASS = 'dtb456'; // see docker/.env
+    public const DB_HOST = 'db';  // Hostname for the database service (defined in docker/docker-compose.yml)
+    public const DB_NAME = 'vaiicko_db'; // Database name (defined in docker/.env)
+    public const DB_USER = 'vaiicko_user'; // Username for database access (defined in docker/.env)
+    public const DB_PASS = 'dtb456'; // Password for database access (defined in docker/.env)
 
     /**
-     * URL where main page logging is. If action needs login, user will be redirected to this url
+     * URL for the login page. Users will be redirected here if authentication is required for an action.
      */
     public const LOGIN_URL = '?c=auth&a=login';
+
     /**
-     * Prefix of default view in App/Views dir. <ROOT_LAYOUT>.layout.view.php
+     * Prefix for the default view files located in the App/Views directory. The view file format is
+     * <ROOT_LAYOUT>.layout.view.php.
      */
     public const ROOT_LAYOUT = 'root';
+
     /**
-     * Add all SQL queries after app output
+     * Flag to determine whether to display all SQL queries after the application output for debugging purposes.
      */
     public const SHOW_SQL_QUERY = false;
 
     /**
-     * Conversion class for DB names See PHPDoc in class for more information
+     * Class name for the database naming conventions implementation. This should adhere to the IDbConvention interface.
+     * The default implementation is DefaultConventions.
      */
     public const DB_CONVENTIONS_CLASS = DefaultConventions::class;
 
     /**
-     * Show detailed stacktrace using default exception handler. Should be used only for development.
+     * Flag to enable or disable detailed exception stack traces. This feature is intended for development purposes
+     * only.
      */
     public const SHOW_EXCEPTION_DETAILS = true;
+
     /**
-     * Class used as authenticator. Must implement IAuthenticator.
-     * Comment out, if no authentication is needed in the application
+     * Class name for the authenticator. This class must implement the IAuthenticator interface. Comment out this line
+     * if authentication is not required in the application.
      */
     public const AUTH_CLASS = DummyAuthenticator::class;
+
     /**
-     * Class used as error handler. Must implement IHandleError
+     * Class name for the error handler. This class must implement the IHandleError interface.
      */
     public const ERROR_HANDLER_CLASS = ErrorHandler::class;
 }

@@ -6,8 +6,8 @@
     <div class="row">
         <div class="col">
             <div>
-                Vitaj, <strong><?= $auth->getLoggedUserName() ?></strong>!<br><br>
-                Táto časť aplikácie je prístupná len po prihlásení.
+                Welcome, <strong><?= $auth->getLoggedUserName() ?></strong>!<br><br>
+                This part of the application is accessible only after logging in.
             </div>
         </div>
     </div>

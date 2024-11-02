@@ -26,20 +26,20 @@
         </a>
         <ul class="navbar-nav me-auto">
             <li class="nav-item">
-                <a class="nav-link" href="<?= $link->url("home.contact") ?>">Kontakt</a>
+                <a class="nav-link" href="<?= $link->url("home.contact") ?>">Contact</a>
             </li>
         </ul>
         <?php if ($auth?->isLogged()) { ?>
-            <span class="navbar-text">Prihlásený používateľ: <b><?= $auth?->getLoggedUserName() ?></b></span>
+            <span class="navbar-text">Logged in user: <b><?= $auth?->getLoggedUserName() ?></b></span>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= $link->url("auth.logout") ?>">Odhlásenie</a>
+                    <a class="nav-link" href="<?= $link->url("auth.logout") ?>">Log out</a>
                 </li>
             </ul>
         <?php } else { ?>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= \App\Config\Configuration::LOGIN_URL ?>">Prihlásenie</a>
+                    <a class="nav-link" href="<?= \App\Config\Configuration::LOGIN_URL ?>">Log in</a>
                 </li>
             </ul>
         <?php } ?>

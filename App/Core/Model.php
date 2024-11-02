@@ -6,24 +6,31 @@ use App\Config\Configuration;
 use App\Core\DB\Connection;
 use App\Core\DB\IDbConvention;
 use App\Core\Http\Request;
+use Exception;
 use PDO;
 use PDOException;
 
 /**
  * Class Model
- * Abstract class serving as a simple model example, predecessor of all models
- * Allows basic CRUD operations
+ *
+ * Abstract base class that serves as a foundation for all models within the application. This class provides basic
+ * Create, Read, Update, and Delete (CRUD) operations and defines a standard structure for model interactions
+ * with the database.
+ *
  * @package App\Core\Storage
  */
 abstract class Model implements \JsonSerializable
 {
-    private static array $dbColumns = [];
-    private static IDbConvention $dbConventions;
-    private mixed $_dbId = null;
+    private static array $dbColumns = []; // Cache for database column names
+    private static IDbConvention $dbConventions; // Instance for database naming conventions
+    private mixed $_dbId = null; // Store the primary key value for the model
+
     /**
-     * Returns table name from model class name
-     * This method can be overwritten in a descendant of the class Model for custom table name
-     * @return string
+     * Retrieves the table name associated with the model class.
+     *
+     * This method can be overridden in a subclass to provide a custom table name.
+     *
+     * @return string The name of the database table corresponding to the model.
      */
     protected static function getTableName(): string
     {
@@ -31,9 +38,11 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Returns default primary key column name
-     * This method can be overwritten in a descendant of the class Model for custom primary key name
-     * @return string
+     * Retrieves the default primary key column name for the model.
+     *
+     * This method can be overridden in a subclass to specify a custom primary key name.
+     *
+     * @return string The name of the primary key column in the database table.
      */
     protected static function getPkColumnName(): string
     {
@@ -41,9 +50,11 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Returns mapping from model property names to DB column names
-     * This method can be overwritten in a descendant of the class Model for custom mapping
-     * @return array
+     * Retrieves the mapping of model property names to database column names.
+     *
+     * This method can be overridden in a subclass to provide custom mappings.
+     *
+     * @return array An associative array where keys are model property names and values are DB column names.
      */
     protected static function getColumnsMap(): array
     {
@@ -51,8 +62,11 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Set model property values to values from request, only corresponding names are matched
-     * @param Request $request Request
+     * Populates the model's properties with values from the incoming request.
+     *
+     * This method matches property names with corresponding request parameters.
+     *
+     * @param Request $request The incoming HTTP request containing parameters.
      * @return void
      */
     public function setFromRequest(Request $request): void
@@ -66,59 +80,63 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Returns an array of models from DB
-     * @param string|null $whereClause WHERE clause content
-     * @param array $whereParams WHERE parameters
-     * @param string|null $orderBy ORDER BY clause content, including ASC or DESC
-     * @param int|null $limit LIMIT clause content
-     * @param int|null $offset OFFSET clause content
-     * @return static[]
-     * @throws \Exception Returns exception, if there is a problem with SQL query
+     * Retrieves all models from the database.
+     *
+     * This method accepts optional parameters for filtering, ordering, limiting, and offsetting results.
+     *
+     * @param string|null $whereClause Optional WHERE clause for filtering results.
+     * @param array $whereParams Optional parameters for the WHERE clause.
+     * @param string|null $orderBy Optional ORDER BY clause for sorting results.
+     * @param int|null $limit Optional limit on the number of results.
+     * @param int|null $offset Optional offset for paginating results.
+     * @return static[] An array of model instances retrieved from the database.
+     * @throws Exception If there is an error executing the SQL query.
      */
     public static function getAll(
         ?string $whereClause = null,
-        array $whereParams = [],
+        array   $whereParams = [],
         ?string $orderBy = null,
-        ?int $limit = null,
-        ?int $offset = null
-    ): array {
+        ?int    $limit = null,
+        ?int    $offset = null
+    ): array
+    {
         try {
             $sql = "SELECT " . self::getDBColumnNamesList() . " FROM `" . static::getTableName() . "`";
-            if ($whereClause != null) {
+            if ($whereClause !== null) {
                 $sql .= " WHERE $whereClause";
             }
-            if ($orderBy != null) {
+            if ($orderBy !== null) {
                 $sql .= " ORDER BY $orderBy";
             }
-            if ($limit != null) {
+            if ($limit !== null) {
                 $sql .= " LIMIT $limit";
             }
-            if ($offset != null) {
+            if ($offset !== null) {
                 $sql .= " OFFSET $offset";
             }
 
             $stmt = Connection::getInstance()->prepare($sql);
             $stmt->execute($whereParams);
             $models = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
-            /** @var static $model */
             foreach ($models as $model) {
                 $model->_dbId = $model->getIdValue();
             }
             return $models;
         } catch (PDOException $exception) {
-            throw new \Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
+            throw new Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
         }
     }
 
     /**
-     * Returns one model from DB by a primary key
-     * @param mixed $id Primary key value
-     * @return static|null
-     * @throws \Exception
+     * Retrieves a single model instance from the database by its primary key.
+     *
+     * @param mixed $id The primary key value of the desired model.
+     * @return static|null The model instance, or null if not found.
+     * @throws Exception If there is an error executing the SQL query.
      */
     public static function getOne(mixed $id): ?static
     {
-        if ($id == null) {
+        if ($id === null) {
             return null;
         }
 
@@ -128,29 +146,29 @@ abstract class Model implements \JsonSerializable
             $stmt = Connection::getInstance()->prepare($sql);
             $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
             $stmt->execute([$id]);
-            /** @var static $model * */
             $model = $stmt->fetch() ?: null;
-            if ($model != null) {
+            if ($model !== null) {
                 $model->_dbId = $model->getIdValue();
             }
             return $model;
         } catch (PDOException $exception) {
-            throw new \Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
+            throw new Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
         }
     }
 
     /**
-     * Returns count of models in DB
-     * @param string|null $whereClause WHERE clause content
-     * @param array $whereParams WHERE parameters
-     * @return int
-     * @throws \Exception Returns exception, if there is a problem with SQL query
+     * Counts the number of models in the database.
+     *
+     * @param string|null $whereClause Optional WHERE clause for filtering results.
+     * @param array $whereParams Optional parameters for the WHERE clause.
+     * @return int The count of models matching the criteria.
+     * @throws Exception If there is an error executing the SQL query.
      */
     public static function getCount(?string $whereClause = null, array $whereParams = []): int
     {
         try {
             $sql = "SELECT COUNT(*) FROM `" . static::getTableName() . "`";
-            if ($whereClause != null) {
+            if ($whereClause !== null) {
                 $sql .= " WHERE $whereClause";
             }
 
@@ -158,14 +176,18 @@ abstract class Model implements \JsonSerializable
             $stmt->execute($whereParams);
             return (int)$stmt->fetchColumn();
         } catch (PDOException $exception) {
-            throw new \Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
+            throw new Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
         }
     }
 
     /**
-     * Saves the current model to DB. If model property $_dbId is set, update the record, else insert a new record
+     * Saves the current model instance to the database.
+     *
+     * If the model has a primary key value set, it updates the existing record;
+     * otherwise, it inserts a new record.
+     *
      * @return void
-     * @throws \Exception
+     * @throws Exception If there is an error executing the SQL query.
      */
     public function save(): void
     {
@@ -174,8 +196,8 @@ abstract class Model implements \JsonSerializable
             foreach ($data as $key => &$item) {
                 $item = $this->{static::toPropertyName($key)};
             }
-            // insert
-            if ($this->_dbId == null) {
+            // Insert new record
+            if ($this->_dbId === null) {
                 $arrColumns = array_map(fn($item) => (':' . $item), array_keys($data));
                 $columns = '`' . implode('`,`', array_keys($data)) . "`";
                 $params = implode(',', $arrColumns);
@@ -188,7 +210,7 @@ abstract class Model implements \JsonSerializable
                     $this->{$pkPropertyName} = Connection::getInstance()->lastInsertId();
                     $this->_dbId = $this->{$pkPropertyName};
                 }
-                // update
+                // Update existing record
             } else {
                 $arrColumns = array_map(fn($item) => ("`" . $item . '`=:' . $item), array_keys($data));
                 $columns = implode(',', $arrColumns);
@@ -199,13 +221,16 @@ abstract class Model implements \JsonSerializable
                 $stmt->execute($data);
             }
         } catch (PDOException $exception) {
-            throw new \Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
+            throw new Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
         }
     }
 
     /**
-     * Deletes current model from DB
-     * @throws \Exception If model not exists, throw an exception
+     * Deletes the current model instance from the database.
+     *
+     * If the model does not exist, an exception is thrown.
+     *
+     * @throws Exception If the model does not exist or if there is an error executing the SQL query.
      */
     public function delete(): void
     {
@@ -217,28 +242,32 @@ abstract class Model implements \JsonSerializable
             $stmt = Connection::getInstance()->prepare($sql);
             $stmt->execute([$this->getIdValue()]);
             if ($stmt->rowCount() == 0) {
-                throw new \Exception('Model not found!');
+                throw new Exception('Model not found!');
             }
         } catch (PDOException $exception) {
-            throw new \Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
+            throw new Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
         }
     }
 
     /**
-     * Default implementation of JSON serialize method. Returns all properties from model
-     * @return array
+     * Default implementation of the JSON serialize method. Converts the model's properties to an array for JSON
+     * serialization, excluding the internal `_dbId` property.
+     *
+     * @return array An associative array of the model's properties for JSON output.
      */
     public function jsonSerialize(): array
     {
         $properties = get_object_vars($this);
-        unset($properties["_dbId"]); //Remove internal object ID
+        unset($properties["_dbId"]); // Remove internal object ID
         return $properties;
     }
 
     /**
-     * Returns an array of column names from the associated model table
-     * @return array
-     * @throws \Exception
+     * Retrieves an array of column names from the associated database table. Caches the results to optimize performance
+     * on subsequent calls.
+     *
+     * @return array An array of column names from the model's database table.
+     * @throws Exception If the query fails due to a database error.
      */
     private static function getDbColumns(): array
     {
@@ -252,13 +281,15 @@ abstract class Model implements \JsonSerializable
             self::$dbColumns[static::class] = array_column($stmt->fetchAll(), 'Field');
             return self::$dbColumns[static::class];
         } catch (PDOException $exception) {
-            throw new \Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
+            throw new Exception('Query failed: ' . $exception->getMessage(), 0, $exception);
         }
     }
 
     /**
-     * Returns the value of private key
-     * @return mixed
+     * Retrieves the value of the model's primary key. This is used internally to identify the model instance
+     * in the database.
+     *
+     * @return mixed The value of the primary key property for the model.
      */
     private function getIdValue(): mixed
     {
@@ -267,9 +298,11 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Returns the list of DB column names for SELECT clause
-     * @return string
-     * @throws \Exception
+     * Generates a list of database column names formatted for a SELECT SQL clause. Maps the database column names
+     * to their corresponding model property names.
+     *
+     * @return string A comma-separated string of formatted column names for SQL SELECT.
+     * @throws Exception If the query fails due to a database error.
      */
     private static function getDBColumnNamesList(): string
     {
@@ -286,9 +319,11 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Returns the property name for DB column name considering the user mapping (if applied)
-     * @param string $columnName Name of the DB column
-     * @return string
+     * Converts a database column name to the corresponding model property name. This method takes into account any
+     * user-defined mappings if applicable.
+     *
+     * @param string $columnName The name of the database column to convert.
+     * @return string The corresponding model property name.
      */
     private static function toPropertyName(string $columnName): string
     {
@@ -301,8 +336,10 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Returns instance of name conventions used in DB
-     * @return IDbConvention
+     * Retrieves the instance of the naming conventions used in the database. This method ensures that the conventions
+     * are instantiated only once, promoting efficient use of resources.
+     *
+     * @return IDbConvention An instance of the naming conventions used for the database.
      */
     private static function getConventions(): IDbConvention
     {

@@ -6,16 +6,23 @@ use App\Core\ControllerBase;
 use App\Core\Responses\Response;
 
 /**
- * Class HomeController
- * Example class of a controller
+ * Class AdminController
+ *
+ * This controller manages admin-related actions within the application.It extends the base controller functionality
+ * provided by ControllerBase.
+ *
  * @package App\Controllers
  */
 class AdminController extends ControllerBase
 {
     /**
-     * Authorize controller actions
-     * @param $action
-     * @return bool
+     * Authorizes actions in this controller.
+     *
+     * This method checks if the user is logged in, allowing or denying access to specific actions based
+     * on the authentication state.
+     *
+     * @param string $action The name of the action to authorize.
+     * @return bool Returns true if the user is logged in; false otherwise.
      */
     public function authorize($action): bool
     {
@@ -23,8 +30,11 @@ class AdminController extends ControllerBase
     }
 
     /**
-     * Example of an action (authorization needed)
-     * @return \App\Core\Responses\Response|\App\Core\Responses\ViewResponse
+     * Displays the index page of the admin panel.
+     *
+     * This action requires authorization. It returns an HTML response for the admin dashboard or main page.
+     *
+     * @return Response Returns a response object containing the rendered HTML.
      */
     public function index(): Response
     {

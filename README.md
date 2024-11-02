@@ -1,27 +1,30 @@
-# O tomto frameworku
+# About
 
-Tento framework vznikol na podporu výučby predmetu Vývoj aplikácií pre intranet a intrenate (VAII)
-na [Fakulte informatiky a riadenia](https://www.fri.uniza.sk/) [Žilinskej univerzity v Žiline](https://www.uniza.sk/). Framework je navrhnutý tak, aby bol čo
-najmenší a najjednoduchší.
+This framework was created to support the teaching of the subject Development of intranet and intranet applications 
+(VAII) at the [Faculty of Management Science and Informatics](https://www.fri.uniza.sk/) of
+[University of Žilina](https://www.uniza.sk/). Framework demonstrates how the MVC architecture works.
 
-# Návod a dokumentácia
+# Instructions and documentation 
 
-Kód frameworku je kompletne okomentovaný. V prípade, že na pochopenie potrebujete dodatočné informácie,
-navštívte [WIKI stránky](https://github.com/thevajko/vaiicko/wiki/00-%C3%9Avodn%C3%A9-inform%C3%A1cie).
+The framework source code is fully commented. In case you need additional information to understand,
+visit the [WIKI stránky](https://github.com/thevajko/vaiicko/wiki/00-%C3%9Avodn%C3%A9-inform%C3%A1cie) (only in Slovak).
 
-# Docker
+# Docker configuration
 
-Framework ma v adresári `<root>/docker` základnú konfiguráciu pre spustenie a debug web aplikácie. Všetky potrebné služby sú v `docker-compose.yml`. Po ich spustení sa vytvorí:
+The Framework has a basic configuration for running and debugging web applications in the `<root>/docker` directory. 
+All necessary services are set in `docker-compose.yml` file. After starting them, it creates the following services:
 
-- __WWW document root__ je nastavený adresár riešenia, čiže web bude dostupný na adrese [http://localhost/](http://localhost/). Server má pridaný modul pre
-  ladenie móde" (`xdebug.start_with_request=yes`).
-- webový server beží na __PHP 8.2__ s [__Xdebug 3__](https://xdebug.org/) nastavený na port __9003__ v "auto-štart" móde
-- PHP ma doinštalované rozšírenie __PDO__
-- databázový server s vytvorenou _databázou_ a tabuľkami `messages` a `users` na porte __3306__ a bude dostupný na `localhost:3306`. Prihlasovacie údaje sú:
-    - MYSQL_ROOT_PASSWORD: db_user_pass
-    - MYSQL_DATABASE: databaza
-    - MYSQL_USER: db_user
-    - MYSQL_PASSWORD: db_user_pass
-- phpmyadmin server, ktorý sa automatický nastavený na databázový server na porte __8080__ a bude dostupný na
-  adrese [http://localhost:8080/](http://localhost:8080/)
+- web server (Apache) with the __PHP 8.2__ 
+- MariaDB database server with a created _database_ named according `MYSQL_DATABASE` environment variable
+- Adminer application for MariaDB administration
+
+## Other notes:
+
+- __WWW document root__ is set to the project directory.
+- The website is available at [http://localhost/](http://localhost/).
+- The server includes an extension for PHP code debugging [__Xdebug 3__](https://xdebug.org/), uses the  
+  port __9003__ and works in "auto-start" mode.
+- PHP contains the __PDO__ extension.
+- The database server is available locally on the port __3306__. The default login details can be found in `.env` file.
+- Adminer is available at [http://localhost:8080/](http://localhost:8080/)
 
