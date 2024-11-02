@@ -17,7 +17,7 @@ class JsonResponse extends Response
      *
      * @var mixed
      */
-    private $data;
+    private mixed $data;
 
     /**
      * JsonResponse constructor.
@@ -27,7 +27,7 @@ class JsonResponse extends Response
      * @param mixed $data The data to be returned in the JSON response. This can be an array, an object, or any other
      * type that can be converted to JSON.
      */
-    public function __construct($data)
+    public function __construct(mixed $data)
     {
         $this->data = $data;
     }

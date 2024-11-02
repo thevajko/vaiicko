@@ -6,6 +6,7 @@ use App\Config\Configuration;
 use App\Core\ControllerBase;
 use App\Core\Http\Responses\Response;
 use App\Core\Http\Responses\ViewResponse;
+use Exception;
 
 /**
  * Class AuthController

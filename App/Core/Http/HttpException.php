@@ -2,13 +2,16 @@
 
 namespace App\Core\Http;
 
+use Exception;
+use Throwable;
+
 /**
  * Custom exception class for handling HTTP-related errors.
  *
  * This class extends PHP's built-in `Exception` to provide more informative error handling with standard HTTP status
  * codes and messages. It's designed for use in web applications to simplify the management of HTTP errors.
  */
-class HttpException extends \Exception
+class HttpException extends Exception
 {
     /**
      * Maps HTTP status codes to their standard reason phrases.
@@ -90,9 +93,9 @@ class HttpException extends \Exception
      *
      * @param int $statusCode The HTTP status code associated with the exception
      * @param null $message Custom error message (if not provided, a standard message is used)
-     * @param \Throwable|null $previous Optional previous exception for exception chaining
+     * @param Throwable|null $previous Optional previous exception for exception chaining
      */
-    public function __construct(int $statusCode, $message = null, \Throwable $previous = null)
+    public function __construct(int $statusCode, $message = null, Throwable $previous = null)
     {
         parent::__construct($message ? $message : self::$statusCodeMessages[$statusCode],
             $statusCode,
@@ -106,11 +109,11 @@ class HttpException extends \Exception
      * This is useful for converting generic exceptions into standardized HTTP errors, often with a default status
      * code of 500 (Internal Server Error).
      *
-     * @param \Throwable $exception The original exception to be wrapped
+     * @param Throwable $exception The original exception to be wrapped
      * @param int $statusCode The HTTP status code to use (default: 500)
      * @return HttpException The wrapped exception
      */
-    public static function from(\Throwable $exception, int $statusCode = 500): HttpException
+    public static function from(Throwable $exception, int $statusCode = 500): HttpException
     {
         return new HttpException($statusCode, null, $exception);
     }

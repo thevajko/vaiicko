@@ -14,9 +14,9 @@ namespace App\Core;
  */
 class Router
 {
-    private $controller;
-    private $controllerName;
-    private $action;
+    private object $controller;
+    private string $controllerName;
+    private string $action;
 
     /**
      * Processes the current URL to determine the controller and action to run. This method initializes the controller
@@ -68,9 +68,9 @@ class Router
      * Returns the instance of the controller determined from the URL. This instance can be used to invoke the
      * specified action.
      *
-     * @return mixed The instantiated controller object.
+     * @return object The instantiated controller object.
      */
-    public function getController()
+    public function getController(): object
     {
         return $this->controller;
     }

@@ -39,7 +39,7 @@ class DebugStatement
      * @param array|null $params Optional parameters to bind to the statement.
      * @return bool Returns true on success or false on failure.
      */
-    public function execute($params = null)
+    public function execute(?array $params = null): bool
     {
         $result = $this->stmt->execute($params);
         ob_start(); // Start output buffering to capture debug output
@@ -58,7 +58,7 @@ class DebugStatement
      * @param array $arguments The arguments to pass to the method.
      * @return mixed The return value from the invoked method on the PDOStatement.
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments) : mixed
     {
         return $this->stmt->{$name}(...$arguments);
     }

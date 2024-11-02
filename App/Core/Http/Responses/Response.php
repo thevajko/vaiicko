@@ -36,8 +36,7 @@ abstract class Response
     /**
      * Sets the HTTP status code for the response.
      *
-     * @param int $statusCode The HTTP status code (e.g., 200, 404, 500)
-     * @return $this Returns the current instance for method chaining
+     * @return void Returns the current instance for method chaining
      */
     abstract protected function generate(): void;
 
@@ -59,7 +58,7 @@ abstract class Response
      *
      * @param string $name The name of the cookie
      * @param mixed $value The value of the cookie
-     * @param int|array $expires_or_options Expiration time as a Unix timestamp or an options array
+     * @param int $expires_or_options Expiration time as a Unix timestamp or an options array
      * @param string $path The path on the server where the cookie will be available
      * @param string $domain The (sub)domain that the cookie is available to
      * @param bool $secure Whether the cookie should be transmitted over a secure HTTPS connection
@@ -70,12 +69,12 @@ abstract class Response
      */
     public function setCookie(
         string $name,
-               $value = "",
-               $expires_or_options = 0,
-               $path = "",
-               $domain = "",
-               $secure = false,
-               $httponly = false
+        string $value = "",
+        int    $expires_or_options = 0,
+        string $path = "",
+        string $domain = "",
+        bool   $secure = false,
+        bool   $httponly = false
     ): bool
     {
         return setcookie($name, $value, $expires_or_options, $path, $domain, $secure, $httponly);

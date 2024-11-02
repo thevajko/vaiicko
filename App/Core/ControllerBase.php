@@ -7,6 +7,7 @@ use App\Core\Http\Responses\JsonResponse;
 use App\Core\Http\Responses\RedirectResponse;
 use App\Core\Http\Responses\Response;
 use App\Core\Http\Responses\ViewResponse;
+use Exception;
 
 /**
  * Class ControllerBase
@@ -143,7 +144,7 @@ abstract class ControllerBase
      * @param mixed $data The data to be returned as JSON.
      * @return JsonResponse The constructed JsonResponse object.
      */
-    protected function json($data): JsonResponse
+    protected function json(mixed $data): JsonResponse
     {
         return new JsonResponse($data);
     }

@@ -3,6 +3,7 @@
 namespace App\Core\DB;
 
 use App\Config\Configuration;
+use Exception;
 use PDO;
 use PDOException;
 
@@ -20,9 +21,9 @@ use PDOException;
  */
 class Connection
 {
-    private static $instance;
-    private static $log = [];
-    private $db;
+    private static Connection $instance;
+    private static array $log = [];
+    private PDO $db;
 
     /**
      * Connection constructor.
@@ -40,9 +41,9 @@ class Connection
      * already exist.
      *
      * @return Connection The instance of the Connection class.
-     * @throws \Exception If the connection fails to be established.
+     * @throws Exception If the connection fails to be established.
      */
-    public static function getInstance()
+    public static function getInstance(): Connection
     {
         try {
             if (self::$instance == null) {
@@ -57,7 +58,7 @@ class Connection
             }
             return self::$instance;
         } catch (PDOException $e) {
-            throw new \Exception('Connection failed: ' . $e->getMessage());
+            throw new Exception('Connection failed: ' . $e->getMessage());
         }
     }
 
@@ -67,7 +68,7 @@ class Connection
      * @param string $query The SQL query to log.
      * @return void
      */
-    public static function appendQueryLog($query)
+    public static function appendQueryLog(string $query): void
     {
         self::$log[] = $query;
     }
@@ -88,14 +89,14 @@ class Connection
      *
      * @param string $sql The SQL query to prepare.
      * @return DebugStatement The prepared statement wrapped for debugging.
-     * @throws \Exception If the statement preparation fails.
+     * @throws Exception If the statement preparation fails.
      */
-    public function prepare($sql)
+    public function prepare(string $sql): DebugStatement
     {
         try {
             return new DebugStatement($this->db->prepare($sql));
         } catch (PDOException $e) {
-            throw new \Exception('Prepare failed: ' . $e->getMessage());
+            throw new Exception('Prepare failed: ' . $e->getMessage());
         }
     }
 
@@ -107,7 +108,7 @@ class Connection
      * @param array $arguments The arguments to pass to the method.
      * @return mixed The return value from the invoked PDO method.
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments) : mixed
     {
         return $this->db->{$name}(...$arguments);
     }

@@ -24,7 +24,7 @@ class HomeController extends ControllerBase
      * @param string $action The action name to authorize.
      * @return bool Returns true, allowing all actions.
      */
-    public function authorize($action): bool
+    public function authorize(string $action): bool
     {
         return true;
     }

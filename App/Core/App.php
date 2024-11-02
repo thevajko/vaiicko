@@ -29,7 +29,7 @@ class App
     /**
      * @var Router The router responsible for mapping URLs to controller actions.
      */
-    private $router;
+    private Router $router;
 
     /**
      * @var Request The HTTP request object that contains request data and methods.
