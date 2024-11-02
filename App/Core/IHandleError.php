@@ -9,15 +9,17 @@ use App\Core\Http\Responses\Response;
  * Interface IHandleError
  *
  * This interface defines the contract for custom error handling classes within the application. Any class that
- * implements this interface must provide an implementation for handling errors represented by the HttpException class.
+ * implements this interface must provide an implementation for handling errors represented by the HttpException
+ * class.
  *
  * The primary responsibility of implementing classes is to manage error scenarios gracefully, ensuring that users
  * receive meaningful feedback when exceptions occur during application execution. This interface allows for
- * flexibility in error handling strategies, accommodating different response formats based on the needs of the application.
+ * flexibility in error handling strategies, accommodating different response formats based on the needs of the
+ * application.
  *
  * Implementing the handleError method allows developers to define custom logic for processing exceptions, including
- * how errors are logged, how user-facing messages are generated, and how responses are structured (e.g., JSON for APIs
- * or HTML for web pages).
+ * how errors are logged, how user-facing messages are generated, and how responses are structured (e.g., JSON
+ * for APIs or HTML for web pages).
  *
  * @package App\Core
  */

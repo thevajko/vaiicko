@@ -26,8 +26,10 @@ abstract class Response
     {
         // Check if output was echoed
         if (ob_get_contents()) {
-            throw new HttpException(500,
-                'It is not allowed to send any output (e.g. echo) from the controller.');
+            throw new HttpException(
+                500,
+                'It is not allowed to send any output (e.g. echo) from the controller.'
+            );
         }
         http_response_code($this->statusCode);
         $this->generate();
@@ -75,8 +77,7 @@ abstract class Response
         string $domain = "",
         bool   $secure = false,
         bool   $httponly = false
-    ): bool
-    {
+    ): bool  {
         return setcookie($name, $value, $expires_or_options, $path, $domain, $secure, $httponly);
     }
 }

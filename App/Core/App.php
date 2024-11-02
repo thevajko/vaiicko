@@ -130,9 +130,9 @@ class App
                 $lines = explode("\n", $q);
                 $query = "Sent ";
                 foreach ($lines as $line) {
-                    if (preg_match("/^Sent SQL: \[\d+\]/", $line)) {
+                    if (preg_match("/^Sent SQL: \[\d+]/", $line)) {
                         $query = $line;
-                    } else if (preg_match("/^Params:  \d+/", $line)) {
+                    } elseif (preg_match("/^Params: \d+/", $line)) {
                         break;
                     } else {
                         $query .= $line . "\n";

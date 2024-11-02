@@ -108,7 +108,7 @@ class Connection
      * @param array $arguments The arguments to pass to the method.
      * @return mixed The return value from the invoked PDO method.
      */
-    public function __call(string $name, array $arguments) : mixed
+    public function __call(string $name, array $arguments): mixed
     {
         return $this->db->{$name}(...$arguments);
     }

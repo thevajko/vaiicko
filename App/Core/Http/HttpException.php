@@ -97,7 +97,8 @@ class HttpException extends Exception
      */
     public function __construct(int $statusCode, $message = null, Throwable $previous = null)
     {
-        parent::__construct($message ? $message : self::$statusCodeMessages[$statusCode],
+        parent::__construct(
+            $message ? $message : self::$statusCodeMessages[$statusCode],
             $statusCode,
             $previous
         );

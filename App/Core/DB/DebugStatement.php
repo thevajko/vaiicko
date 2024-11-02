@@ -58,7 +58,7 @@ class DebugStatement
      * @param array $arguments The arguments to pass to the method.
      * @return mixed The return value from the invoked method on the PDOStatement.
      */
-    public function __call(string $name, array $arguments) : mixed
+    public function __call(string $name, array $arguments): mixed
     {
         return $this->stmt->{$name}(...$arguments);
     }

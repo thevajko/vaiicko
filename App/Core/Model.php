@@ -94,12 +94,11 @@ abstract class Model implements \JsonSerializable
      */
     public static function getAll(
         ?string $whereClause = null,
-        array   $whereParams = [],
+        array $whereParams = [],
         ?string $orderBy = null,
-        ?int    $limit = null,
-        ?int    $offset = null
-    ): array
-    {
+        ?int $limit = null,
+        ?int $offset = null
+    ): array  {
         try {
             $sql = "SELECT " . self::getDBColumnNamesList() . " FROM `" . static::getTableName() . "`";
             if ($whereClause !== null) {
