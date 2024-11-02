@@ -3,11 +3,11 @@
         <div class="col mt-5">
             <div class="text-center">
                 <h2>Vaííčko MVC FW</h2>
-                <h3>Version <?= \App\Config\Configuration::FW_VERSION ?></h3>
-                <img src="public/images/vaiicko_logo.png">
+                <h3>Version <?= App\Configuration::FW_VERSION ?></h3>
+                <img src="images/vaiicko_logo.png" alt="Framework Logo">
                 <p>
                     Congratulations, you have successfully installed and run the framework
-                    <strong>Vaííčko</strong> <?= \App\Config\Configuration::FW_VERSION ?>!<br>
+                    <strong>Vaííčko</strong> <?= App\Configuration::FW_VERSION ?>!<br>
                     We hope that you will create a great application using this framework.<br>
                 </p>
                 <p>

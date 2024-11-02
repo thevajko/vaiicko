@@ -2,11 +2,11 @@
 
 namespace App\Controllers;
 
-use App\Config\Configuration;
-use App\Core\ControllerBase;
-use App\Core\Http\Responses\Response;
-use App\Core\Http\Responses\ViewResponse;
+use App\Configuration;
 use Exception;
+use Framework\Core\ControllerBase;
+use Framework\Http\Responses\Response;
+use Framework\Http\Responses\ViewResponse;
 
 /**
  * Class AuthController
@@ -24,7 +24,7 @@ class AuthController extends ControllerBase
      * This action serves as the default landing point for the authentication section of the application, directing
      * users to the login URL specified in the configuration.
      *
-     * @return Response The response object for the redirection to the login page.
+     * @return \Framework\Http\Responses\Response The response object for the redirection to the login page.
      */
     public function index(): Response
     {

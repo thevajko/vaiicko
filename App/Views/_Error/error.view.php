@@ -3,7 +3,7 @@
 $layout = null;
 
 /** @var array $data */
-/** @var \App\Core\Http\HttpException $exception */
+/** @var \Framework\Http\HttpException $exception */
 $exception = $data["exception"];
 ?>
 

@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Core\ControllerBase;
-use App\Core\Http\Responses\Response;
+use Framework\Core\ControllerBase;
+use Framework\Http\Responses\Response;
 
 /**
  * Class HomeController
@@ -34,7 +34,7 @@ class HomeController extends ControllerBase
      *
      * This action serves the main HTML view of the home page.
      *
-     * @return Response The response object containing the rendered HTML for the home page.
+     * @return \Framework\Http\Responses\Response The response object containing the rendered HTML for the home page.
      */
     public function index(): Response
     {
@@ -47,7 +47,7 @@ class HomeController extends ControllerBase
      * This action serves the HTML view for the contact page, which is accessible to all users without any
      * authorization.
      *
-     * @return Response The response object containing the rendered HTML for the contact page.
+     * @return \Framework\Http\Responses\Response The response object containing the rendered HTML for the contact page.
      */
     public function contact(): Response
     {

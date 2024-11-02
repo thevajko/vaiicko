@@ -1,7 +1,7 @@
 <?php
 
 /** @var Array $data */
-/** @var \App\Core\LinkGenerator $link */
+/** @var \Framework\Core\LinkGenerator $link */
 ?>
 
 <div class="row">

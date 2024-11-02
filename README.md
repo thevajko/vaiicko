@@ -14,13 +14,13 @@ visit the [WIKI stránky](https://github.com/thevajko/vaiicko/wiki/00-%C3%9Avodn
 The Framework has a basic configuration for running and debugging web applications in the `<root>/docker` directory. 
 All necessary services are set in `docker-compose.yml` file. After starting them, it creates the following services:
 
-- web server (Apache) with the __PHP 8.2__ 
+- web server (Apache) with the __PHP 8.3__ 
 - MariaDB database server with a created _database_ named according `MYSQL_DATABASE` environment variable
 - Adminer application for MariaDB administration
 
 ## Other notes:
 
-- __WWW document root__ is set to the project directory.
+- __WWW document root__ is set to the `public` in the project directory.
 - The website is available at [http://localhost/](http://localhost/).
 - The server includes an extension for PHP code debugging [__Xdebug 3__](https://xdebug.org/), uses the  
   port __9003__ and works in "auto-start" mode.

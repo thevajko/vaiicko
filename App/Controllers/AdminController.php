@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Core\ControllerBase;
-use App\Core\Http\Responses\Response;
+use Framework\Core\ControllerBase;
+use Framework\Http\Responses\Response;
 
 /**
  * Class AdminController
@@ -34,7 +34,7 @@ class AdminController extends ControllerBase
      *
      * This action requires authorization. It returns an HTML response for the admin dashboard or main page.
      *
-     * @return Response Returns a response object containing the rendered HTML.
+     * @return \Framework\Http\Responses\Response Returns a response object containing the rendered HTML.
      */
     public function index(): Response
     {
