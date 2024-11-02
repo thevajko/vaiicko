@@ -54,7 +54,6 @@ abstract class Response
         return $this;
     }
 
-
     /**
      * Sets a cookie for the response.
      *
