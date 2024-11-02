@@ -22,7 +22,7 @@ class Configuration
     public const APP_NAME = 'Vaííčko MVC FW';
 
     /**
-     * Version of the framework being used.
+     * Version of the framework.
      */
     public const FW_VERSION = '3.0 RC1';
 
