@@ -250,7 +250,7 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Loads entity of type $modelClass witch reference this entity.
+     * Loads entity of type $modelClass which reference this entity.
      * @param string $modelClass Model to load
      * @param string|null $refColumn Db column name used to reference this entity
      * @param string|null $where Additional conditions to restrict loaded references

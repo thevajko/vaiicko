@@ -49,7 +49,7 @@ class ResultSet
 
     /**
      * @param string $modelClass Model class to load
-     * @param string $fk DB column name referenced entity used to load referencies
+     * @param string $fk DB column name referenced entity used to load references
      * @param string|null $where Additional parameters for filter loaded entities
      * @param array $whereParams Parameter values
      * @param callable $idPropertyAccessor Callback to load models primary key value
