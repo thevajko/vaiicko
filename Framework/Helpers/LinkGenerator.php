@@ -99,4 +99,32 @@ class LinkGenerator
         // Construct and return the final URL
         return $basePath . "?" . http_build_query($args);
     }
+
+    /**
+     * Generates a URL to a static asset under the public web root.
+     *
+     * Examples:
+     * - asset('css/styl.css')               // relative to app base path
+     * - asset('/css/styl.css')              // leading slash is normalized
+     * - asset('favicons/favicon-32x32.png') // favicon path
+     * - asset('js/app.js', true)            // absolute URL with scheme and host
+     */
+    public function asset(string $path, bool $absolute = false): string
+    {
+        $scriptPath = $this->request->server('PHP_SELF') ?? '/';
+        $dir = rtrim(str_replace('\\', '/', dirname($scriptPath)), '/');
+        $assetPath = '/' . ltrim($path, '/');
+
+        if ($absolute) {
+            $serverProtocol = strtolower($this->request->server('SERVER_PROTOCOL') ?? 'http');
+            $isHttps = str_starts_with($serverProtocol, 'https')
+                || ($this->request->server('HTTPS') ?? '') === 'on'
+                || ($this->request->server('REQUEST_SCHEME') ?? '') === 'https';
+            $protocol = $isHttps ? 'https' : 'http';
+            $host = $this->request->server('HTTP_HOST') ?? '';
+            return $protocol . '://' . $host . $dir . $assetPath;
+        }
+
+        return ($dir ?: '') . $assetPath;
+    }
 }
