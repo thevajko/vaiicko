@@ -5,6 +5,7 @@ namespace Framework\Core;
 use App\Configuration;
 use Exception;
 use Framework\DB\Connection;
+use Framework\DB\ResultSet;
 use Framework\DB\IDbConvention;
 use Framework\Http\Request;
 use PDO;
@@ -17,48 +18,61 @@ use PDOException;
  * Create, Read, Update, and Delete (CRUD) operations and defines a standard structure for model interactions
  * with the database.
  *
+ * Customization for subclasses:
+ * - To set a custom table name: define `protected static ?string $tableName = 'my_table';`
+ * - To set a custom primary key: define `protected static ?string $primaryKey = 'my_pk';`
+ * - To map DB columns to properties: define `protected static array $columnsMap = ['db_column' => 'propertyName'];`
+ *
  * @package App\Core\Storage
  */
 abstract class Model implements \JsonSerializable
 {
+    /**
+     * Optional overrides in subclasses.
+     * - $tableName: custom DB table name
+     * - $primaryKey: custom primary key column
+     * - $columnsMap: map of DB column => property name
+     */
+    protected static ?string $tableName = null;
+    protected static ?string $primaryKey = null;
+    protected static array $columnsMap = [];
+
     private static array $dbColumns = []; // Cache for database column names
     private static IDbConvention $dbConventions; // Instance for database naming conventions
     private mixed $_dbId = null; // Store the primary key value for the model
+    private ?ResultSet $_resultSet = null; // ResultSet for related entity loading
 
     /**
      * Retrieves the table name associated with the model class.
-     *
-     * This method can be overridden in a subclass to provide a custom table name.
-     *
-     * @return string The name of the database table corresponding to the model.
+     * Subclasses can override via `protected static ?string $tableName`.
      */
     protected static function getTableName(): string
     {
+        if (!empty(static::$tableName)) {
+            return static::$tableName;
+        }
         return self::getConventions()->getTableName(get_called_class());
     }
 
     /**
      * Retrieves the default primary key column name for the model.
-     *
-     * This method can be overridden in a subclass to specify a custom primary key name.
-     *
-     * @return string The name of the primary key column in the database table.
+     * Subclasses can override via `protected static ?string $primaryKey`.
      */
     protected static function getPkColumnName(): string
     {
+        if (!empty(static::$primaryKey)) {
+            return static::$primaryKey;
+        }
         return self::getConventions()->getPkColumnName(get_called_class());
     }
 
     /**
      * Retrieves the mapping of model property names to database column names.
-     *
-     * This method can be overridden in a subclass to provide custom mappings.
-     *
-     * @return array An associative array where keys are model property names and values are DB column names.
+     * Subclasses can override via `protected static array $columnsMap = ['db_col' => 'propertyName'];`.
      */
     protected static function getColumnsMap(): array
     {
-        return [];
+        return static::$columnsMap ?? [];
     }
 
     /**
@@ -100,8 +114,8 @@ abstract class Model implements \JsonSerializable
         ?int $offset = null
     ): array {
         try {
-            $sql = "SELECT " . self::getDBColumnNamesList() . " FROM `" . static::getTableName() . "`";
-            if ($whereClause !== null) {
+            $sql = "SELECT " . static::getDBColumnNamesList() . " FROM `" . static::getTableName() . "`";
+            if ($whereClause != null) {
                 $sql .= " WHERE $whereClause";
             }
             if ($orderBy !== null) {
@@ -117,8 +131,11 @@ abstract class Model implements \JsonSerializable
             $stmt = Connection::getInstance()->prepare($sql);
             $stmt->execute($whereParams);
             $models = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
+            $dataSet = new ResultSet($models);
+            /** @var static $model */
             foreach ($models as $model) {
                 $model->_dbId = $model->getIdValue();
+                $model->_resultSet = $dataSet;
             }
             return $models;
         } catch (PDOException $exception) {
@@ -140,7 +157,7 @@ abstract class Model implements \JsonSerializable
         }
 
         try {
-            $sql = "SELECT " . self::getDBColumnNamesList() . " FROM `" . static::getTableName() . "` WHERE `" .
+            $sql = "SELECT " . static::getDBColumnNamesList() . " FROM `" . static::getTableName() . "` WHERE `" .
                 static::getPkColumnName() . "`=?";
             $stmt = Connection::getInstance()->prepare($sql);
             $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, static::class);
@@ -148,6 +165,7 @@ abstract class Model implements \JsonSerializable
             $model = $stmt->fetch() ?: null;
             if ($model !== null) {
                 $model->_dbId = $model->getIdValue();
+                $model->_resultSet = new ResultSet([$model]);
             }
             return $model;
         } catch (PDOException $exception) {
@@ -274,6 +292,57 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
+     * Loads referenced entity of type $modelClass using default property.
+     * @param class-string<Model> $modelClass Model to load (must extend Model)
+     * @param string|null $refColumn Change DB column name used to load referenced property
+     * @return mixed
+     */
+    public function getOneRelated(string $modelClass, ?string $refColumn = null)
+    {
+        if ($modelClass !== static::class && !is_subclass_of($modelClass, self::class)) {
+            throw new Exception("Parameter modelClass must be a subclass of " . self::class);
+        }
+        $refColumn ??= static::getConventions()->getFkColumn($modelClass);
+        return $this->_resultSet->getOneRelated(
+            $modelClass,
+            self::toPropertyName($refColumn),
+            fn($e) => $e->{self::toPropertyName($refColumn)},
+            fn($e) => $e->getIdValue(),
+            $modelClass::getPkColumnName(),
+            $this->{self::toPropertyName($refColumn)},
+        );
+    }
+
+    /**
+     * Loads entity of type $modelClass which reference this entity.
+     * @param class-string<Model> $modelClass Model to load (must extend Model)
+     * @param string|null $refColumn Db column name used to reference this entity
+     * @param string|null $where Additional conditions to restrict loaded references
+     * @param array $whereParams
+     * @return mixed
+     */
+    public function getAllRelated(
+        string $modelClass,
+        ?string $refColumn = null,
+        ?string $where = null,
+        array $whereParams = []
+    ) {
+        if ($modelClass !== static::class && !is_subclass_of($modelClass, self::class)) {
+            throw new Exception("Parameter modelClass must be a subclass of " . self::class);
+        }
+        $refColumn ??= self::getConventions()->getFkColumn(static::class);
+        return $this->_resultSet->getAllRelated(
+            $modelClass,
+            $refColumn,
+            $where,
+            $whereParams,
+            fn($e) => $e->getIdValue(),
+            fn($e) => $e->{self::toPropertyName($refColumn)},
+            $this->getIdValue()
+        );
+    }
+
+    /**
      * Default implementation of the JSON serialize method. Converts the model's properties to an array for JSON
      * serialization, excluding the internal `_dbId` property.
      *
@@ -283,6 +352,7 @@ abstract class Model implements \JsonSerializable
     {
         $properties = get_object_vars($this);
         unset($properties["_dbId"]); // Remove internal object ID
+        unset($properties["_resultSet"]); //Remove resultset
         return $properties;
     }
 
@@ -318,7 +388,7 @@ abstract class Model implements \JsonSerializable
     private function getIdValue(): mixed
     {
         $pk = static::getPkColumnName();
-        return $this->{self::toPropertyName($pk)};
+        return $this->{static::toPropertyName($pk)};
     }
 
     /**
@@ -332,7 +402,7 @@ abstract class Model implements \JsonSerializable
     {
         $dbColumns = [];
         foreach (static::getDbColumns() as $columnName) {
-            $name = self::toPropertyName($columnName);
+            $name = static::toPropertyName($columnName);
             if ($name != $columnName) {
                 $dbColumns[] = "`$columnName` AS {$name}";
             } else {
@@ -343,11 +413,8 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * Converts a database column name to the corresponding model property name. This method takes into account any
-     * user-defined mappings if applicable.
-     *
-     * @param string $columnName The name of the database column to convert.
-     * @return string The corresponding model property name.
+     * Converts a database column name to the corresponding model property name.
+     * Uses `$columnsMap` when provided in the subclass; otherwise falls back to conventions.
      */
     private static function toPropertyName(string $columnName): string
     {
@@ -367,9 +434,9 @@ abstract class Model implements \JsonSerializable
      */
     private static function getConventions(): IDbConvention
     {
-        if (!isset(self::$dbConventions)) {
-            self::$dbConventions = new (Configuration::DB_CONVENTIONS_CLASS)();
+        if (!isset(static::$dbConventions)) {
+            static::$dbConventions = new (Configuration::DB_CONVENTIONS_CLASS)();
         }
-        return self::$dbConventions;
+        return static::$dbConventions;
     }
 }

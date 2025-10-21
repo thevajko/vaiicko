@@ -30,6 +30,13 @@ interface IDbConvention
     public function getPkColumnName(string $className): string;
 
     /**
+     * Returns the name of the foreign key for model class
+     * @param string $className Class name of the model
+     * @return string
+     */
+    public function getFkColumn(string $className);
+
+    /**
      * Convert a model property name to its corresponding database column name. This method should maintain consistency
      * between model properties and their respective database columns.
      *
