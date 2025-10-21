@@ -1,0 +1,205 @@
+From 6a22be6cc30163e1f3be3c0b837e066dfcdfba5f Mon Sep 17 00:00:00 2001
+From: GitHub Copilot Agent <copilot-agent@github.com>
+Date: Tue, 21 Oct 2025 13:58:33 +0000
+Subject: [PATCH] Update wiki pages for version 3.0 with new structure
+
+- Update PHP version requirement to 8.3
+- Update document root to public/ directory
+- Update namespace references from App\Core to Framework\Core
+- Update namespace references from App\Config to App
+- Update database class paths to Framework\DB
+- Update authentication class paths to Framework\Auth
+- Fix all configuration class references
+---
+ "01-In\305\241tal\303\241cia.md"               |  4 ++--
+ "07-Vytv\303\241ranie-URL-adries.md"           |  4 ++--
+ "10-Rozlo\305\276enie-celej-str\303\241nky.md" |  2 +-
+ "11-Pripojenie-k-datab\303\241ze.md"           |  4 ++--
+ "12-Tvorba-vlastn\303\275ch-modelov.md"        |  6 +++---
+ 14-Ukladanie-modelu-do-DB.md                   |  2 +-
+ "16-Zlo\305\276itej\305\241ie-SQL-dopyty.md"   |  4 ++--
+ "18-O\305\241etrovanie-ch\303\275b.md"         |  2 +-
+ "19-Autentifik\303\241cia.md"                  | 12 ++++++------
+ 9 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git "a/01-In\305\241tal\303\241cia.md" "b/01-In\305\241tal\303\241cia.md"
+index 90425f9..024b585 100644
+--- "a/01-In\305\241tal\303\241cia.md"
++++ "b/01-In\305\241tal\303\241cia.md"
+@@ -7,7 +7,7 @@
+ Alternatívne je možné vytvoriť vlastné behové prostredie s týmito SW komponentami:
+ 
+ - Webový server s nainštalovanou podporou PHP
+-- PHP min. vo verzii 8.0 a vyššej
++- PHP min. vo verzii 8.3 a vyššej
+ - MySQL v6 (MariaDB v10) a vyššia
+ 
+ ## Stiahnutie frameworku
+@@ -27,7 +27,7 @@ definované v súbore `docker-compose.yml`.
+ 
+ Niekoľko doplňujúcich informácií ku konfigurácii:
+ 
+-- __www document root__ je nastavený na adresár projektu. Všetko, čo nahráte do adresára projektu, bude dostupné na
++- __www document root__ je nastavený na adresár `public` v rámci projektu. Všetko, čo nahráte do adresára `public`, bude dostupné na
+   adrese [http://localhost/](http://localhost/)
+ - __web server__ je vytvorený z obrazu [ghcr.io/thevajko/vaii-web-server:main](https://github.com/thevajko/vaii-web-server)
+ - __databázový server__ je MariaDB server, pri spustení kontajnera sa vytvorí databáza, jej meno a prihlasovacie údaje k nej sú uvedené v súbore `docker/.env`. 
+diff --git "a/07-Vytv\303\241ranie-URL-adries.md" "b/07-Vytv\303\241ranie-URL-adries.md"
+index 66cb0b3..10b2436 100644
+--- "a/07-Vytv\303\241ranie-URL-adries.md"
++++ "b/07-Vytv\303\241ranie-URL-adries.md"
+@@ -11,7 +11,7 @@ Pohľad môže obsahovať nasledovný HTML kód:
+ ```php
+ <?php
+ 
+-/** @var \App\Core\LinkGenerator $link */
++/** @var \Framework\Core\LinkGenerator $link */
+ ?>
+ <h1>
+     Hello World!
+@@ -19,7 +19,7 @@ Pohľad môže obsahovať nasledovný HTML kód:
+ <a href="<?= $link->url("home.index") ?>">Návrat na hlavnú stránku</a>
+ ```
+ 
+-> __Poznámka:__ Dokumentačný komentár `/** @var \App\Core\LinkGenerator $link */` slúži na to, aby vývojové prostredie nepovažovalo premennú `$link` za neznámu
++> __Poznámka:__ Dokumentačný komentár `/** @var \Framework\Core\LinkGenerator $link */` slúži na to, aby vývojové prostredie nepovažovalo premennú `$link` za neznámu
+ > premennú a bolo schopné dopĺňať názvy jej metód a ich parametrov.
+ 
+ Premenná `$link` je automaticky dostupná v každom pohľade. Objekt `LinkGenerator` obsahuje metódu `url()`, ktorá za vás zostaví príslušnú URL adresu.
+diff --git "a/10-Rozlo\305\276enie-celej-str\303\241nky.md" "b/10-Rozlo\305\276enie-celej-str\303\241nky.md"
+index dffd070..0fb4630 100644
+--- "a/10-Rozlo\305\276enie-celej-str\303\241nky.md"
++++ "b/10-Rozlo\305\276enie-celej-str\303\241nky.md"
+@@ -6,7 +6,7 @@ by preto zbytočné, aby sa v každom pohľade opakoval celý HTML kód stránky
+ 
+ Rozloženie stránky (_layout_) sa nachádza v súbore s koncovkou `.layout.view.php` v adresári `App\Views`. Týchto súborov môže byť viac, preto v konfigurácii je
+ potrebné uviesť, ktoré rozloženia je základné a použije sa, ak pohľad nenastaví iné rozloženie. Konfiguračná konštanta `ROOT_LAYOUT` v súbore
+-`App\Config\Configuration.php` je štandardne nastavená na `root` a preto framework používa rozloženie `root.layout.view.php`. V tomto rozložení sa nachádza
++`App\Configuration.php` je štandardne nastavená na `root` a preto framework používa rozloženie `root.layout.view.php`. V tomto rozložení sa nachádza
+ aj sekcia `<head>`, kde sa importuje Bootstrap CSS framework, alebo menu, ktoré je možné vidieť na úvodnej stránke frameworku.
+ 
+ Obsah pohľadu do rozloženia framework vkladá cez premennú `$contentHTML`:
+diff --git "a/11-Pripojenie-k-datab\303\241ze.md" "b/11-Pripojenie-k-datab\303\241ze.md"
+index 698c22e..ee09239 100644
+--- "a/11-Pripojenie-k-datab\303\241ze.md"
++++ "b/11-Pripojenie-k-datab\303\241ze.md"
+@@ -1,8 +1,8 @@
+ # Pripojenie k databázovému serveru
+ 
+ Framework v súčasnosti podporuje spoluprácu s databázovým serverom MariaDB (MySQL). Pokiaľ by ste chceli komunikovať s iným DB serverom, bolo by potrebné
+-vykonať zmeny v triedach `App\Core\DB\Connecton` a `App\Core\Model` (prípadne si vytvoriť vlastné). Na pripojenie k DB serveru sú potrebné prihlasovacie
+-údaje, ktoré je možné nájsť v triede `Config\Configuration`:
++vykonať zmeny v triedach `Framework\DB\Connection` a `Framework\Core\Model` (prípadne si vytvoriť vlastné). Na pripojenie k DB serveru sú potrebné prihlasovacie
++údaje, ktoré je možné nájsť v triede `App\Configuration`:
+ 
+ ```php
+     /**
+diff --git "a/12-Tvorba-vlastn\303\275ch-modelov.md" "b/12-Tvorba-vlastn\303\275ch-modelov.md"
+index 13bfa36..978e32e 100644
+--- "a/12-Tvorba-vlastn\303\275ch-modelov.md"
++++ "b/12-Tvorba-vlastn\303\275ch-modelov.md"
+@@ -6,7 +6,7 @@ reprezentáciu v databáze vo forme __tabuľky__. Jedna aplikácia zvyčajne obs
+ ## Ako si vytvoriť vlastný model
+ 
+ Súbor s triedou modelu je potrebné umiestniť do adresára `App\Models`. Ak chcete, aby model mal schopnosť čítať a zapisovať z/do databázy, je potrebné, aby
+-mal ako predka triedu `App\Core\Model`. Trieda modelu musí spĺňať tieto požiadavky:
++mal ako predka triedu `Framework\Core\Model`. Trieda modelu musí spĺňať tieto požiadavky:
+ 
+ * Model musí mať konštruktor bez parametrov (alebo žiadny),
+ * atribúty modelov musia byť označené `protected`,
+@@ -20,7 +20,7 @@ mal ako predka triedu `App\Core\Model`. Trieda modelu musí spĺňať tieto pož
+ * názov tabuľky v DB by mal byť v angličtine, v množnom čísle a malými písmenami, potom je framework schopný automaticky prepojiť model a DB tabuľku,
+ * ak si pomenujete model alebo tabuľku svojím názvom, je nutné v modeli prekryť metódu vracajúcu meno tabuľky `getTableName()`.
+ 
+-> __Poznámka:__ Model nemusí nutne spolupracovať s databázou. Potom ani nemusí mať predka `App\Core\Model`.
++> __Poznámka:__ Model nemusí nutne spolupracovať s databázou. Potom ani nemusí mať predka `Framework\Core\Model`.
+ 
+ Model by mal obsahovať všetky atribúty a ich _get_ a _set_ metódy. Okrem toho môže obsahovať ďalšie metódy, ktorých úlohou je pripraviť dáta pre
+ aplikačnú logiku kontroléra. Nemal by však obsahovať žiadnu aplikačnú logiku! Jednoduchú triedu je možné nájsť v nasledovnom príklade:
+@@ -30,7 +30,7 @@ aplikačnú logiku kontroléra. Nemal by však obsahovať žiadnu aplikačnú lo
+ 
+ namespace App\Models;
+ 
+-use App\Core\Model;
++use Framework\Core\Model;
+ 
+ class Post extends Model
+ {
+diff --git a/14-Ukladanie-modelu-do-DB.md b/14-Ukladanie-modelu-do-DB.md
+index 63ec06d..be2cbdc 100644
+--- a/14-Ukladanie-modelu-do-DB.md
++++ b/14-Ukladanie-modelu-do-DB.md
+@@ -30,7 +30,7 @@ $post->save();
+ ```
+ 
+ > __Poznámka:__ Ako framework vie, či má ukladať nový záznam, alebo zmeniť existujúci, keď volá rovnakú metódu `save()`? Na tento účel používa privátny atribút 
+-> `$_dbId` v triede `App\Core\Model`.
++> `$_dbId` v triede `Framework\Core\Model`.
+ 
+ ### Kontrola, či záznam v DB existuje
+ 
+diff --git "a/16-Zlo\305\276itej\305\241ie-SQL-dopyty.md" "b/16-Zlo\305\276itej\305\241ie-SQL-dopyty.md"
+index 730e42f..4a8ad8e 100644
+--- "a/16-Zlo\305\276itej\305\241ie-SQL-dopyty.md"
++++ "b/16-Zlo\305\276itej\305\241ie-SQL-dopyty.md"
+@@ -1,8 +1,8 @@
+ # Zložitejšie SQL dopyty
+ 
+ Na vytvorenie jednoduchej aplikácie, ktorá vykonáva všetky základné operácie s modelom (čítanie, ukladanie, editovanie, zmazanie), postačujú základné metódy,
+-ktoré poskytuje trieda `App\Core\Model`. Niekedy môže nastať situácia, že potrebujete vytvoriť vlastný SQL dopyt. Framework pre takéto situácie ponúka 
+-metódu `connect()` z triedy `App\Core\DB\Connection`. So získaným spojením na DB server je potom možné zostaviť vlastný SQL príkaz a ten potom poslať
++ktoré poskytuje trieda `Framework\Core\Model`. Niekedy môže nastať situácia, že potrebujete vytvoriť vlastný SQL dopyt. Framework pre takéto situácie ponúka 
++metódu `connect()` z triedy `Framework\DB\Connection`. So získaným spojením na DB server je potom možné zostaviť vlastný SQL príkaz a ten potom poslať
+ do databázového servera metódami triedy `PDO` z PHP:
+ 
+ ```php
+diff --git "a/18-O\305\241etrovanie-ch\303\275b.md" "b/18-O\305\241etrovanie-ch\303\275b.md"
+index 8da5406..947b387 100644
+--- "a/18-O\305\241etrovanie-ch\303\275b.md"
++++ "b/18-O\305\241etrovanie-ch\303\275b.md"
+@@ -50,7 +50,7 @@ informáciami o tom, kde chyba vznikla:
+ ![500 - Internal server error](images/chyba_500.png)
+ 
+ > __Poznámka:__ Pokiaľ nechcete, aby framework zobrazil detaily výnimky (napr. v ktorom súbore a na ktorom riadku nastala), je možné v konfigurácii
+-> aplikácie (trieda `App\Config\Configuration`) nastaviť konštantu `SHOW_EXCEPTION_DETAILS`. Ak ju nastavíte na `false`, zobrazí sa len chyba, ale jej
++> aplikácie (trieda `App\Configuration`) nastaviť konštantu `SHOW_EXCEPTION_DETAILS`. Ak ju nastavíte na `false`, zobrazí sa len chyba, ale jej
+ > detaily nebudú zobrazené.
+ 
+ ### Používateľské chyby
+diff --git "a/19-Autentifik\303\241cia.md" "b/19-Autentifik\303\241cia.md"
+index 526248c..7fade05 100644
+--- "a/19-Autentifik\303\241cia.md"
++++ "b/19-Autentifik\303\241cia.md"
+@@ -8,15 +8,15 @@ prihlásení. Vývojár si môže vzhľad a spôsob overovania identity prispôs
+ V adresári `App\Views\Auth` sa nachádzajú dva pohľady: `login.view.php` a `logout.view.php`. Keďže pri prihlasovaní nepotrebujeme mať menu, pohľady používajú
+ iné rozloženie stránky, čo je vidieť z nastavenia `$layout = 'auth';`. Tieto pohľady, podobne ako ostatné, používajú Bootstrap na zobrazenie formulára.
+ Vzhľad formulára si môžete upraviť podľa svojich potrieb. Ak chcete na prihlasovanie používať svoju vlastnú akciu, môžete v konfigurácii nastaviť jej URL
+-adresu (konštanta `Config\Configuration::LOGIN_URL`).
++adresu (konštanta `App\Configuration::LOGIN_URL`).
+ 
+ ## Implementácia autentifikácie
+ 
+-V triede konfigurácie aplikácie `Config\Configuration` sa nachádza konštanta `AUTH_CLASS`, ktorá určuje, ktorá trieda sa použije pri autentifikácii. Vzorová
+-jednoduchá autentifikácia je implementovaná v triede `App\Auth\DummyAuthenticator`. Táto trieda implementuje rozhranie `App\Core\IAuthenticator`.
++V triede konfigurácie aplikácie `App\Configuration` sa nachádza konštanta `AUTH_CLASS`, ktorá určuje, ktorá trieda sa použije pri autentifikácii. Vzorová
++jednoduchá autentifikácia je implementovaná v triede `Framework\Auth\DummyAuthenticator`. Táto trieda implementuje rozhranie `Framework\Core\IAuthenticator`.
+ Autentifikácia je veľmi jednoduchá, overuje len používateľa _admin_ a správne heslo je _admin_. Ak si chcete implementovať vlastný spôsob autentifikácie, napr.
+-overovanie používateľa v databáze, mali by ste si implementovať vlastnú triedu autentifikátora podľa rozhrania `App\Core\IAuthenticator`. Podľa potrieb si
+-môžete implementovať všetky metódy vlastným spôsobom, ale implementácia bude veľmi podobná ako v triede `App\Auth\DummyAuthenticator`. Jedinou výrazne inou
++overovanie používateľa v databáze, mali by ste si implementovať vlastnú triedu autentifikátora podľa rozhrania `Framework\Core\IAuthenticator`. Podľa potrieb si
++môžete implementovať všetky metódy vlastným spôsobom, ale implementácia bude veľmi podobná ako v triede `Framework\Auth\DummyAuthenticator`. Jedinou výrazne inou
+ metódou bude `login()`, ktorý musí reflektovať váš spôsob overovania identity. Na záver nezabudnite v konfigurácii nastaviť svoju novú triedu ako tú, ktorá
+ sa bude používať v aplikácii.
+ 
+@@ -32,7 +32,7 @@ je k dispozícii premenná `$auth`, ktorá obsahuje inštanciu autentifikátora,
+ `$auth->isLogged()`, ktorá Vám vráti informáciu, či je používateľ prihlásený (`true`), alebo nie (`false`). Na základe tejto informácie môžete obmedziť
+ zobrazovanie tých častí používateľského rozhrania, ktoré majú zostať skryté, napr. neprihláseným používateľom.
+ 
+-> __Poznámka:__ Nezabudnite na začiatku každého pohľadu uviesť dokumentačný komentár `/** @var \App\Core\IAuthenticator $auth */`, aby vám vývojové prostredie
++> __Poznámka:__ Nezabudnite na začiatku každého pohľadu uviesť dokumentačný komentár `/** @var \Framework\Core\IAuthenticator $auth */`, aby vám vývojové prostredie
+ > bolo schopné pomáhať s názvami metód a nepodčiarkovalo Vám `$auth` ako neznámu premennú.
+ 
+ ## Použitie autentifikácie v kontroléroch
+-- 
+2.51.0
+
