@@ -101,8 +101,8 @@ class ViewResponse extends Response
     /**
      * Renders the specified view file with the given data.
      *
-     * This method extracts the provided data as variables for use within the view and includes the view file, making
-     * it part of the current output.
+     * This method extracts the provided data as variables for use within the view and
+     * includes the view file, making it part of the current output.
      *
      * @param array $data The data to be made available in the view.
      * @param string $viewPath The path to the view file to render.
@@ -115,7 +115,11 @@ class ViewResponse extends Response
         extract($data, EXTR_SKIP);
 
         // Include the specified view file, which will be rendered.
-        require '..' . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . $viewPath;
+        require dirname(__DIR__, 3) .
+            DIRECTORY_SEPARATOR . 'App' .
+            DIRECTORY_SEPARATOR . 'Views' .
+            DIRECTORY_SEPARATOR .
+            $viewPath;
     }
 
     /**
@@ -129,7 +133,8 @@ class ViewResponse extends Response
      */
     private function getLayoutFullName(string $layoutName): string
     {
-        return str_ends_with($layoutName, '.layout.view.php') ? $layoutName : $layoutName . '.layout.view.php';
+        $file = str_ends_with($layoutName, '.layout.view.php') ? $layoutName : $layoutName . '.layout.view.php';
+        return 'Layouts' . DIRECTORY_SEPARATOR . $file;
     }
 
     /**
