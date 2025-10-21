@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use Framework\Core\BaseController;
+use Framework\Http\Request;
 use Framework\Http\Responses\Response;
 
 /**
@@ -36,7 +37,7 @@ class AdminController extends BaseController
      *
      * @return \Framework\Http\Responses\Response Returns a response object containing the rendered HTML.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return $this->html();
     }

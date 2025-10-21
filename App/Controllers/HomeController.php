@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use Framework\Core\BaseController;
+use Framework\Http\Request;
 use Framework\Http\Responses\Response;
 
 /**
@@ -36,7 +37,7 @@ class HomeController extends BaseController
      *
      * @return Response The response object containing the rendered HTML for the home page.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return $this->html();
     }
@@ -49,7 +50,7 @@ class HomeController extends BaseController
      *
      * @return Response The response object containing the rendered HTML for the contact page.
      */
-    public function contact(): Response
+    public function contact(Request $request): Response
     {
         return $this->html();
     }

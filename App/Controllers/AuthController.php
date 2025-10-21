@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Configuration;
 use Exception;
 use Framework\Core\BaseController;
+use Framework\Http\Request;
 use Framework\Http\Responses\Response;
 use Framework\Http\Responses\ViewResponse;
 
@@ -26,7 +27,7 @@ class AuthController extends BaseController
      *
      * @return \Framework\Http\Responses\Response The response object for the redirection to the login page.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return $this->redirect(Configuration::LOGIN_URL);
     }
@@ -42,9 +43,8 @@ class AuthController extends BaseController
      *                  an error message on failure.
      * @throws Exception If the parameter for the URL generator is invalid throws an exception.
      */
-    public function login(): Response
+    public function login(Request $request): Response
     {
-        $request = $this->getRequest();
         $logged = null;
         if ($request->hasValue('submit')) {
             $logged = $this->app->getAuth()->login($request->value('login'), $request->value('password'));
@@ -65,7 +65,7 @@ class AuthController extends BaseController
      *
      * @return ViewResponse The response object that renders the logout view.
      */
-    public function logout(): Response
+    public function logout(Request $request): Response
     {
         $this->app->getAuth()->logout();
         return $this->html();

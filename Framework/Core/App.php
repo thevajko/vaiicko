@@ -93,8 +93,8 @@ class App
 
             // Attempt to authorize the requested action.
             if ($this->router->getController()->authorize($this->router->getAction())) {
-                // Call the specified action method on the controller.
-                $response = call_user_func([$this->router->getController(), $this->router->getAction()]);
+                // Call the specified action method on the controller with Request as required parameter (no reflection)
+                $response = call_user_func([$this->router->getController(), $this->router->getAction()], $this->request);
 
                 // If the response is valid, send it to the client.
                 if ($response instanceof Response) {
