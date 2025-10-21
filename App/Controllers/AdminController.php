@@ -2,18 +2,18 @@
 
 namespace App\Controllers;
 
-use Framework\Core\ControllerBase;
+use Framework\Core\BaseController;
 use Framework\Http\Responses\Response;
 
 /**
  * Class AdminController
  *
  * This controller manages admin-related actions within the application.It extends the base controller functionality
- * provided by ControllerBase.
+ * provided by BaseController.
  *
  * @package App\Controllers
  */
-class AdminController extends ControllerBase
+class AdminController extends BaseController
 {
     /**
      * Authorizes actions in this controller.
