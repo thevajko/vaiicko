@@ -6,11 +6,14 @@ use Exception;
 use Framework\Core\App;
 use Framework\Core\IAuthenticator;
 use Framework\Http\Session;
+use App\Models\User;
 
 /**
  * Class DummyAuthenticator
  * A basic implementation of user authentication using hardcoded credentials.
+ *
  * @package App\Auth
+ * @property-read User|null $user Associated authenticated user object (or null if not logged in).
  */
 class DummyAuthenticator implements IAuthenticator
 {
@@ -24,6 +27,8 @@ class DummyAuthenticator implements IAuthenticator
     private App $app;
     // Session management instance
     private Session $session;
+    // Cached authenticated user instance (nullable when not logged in)
+    private ?User $user = null;
 
     /**
      * DummyAuthenticator constructor.
@@ -47,8 +52,10 @@ class DummyAuthenticator implements IAuthenticator
     {
         // Check if the provided login and password match the hardcoded credentials
         if ($username == self::LOGIN && password_verify($password, self::PASSWORD_HASH)) {
-            $this->session->set('user', self::USERNAME); // Store the username in the session
-            return true; // Authentication successful
+            $this->user = new User(id: null, login: self::LOGIN, name: self::USERNAME);
+            // Store the entire User object in the session
+            $this->session->set('user', $this->user);
+            return true;
         }
         return false; // Authentication failed
     }
@@ -60,50 +67,59 @@ class DummyAuthenticator implements IAuthenticator
      */
     public function logout(): void
     {
+        $this->user = null;
         $this->session->destroy(); // Destroy the session to log out the user
     }
 
     /**
-     * Retrieves the name of the currently logged-in user.
-     *
-     * @return string The name of the logged-in user.
-     * @throws Exception If no user is logged in.
-     */
-    public function getLoggedUserName(): string
-    {
-        // Check if the user key exists in the session
-        return $this->session->hasKey('user') ?
-            $this->session->get('user') :
-            throw new Exception("User not logged in"); // Throw an exception if no user is logged in
-    }
-
-    /**
-     * Retrieves additional context for the logged-in user (currently returns null).
-     *
-     * @return mixed Contextual information about the logged-in user.
-     */
-    public function getLoggedUserContext(): mixed
-    {
-        return null; // No additional context is provided in this implementation
-    }
-
-    /**
      * Checks if the user is currently authenticated.
-     *
-     * @return bool Returns true if the user is logged in; false otherwise.
      */
     public function isLogged(): bool
     {
-        return $this->session->hasKey('user'); // Return true if user key exists in session
+        return $this->getUser() instanceof User;
     }
 
     /**
-     * Retrieves the ID of the currently logged-in user (always returns null in this implementation).
+     * Returns the associated authenticated user object, if available.
      *
-     * @return mixed Returns null, as no user ID is tracked in this implementation.
+     * @return User|null The user object for the logged-in user, or null if not authenticated.
+     * @throws Exception
      */
-    public function getLoggedUserId(): mixed
+    public function getUser(): ?User
     {
-        return null; // No user ID is available in this implementation
+        if ($this->user instanceof User) {
+            return $this->user;
+        }
+
+        $sessionValue = $this->session->get('user');
+
+        // Upgrade legacy string session value to a User object
+        if (is_string($sessionValue) && $sessionValue !== '') {
+            $this->user = new User(id: null, login: self::LOGIN, name: $sessionValue);
+            $this->session->set('user', $this->user);
+            return $this->user;
+        }
+
+        if ($sessionValue instanceof User) {
+            $this->user = $sessionValue;
+            return $this->user;
+        }
+
+        return null;
+    }
+
+    /**
+     * Magic getter to support property-style access `$auth->user`.
+     *
+     * @param string $name The property name being accessed.
+     * @return mixed The value of the requested property.
+     * @throws Exception
+     */
+    public function __get(string $name): mixed
+    {
+        if ($name === 'user') {
+            return $this->getUser();
+        }
+        return null;
     }
 }

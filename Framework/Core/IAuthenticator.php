@@ -2,12 +2,16 @@
 
 namespace Framework\Core;
 
+use App\Models\User;
+
 /**
  * Interface IAuthenticator
  *
  * This interface defines the necessary methods for implementing authentication functionality within the application.
  * Classes that implement this interface will provide the capability to log users in and out, as well as retrieve
  * user-specific information such as their identity and context.
+ *
+ * @property-read User|null $user Associated authenticated user object (or null if not logged in).
  *
  * @package App\Core
  */
@@ -36,36 +40,6 @@ interface IAuthenticator
     public function logout(): void;
 
     /**
-     * Retrieves the name of the currently logged-in user.
-     *
-     * This method returns the username or identifier of the authenticated user. If no user is currently logged in,
-     * it may return an empty string or null, depending on the implementation.
-     *
-     * @return string The name of the logged-in user.
-     */
-    public function getLoggedUserName(): string;
-
-    /**
-     * Retrieves the ID of the currently logged-in user.
-     *
-     * This method returns a unique identifier for the user who is authenticated. The return type may vary based on the
-     * implementation (e.g., integer, string).
-     *
-     * @return mixed The ID of the logged-in user.
-     */
-    public function getLoggedUserId(): mixed;
-
-    /**
-     * Retrieves the context of the currently logged-in user.
-     *
-     * This method returns an object or data structure representing the user's context, such as a user profile or
-     * permissions. The return type will depend on the specific implementation details.
-     *
-     * @return mixed The context of the logged-in user (e.g., a user class instance).
-     */
-    public function getLoggedUserContext(): mixed;
-
-    /**
      * Checks if a user is currently logged in.
      *
      * This method returns true if there is an authenticated user, and false otherwise. It provides a straightforward
@@ -74,4 +48,12 @@ interface IAuthenticator
      * @return bool True if a user is logged in; false otherwise.
      */
     public function isLogged(): bool;
+
+    /**
+     * Returns the associated authenticated user object, if available.
+     *
+     * @return User|null The user object for the logged-in user, or null if not authenticated.
+     */
+    public function getUser(): ?User;
 }
+
