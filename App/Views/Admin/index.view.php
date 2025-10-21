@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col">
             <div>
-                Welcome, <strong><?= $auth->getLoggedUserName() ?></strong>!<br><br>
+                Welcome, <strong><?= $auth->user->name ?></strong>!<br><br>
                 This part of the application is accessible only after logging in.
             </div>
         </div>
