@@ -1,6 +1,5 @@
 <?php
 
-$layout = 'auth';
 /** @var \Framework\Helpers\LinkGenerator $link */
 ?>
 

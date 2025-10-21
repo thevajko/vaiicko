@@ -1,7 +1,5 @@
 <?php
 
-$layout = null;
-
 /** @var array $data */
 /** @var \Framework\Http\HttpException $exception */
 $exception = $data["exception"];

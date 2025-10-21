@@ -1,6 +1,5 @@
 <?php
 
-$layout = 'auth';
 /** @var Array $data */
 /** @var \Framework\Helpers\LinkGenerator $link */
 ?>
@@ -16,11 +15,13 @@ $layout = 'auth';
                     </div>
                     <form class="form-signin" method="post" action="<?= $link->url("login") ?>">
                         <div class="form-label-group mb-3">
+                            <label for="login" class="form-label">Login</label>
                             <input name="login" type="text" id="login" class="form-control" placeholder="Login"
                                    required autofocus>
                         </div>
 
                         <div class="form-label-group mb-3">
+                            <label for="password" class="form-label">Password</label>
                             <input name="password" type="password" id="password" class="form-control"
                                    placeholder="Password" required>
                         </div>
