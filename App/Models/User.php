@@ -7,14 +7,10 @@ namespace App\Models;
  */
 class User
 {
-    public ?int $id;
-    public string $login;
-    public string $name;
-
-    public function __construct(?int $id, string $login, string $name)
-    {
-        $this->id = $id;
-        $this->login = $login;
+    public function __construct(
+        public ?int $id = null,
+        public string $login = '',
+        public string $name = ''
+    ) {
     }
 }
-
