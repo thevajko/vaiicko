@@ -1,7 +1,7 @@
 <?php
 
 $layout = 'auth';
-/** @var \Framework\Core\LinkGenerator $link */
+/** @var \Framework\Helpers\LinkGenerator $link */
 ?>
 
 <div class="container-fluid">

@@ -1,8 +1,9 @@
 <?php
 
-namespace Framework\Core;
+namespace Framework\Helpers;
 
 use Exception;
+use Framework\Core\Router;
 use Framework\Http\Request;
 
 /**
