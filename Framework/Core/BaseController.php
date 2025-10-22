@@ -120,10 +120,9 @@ abstract class BaseController
      *
      * @param array $data Associative array containing data to be passed to the view.
      * @param string|null $viewName The name of the view to render, or null to infer from context.
-     * @param string|null $layoutName Optional layout override (e.g., 'auth'); null keeps automatic selection.
      * @return ViewResponse The constructed ViewResponse object.
      */
-    protected function html(array $data = [], string $viewName = null, ?string $layoutName = null): ViewResponse
+    protected function html(array $data = [], string $viewName = null): ViewResponse
     {
         if ($viewName == null) {
             $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR .
@@ -133,7 +132,7 @@ abstract class BaseController
                 ($this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $viewName) :
                 ($viewName['0'] . DIRECTORY_SEPARATOR . $viewName['1']);
         }
-        return new ViewResponse($this->app, $viewName, $data, $layoutName);
+        return new ViewResponse($this->app, $viewName, $data);
     }
 
     /**

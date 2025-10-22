@@ -37,13 +37,6 @@ class ViewResponse extends Response
     private array $data;
 
     /**
-     * The name of the layout file to use, if provided. This can override the automatic layout detection.
-     *
-     * @var string|null
-     */
-    private ?string $layoutName = null;
-
-    /**
      * ViewResponse constructor.
      *
      * Initializes a new instance of ViewResponse with the specified application instance, view name, and data to be
@@ -52,14 +45,12 @@ class ViewResponse extends Response
      * @param App $app The application instance.
      * @param string $viewName The name of the view to render.
      * @param array $data The data to be passed to the view.
-     * @param string|null $layoutName Optional layout override; null keeps automatic selection.
      */
-    public function __construct(App $app, string $viewName, array $data, ?string $layoutName = null)
+    public function __construct(App $app, string $viewName, array $data)
     {
         $this->app = $app;
         $this->viewName = $viewName;
         $this->data = $data;
-        $this->layoutName = $layoutName;
     }
 
     /**
@@ -72,29 +63,26 @@ class ViewResponse extends Response
      */
     protected function generate(): void
     {
-        // Determine layout: explicit override wins, otherwise auto-detect by view path
-        $layout = $this->layoutName !== null ? $this->layoutName : $this->determineLayout($this->viewName);
-
-        // Create view helpers to be passed to the view.
+        // View helpers available in all views
         $viewHelpers = [
             'auth' => $this->app->getAuth(),
             'link' => $this->app->getLinkGenerator(),
         ];
 
-        // Start output buffering to capture view rendering.
+        // Render the main view and let it decide the layout via `$layout`
+        $dataVars = $viewHelpers + $this->data;
+        extract($dataVars, EXTR_SKIP);
+        $layout = null; // view can set this to e.g. 'auth' or 'root', or leave null for no layout
+
         ob_start();
+        require dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . ($this->viewName . '.view.php');
+        $contentHTML = ob_get_clean();
 
-        // Render the main view file.
-        $this->renderView($viewHelpers + $this->data, $this->viewName . ".view.php");
-
-        // If a layout is specified, render it with the captured view content.
         if ($layout !== null) {
-            $contentHTML = ob_get_clean();
             $layoutData = $viewHelpers + ['contentHTML' => $contentHTML];
             $this->renderView($layoutData, $this->getLayoutFullName($layout));
         } else {
-            // If no layout, output the buffered content directly.
-            ob_end_flush();
+            echo $contentHTML;
         }
     }
 
@@ -135,25 +123,5 @@ class ViewResponse extends Response
     {
         $file = str_ends_with($layoutName, '.layout.view.php') ? $layoutName : $layoutName . '.layout.view.php';
         return 'Layouts' . DIRECTORY_SEPARATOR . $file;
-    }
-
-    /**
-     * Determines layout name based on the view path.
-     *
-     * @param string $viewName The name of the view being rendered.
-     * @return string|null The layout name to use, or null for no layout.
-     */
-    private function determineLayout(string $viewName): ?string
-    {
-        // Error views render without a layout
-        if (str_starts_with($viewName, '_Error/')) {
-            return null;
-        }
-        // Auth views use the 'auth' layout
-        if (str_starts_with($viewName, 'Auth/')) {
-            return 'auth';
-        }
-        // Default application layout
-        return Configuration::ROOT_LAYOUT;
     }
 }

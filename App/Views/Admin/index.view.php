@@ -1,5 +1,7 @@
 <?php
 
+/** @var \Framework\Helpers\LinkGenerator $link */
+
 /** @var \Framework\Core\IAuthenticator $auth */ ?>
 
 <div class="container-fluid">

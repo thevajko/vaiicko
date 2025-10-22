@@ -1,3 +1,8 @@
+<?php
+
+/** @var \Framework\Helpers\LinkGenerator $link */
+?>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col mt-5">
