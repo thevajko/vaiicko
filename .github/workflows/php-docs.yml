@@ -1,0 +1,54 @@
+name: Generate PHPDocs
+on:
+  push:
+    branches: [master]
+
+  # Allow running the workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Allow GITHUB_TOKEN to deploy to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v3.0.6
+      - name: Build with phpDocumentor
+        run: docker run --rm --volume "$(pwd):/data" phpdoc/phpdoc:3 run -vv --target docs --cache-folder .phpdoc/cache --template default
+      - name: Upload artifact to GitHub Pages
+        uses: actions/upload-pages-artifact@v2.0.0
+        with:
+          path: docs
+  # Deploy job
+  deploy:
+    # Add a dependency to the build job
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2.0.4

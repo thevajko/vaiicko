@@ -54,6 +54,7 @@ class DummyAuthenticator implements IAuthenticator
     /**
      * Get the name of the logged-in user
      * @return string
+     * @throws \Exception
      */
     public function getLoggedUserName(): string
     {
