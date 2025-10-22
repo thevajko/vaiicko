@@ -1,8 +1,9 @@
 <?php
+/** @var array $data */
+/** @var \Framework\Support\LinkGenerator $link */
+/** @var \Framework\Support\View $view */
 
-$layout = 'auth';
-/** @var Array $data */
-/** @var \Framework\Helpers\LinkGenerator $link */
+$view->layout('auth');
 ?>
 
 <div class="container">

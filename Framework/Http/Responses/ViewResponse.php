@@ -4,6 +4,7 @@ namespace Framework\Http\Responses;
 
 use App\Configuration;
 use Framework\Core\App;
+use Framework\Support\View as ViewHelper;
 
 /**
  * Class ViewResponse
@@ -69,18 +70,24 @@ class ViewResponse extends Response
             'link' => $this->app->getLinkGenerator(),
         ];
 
-        // Render the main view and let it decide the layout via `$layout`
-        $dataVars = $viewHelpers + $this->data;
+        // Selected layout is controlled by the helper via reference; default to root layout
+        $selectedLayout = Configuration::ROOT_LAYOUT;
+        $view = new ViewHelper($selectedLayout);
+
+        // Render the main view; it may call $view->layout('name')
+        $dataVars = $viewHelpers + $this->data + ['view' => $view];
         extract($dataVars, EXTR_SKIP);
-        $layout = null; // view can set this to e.g. 'auth' or 'root', or leave null for no layout
 
         ob_start();
-        require dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . ($this->viewName . '.view.php');
+        require dirname(__DIR__, 3)
+            . DIRECTORY_SEPARATOR . 'App'
+            . DIRECTORY_SEPARATOR . 'Views'
+            . DIRECTORY_SEPARATOR . ($this->viewName . '.view.php');
         $contentHTML = ob_get_clean();
 
-        if ($layout !== null) {
+        if ($selectedLayout !== null) {
             $layoutData = $viewHelpers + ['contentHTML' => $contentHTML];
-            $this->renderView($layoutData, $this->getLayoutFullName($layout));
+            $this->renderView($layoutData, $this->getLayoutFullName($selectedLayout));
         } else {
             echo $contentHTML;
         }
@@ -103,11 +110,10 @@ class ViewResponse extends Response
         extract($data, EXTR_SKIP);
 
         // Include the specified view file, which will be rendered.
-        require dirname(__DIR__, 3) .
-            DIRECTORY_SEPARATOR . 'App' .
-            DIRECTORY_SEPARATOR . 'Views' .
-            DIRECTORY_SEPARATOR .
-            $viewPath;
+        require dirname(__DIR__, 3)
+            . DIRECTORY_SEPARATOR . 'App'
+            . DIRECTORY_SEPARATOR . 'Views'
+            . DIRECTORY_SEPARATOR . $viewPath;
     }
 
     /**
