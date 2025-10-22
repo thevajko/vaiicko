@@ -1,4 +1,5 @@
 <?php
+
 /** @var \Framework\Support\LinkGenerator $link */
 /** @var \Framework\Support\View $view */
 

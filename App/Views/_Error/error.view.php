@@ -1,4 +1,5 @@
 <?php
+
 /** @var array $data */
 /** @var \Framework\Http\HttpException $exception */
 /** @var \Framework\Support\View $view */

@@ -1,4 +1,5 @@
 <?php
+
 /** @var array $data */
 /** @var \Framework\Support\LinkGenerator $link */
 /** @var \Framework\Support\View $view */
