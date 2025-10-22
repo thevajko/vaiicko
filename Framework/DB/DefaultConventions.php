@@ -2,7 +2,7 @@
 
 namespace Framework\DB;
 
-use Framework\Helpers\Inflect;
+use Framework\Support\Inflect;
 
 /**
  * Class DefaultConventions

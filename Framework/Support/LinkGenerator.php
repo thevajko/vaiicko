@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Helpers;
+namespace Framework\Support;
 
 use Exception;
 use Framework\Core\Router;

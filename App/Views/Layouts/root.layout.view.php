@@ -2,7 +2,7 @@
 
 /** @var string $contentHTML */
 /** @var \Framework\Core\IAuthenticator $auth */
-/** @var \Framework\Helpers\LinkGenerator $link */
+/** @var \Framework\Support\LinkGenerator $link */
 ?>
 <!DOCTYPE html>
 <html lang="sk">

@@ -1,6 +1,5 @@
 <?php
-
-/** @var \Framework\Helpers\LinkGenerator $link */
+/** @var \Framework\Support\LinkGenerator $link */
 ?>
 
 <div class="container-fluid">

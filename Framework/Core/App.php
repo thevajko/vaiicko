@@ -4,12 +4,12 @@ namespace Framework\Core;
 
 use App\Configuration;
 use Framework\DB\Connection;
-use Framework\Helpers\LinkGenerator;
 use Framework\Http\HttpException;
 use Framework\Http\Request;
 use Framework\Http\Responses\RedirectResponse;
 use Framework\Http\Responses\Response;
 use Framework\Http\Session;
+use Framework\Support\LinkGenerator;
 
 /**
  * Class App
