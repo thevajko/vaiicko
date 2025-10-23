@@ -4,7 +4,7 @@
 /** @var bool $showDetail */
 /** @var \Framework\Support\View $view */
 
-$view->layout(null);
+$view->setLayout(null);
 
 ?>
 

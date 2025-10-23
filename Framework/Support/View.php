@@ -24,7 +24,7 @@ class View
      * Choose a layout for the current view.
      * Pass null to render without a layout.
      */
-    public function layout(?string $name): void
+    public function setLayout(?string $name): void
     {
         $this->layoutSlot = $name;
     }

@@ -3,7 +3,7 @@
 /** @var \Framework\Support\LinkGenerator $link */
 /** @var \Framework\Support\View $view */
 
-$view->layout('auth');
+$view->setLayout('auth');
 ?>
 
 <div class="container-fluid">
