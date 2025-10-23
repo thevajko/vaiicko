@@ -5,6 +5,7 @@ namespace Framework\Auth;
 use Exception;
 use Framework\Core\App;
 use Framework\Core\IAuthenticator;
+use Framework\Core\IIdentity;
 use Framework\Http\Session;
 use App\Models\User;
 
@@ -28,7 +29,7 @@ class DummyAuthenticator implements IAuthenticator
     // Session management instance
     private Session $session;
     // Cached authenticated user instance (nullable when not logged in)
-    private ?User $user = null;
+    private ?IIdentity $user = null;
 
     /**
      * DummyAuthenticator constructor.
@@ -76,18 +77,18 @@ class DummyAuthenticator implements IAuthenticator
      */
     public function isLogged(): bool
     {
-        return $this->getUser() instanceof User;
+        return $this->getUser() instanceof IIdentity;
     }
 
     /**
      * Returns the associated authenticated user object, if available.
      *
-     * @return User|null The user object for the logged-in user, or null if not authenticated.
+     * @return IIdentity|null The user object for the logged-in user, or null if not authenticated.
      * @throws Exception
      */
-    public function getUser(): ?User
+    public function getUser(): ?IIdentity
     {
-        if ($this->user instanceof User) {
+        if ($this->user instanceof IIdentity) {
             return $this->user;
         }
 
@@ -100,7 +101,7 @@ class DummyAuthenticator implements IAuthenticator
             return $this->user;
         }
 
-        if ($sessionValue instanceof User) {
+        if ($sessionValue instanceof User || $sessionValue instanceof IIdentity) {
             $this->user = $sessionValue;
             return $this->user;
         }

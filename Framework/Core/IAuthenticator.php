@@ -2,8 +2,6 @@
 
 namespace Framework\Core;
 
-use App\Models\User;
-
 /**
  * Interface IAuthenticator
  *
@@ -11,7 +9,7 @@ use App\Models\User;
  * Classes that implement this interface will provide the capability to log users in and out, as well as retrieve
  * user-specific information such as their identity and context.
  *
- * @property-read User|null $user Associated authenticated user object (or null if not logged in).
+ * @property-read \Framework\Core\IIdentity|null $user Associated authenticated identity object (or null if not logged in).
  *
  * @package App\Core
  */
@@ -52,8 +50,7 @@ interface IAuthenticator
     /**
      * Returns the associated authenticated user object, if available.
      *
-     * @return User|null The user object for the logged-in user, or null if not authenticated.
+     * @return IIdentity|null The identity object for the logged-in user, or null if not authenticated.
      */
-    public function getUser(): ?User;
+    public function getUser(): ?IIdentity;
 }
-
