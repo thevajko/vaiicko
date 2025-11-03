@@ -65,6 +65,10 @@ class App
         $this->request = new Request();
         $this->linkGenerator = new LinkGenerator($this->request, $this->router);
 
+        // Register error and shutdown handlers for unified error processing
+        $this->registerErrorHandler();
+        $this->registerShutdownHandler();
+
         // Check if there is an authenticator defined in the configuration.
         if (defined('\\App\\Configuration::AUTH_CLASS')) {
             $this->auth = new (Configuration::AUTH_CLASS)($this);
@@ -72,6 +76,7 @@ class App
             $this->auth = null;
         }
     }
+
 
     /**
      * Runs the application, processing the incoming request and generating a response.
@@ -197,5 +202,59 @@ class App
         } else {
             return $this->session; // Return the existing session.
         }
+    }
+
+    /**
+     * Register a global PHP error handler that throws ErrorException for all non-suppressed errors.
+     */
+    private function registerErrorHandler(): void
+    {
+        set_error_handler(static function (int $severity, string $message, string $file = '', int $line = 0) {
+            // Respect error suppression and current error_reporting level
+            if (!(error_reporting() & $severity)) {
+                return false; // allow normal PHP error handling (e.g., for @ operator)
+            }
+
+            throw new \ErrorException($message, 0, $severity, $file, $line);
+        });
+    }
+
+    /**
+     * Register a shutdown handler to convert fatal errors into HttpException processed by the framework.
+     */
+    private function registerShutdownHandler(): void
+    {
+        $app = $this;
+        register_shutdown_function(static function () use ($app) {
+            $last = error_get_last();
+            if ($last === null) {
+                return;
+            }
+
+            $fatalTypes = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR];
+            if (!in_array($last['type'], $fatalTypes, true)) {
+                return;
+            }
+
+            // Try to clean any partial output to avoid mixing with error page
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+
+            $errorEx = new \ErrorException($last['message'] ?? 'Fatal error', 0, $last['type'] ?? E_ERROR, $last['file'] ?? 'unknown', $last['line'] ?? 0);
+            $httpEx = HttpException::from($errorEx, 500);
+
+            try {
+                $handler = new (Configuration::ERROR_HANDLER_CLASS)();
+                $handler->handleError($app, $httpEx)->send();
+            } catch (\Throwable $e) {
+                // Last-resort fallback if even the handler fails
+                if (!headers_sent()) {
+                    http_response_code(500);
+                    header('Content-Type: text/plain; charset=utf-8');
+                }
+                echo 'Internal Server Error';
+            }
+        });
     }
 }
