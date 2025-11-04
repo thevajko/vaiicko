@@ -237,8 +237,15 @@ class App
             }
 
             // Try to clean any partial output to avoid mixing with error page
-            while (ob_get_level() > 0) {
+            $prevLevel = ob_get_level();
+            while ($prevLevel > 0) {
                 ob_end_clean();
+                $currLevel = ob_get_level();
+                if ($currLevel >= $prevLevel) {
+                    // Buffer level did not decrease, break to avoid infinite loop
+                    break;
+                }
+                $prevLevel = $currLevel;
             }
 
             $errorEx = new \ErrorException($last['message'] ?? 'Fatal error', 0, $last['type'] ?? E_ERROR, $last['file'] ?? 'unknown', $last['line'] ?? 0);
