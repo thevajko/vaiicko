@@ -304,6 +304,12 @@ abstract class Model implements \JsonSerializable
             throw new Exception("Parameter modelClass must be a subclass of " . self::class);
         }
         $refColumn ??= static::getConventions()->getFkColumn($modelClass);
+
+        // Ensure this entity was loaded from DB (has a ResultSet) before attempting to resolve relations
+        if ($this->_resultSet === null) {
+            throw new Exception('Related retrieval requires the entity to be hydrated from the database. Obtain the entity via Model::getOne()/Model::getAll() or otherwise load it from the DB before resolving relations.');
+        }
+
         $ownerProp = self::toPropertyName($refColumn);
         $ownerVal = isset($this->{$ownerProp}) ? $this->{$ownerProp} : null;
         return $this->_resultSet->getOneRelated(
@@ -334,6 +340,12 @@ abstract class Model implements \JsonSerializable
             throw new Exception("Parameter modelClass must be a subclass of " . self::class);
         }
         $refColumn ??= self::getConventions()->getFkColumn(static::class);
+
+        // Ensure this entity was loaded from DB (has a ResultSet) before attempting to resolve relations
+        if ($this->_resultSet === null) {
+            throw new Exception('Related retrieval requires the entity to be hydrated from the database. Obtain the entity via Model::getOne()/Model::getAll() or otherwise load it from the DB before resolving relations.');
+        }
+
         return $this->_resultSet->getAllRelated(
             $modelClass,
             $refColumn,
