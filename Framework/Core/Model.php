@@ -300,7 +300,7 @@ abstract class Model implements \JsonSerializable
      * @return mixed
      * @throws Exception
      */
-    public function getOneRelated(string $modelClass, ?string $refColumn = null)
+    public function getOneRelated(string $modelClass, ?string $refColumn = null): mixed
     {
         if ($modelClass !== static::class && !is_subclass_of($modelClass, self::class)) {
             throw new Exception("Parameter modelClass must be a subclass of " . self::class);
@@ -330,11 +330,11 @@ abstract class Model implements \JsonSerializable
      * @param string|null $refColumn Db column name used to reference this entity
      * @param string|null $where Additional conditions to restrict loaded references
      * @param array $whereParams
-     * @return mixed
+     * @return array
      * @throws Exception
      */
     public function getAllRelated(string $modelClass, ?string $refColumn = null, ?string $where = null, array $whereParams = []
-    )
+    ): array
     {
         if ($modelClass !== static::class && !is_subclass_of($modelClass, self::class)) {
             throw new Exception("Parameter modelClass must be a subclass of " . self::class);
