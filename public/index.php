@@ -1,7 +1,7 @@
 <?php
 
 // Require the class loader to enable automatic loading of classes
-require "../Framework/ClassLoader.php";
+require __DIR__ . '/../Framework/ClassLoader.php';
 
 use Framework\Core\App;
 
