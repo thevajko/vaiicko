@@ -47,13 +47,13 @@ class AuthController extends BaseController
     {
         $logged = null;
         if ($request->hasValue('submit')) {
-            $logged = $this->app->getAuth()->login($request->value('login'), $request->value('password'));
+            $logged = $this->app->getAuth()->login($request->value('username'), $request->value('password'));
             if ($logged) {
                 return $this->redirect($this->url("admin.index"));
             }
         }
 
-        $message = $logged === false ? 'Zlý login alebo heslo!' : null;
+        $message = $logged === false ? 'Bad username or password' : null;
         return $this->html(compact("message"));
     }
 
