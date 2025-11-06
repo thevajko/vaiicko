@@ -97,7 +97,7 @@ abstract class BaseController
      * @param string $action The name of the action to authorize.
      * @return bool True if the action is authorized; false otherwise.
      */
-    public function authorize(string $action): bool
+    public function authorize(Request $request, string $action): bool
     {
         return true;
     }

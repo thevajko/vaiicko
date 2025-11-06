@@ -25,7 +25,7 @@ class AdminController extends BaseController
      * @param string $action The name of the action to authorize.
      * @return bool Returns true if the user is logged in; false otherwise.
      */
-    public function authorize(string $action): bool
+    public function authorize(Request $request, string $action): bool
     {
         return $this->app->getAuth()->isLogged();
     }
