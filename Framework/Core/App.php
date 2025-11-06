@@ -97,7 +97,7 @@ class App
             call_user_func([$this->router->getController(), 'setApp'], $this);
 
             // Attempt to authorize the requested action.
-            if ($this->router->getController()->authorize($this->router->getAction())) {
+            if ($this->router->getController()->authorize($this->request, $this->router->getAction())) {
                 // Call the specified action method on the controller with Request as required parameter (no reflection)
                 $response = call_user_func([$this->router->getController(), $this->router->getAction()], $this->request);
 
