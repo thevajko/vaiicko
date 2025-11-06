@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Framework\Auth\DummyAuthenticator;
+use App\Auth\SimpleAuthenticator;
 use Framework\Core\ErrorHandler;
 use Framework\DB\DefaultConventions;
 
@@ -24,7 +24,7 @@ class Configuration
     /**
      * Version of the framework.
      */
-    public const FW_VERSION = '3.0.1';
+    public const FW_VERSION = '3.0.2';
 
     /**
      * Database connection settings.
@@ -66,10 +66,23 @@ class Configuration
      * Class name for the authenticator. This class must implement the IAuthenticator interface. Comment out this line
      * if authentication is not required in the application.
      */
-    public const AUTH_CLASS = DummyAuthenticator::class;
+    public const AUTH_CLASS = SimpleAuthenticator::class;
 
     /**
      * Class name for the error handler. This class must implement the IHandleError interface.
      */
     public const ERROR_HANDLER_CLASS = ErrorHandler::class;
+
+    /**
+     * Directory for file uploads on the filesystem (uses OS-specific directory separators).
+     * Example on Linux:  public/uploads/
+     * Example on Windows: public\uploads\
+     */
+    public const UPLOAD_DIR = 'uploads' . DIRECTORY_SEPARATOR;
+
+    /**
+     * Public URL path prefix for uploaded files (always uses forward slashes for web URLs).
+     * Example: /uploads/
+     */
+    public const UPLOAD_URL = '/uploads/';
 }
