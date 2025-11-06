@@ -211,7 +211,8 @@ abstract class Model implements \JsonSerializable
         try {
             $data = array_fill_keys(static::getDbColumns(), null);
             foreach ($data as $key => &$item) {
-                $item = $this->{static::toPropertyName($key)};
+                $prop = static::toPropertyName($key);
+                $item = isset($this->{$prop}) ? $this->{$prop} : null;
             }
             // Insert new record
             if ($this->_dbId === null) {
@@ -309,13 +310,15 @@ abstract class Model implements \JsonSerializable
             throw new Exception('Related retrieval requires the entity to be hydrated from the database. Obtain the entity via Model::getOne()/Model::getAll() or otherwise load it from the DB before resolving relations.');
         }
 
+        $ownerProp = self::toPropertyName($refColumn);
+        $ownerVal = isset($this->{$ownerProp}) ? $this->{$ownerProp} : null;
         return $this->_resultSet->getOneRelated(
             $modelClass,
             self::toPropertyName($refColumn),
-            fn($e) => $e->{self::toPropertyName($refColumn)},
+            fn($e) => (isset($e->{self::toPropertyName($refColumn)}) ? $e->{self::toPropertyName($refColumn)} : null),
             fn($e) => $e->getIdValue(),
             $modelClass::getPkColumnName(),
-            $this->{self::toPropertyName($refColumn)},
+            $ownerVal,
         );
     }
 
@@ -349,7 +352,7 @@ abstract class Model implements \JsonSerializable
             $where,
             $whereParams,
             fn($e) => $e->getIdValue(),
-            fn($e) => $e->{self::toPropertyName($refColumn)},
+            fn($e) => (isset($e->{self::toPropertyName($refColumn)}) ? $e->{self::toPropertyName($refColumn)} : null),
             $this->getIdValue()
         );
     }
@@ -400,7 +403,8 @@ abstract class Model implements \JsonSerializable
     private function getIdValue(): mixed
     {
         $pk = static::getPkColumnName();
-        return $this->{static::toPropertyName($pk)};
+        $prop = static::toPropertyName($pk);
+        return isset($this->{$prop}) ? $this->{$prop} : null;
     }
 
     /**
