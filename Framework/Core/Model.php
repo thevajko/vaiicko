@@ -5,8 +5,8 @@ namespace Framework\Core;
 use App\Configuration;
 use Exception;
 use Framework\DB\Connection;
-use Framework\DB\ResultSet;
 use Framework\DB\IDbConvention;
+use Framework\DB\ResultSet;
 use Framework\Http\Request;
 use PDO;
 use PDOException;
@@ -108,11 +108,12 @@ abstract class Model implements \JsonSerializable
      */
     public static function getAll(
         ?string $whereClause = null,
-        array $whereParams = [],
+        array   $whereParams = [],
         ?string $orderBy = null,
-        ?int $limit = null,
-        ?int $offset = null
-    ): array {
+        ?int    $limit = null,
+        ?int    $offset = null
+    ): array
+    {
         try {
             $sql = "SELECT " . static::getDBColumnNamesList() . " FROM `" . static::getTableName() . "`";
             if ($whereClause != null) {
@@ -297,6 +298,7 @@ abstract class Model implements \JsonSerializable
      * @param class-string<Model> $modelClass Model to load (must extend Model)
      * @param string|null $refColumn Change DB column name used to load referenced property
      * @return mixed
+     * @throws Exception
      */
     public function getOneRelated(string $modelClass, ?string $refColumn = null)
     {
@@ -329,16 +331,15 @@ abstract class Model implements \JsonSerializable
      * @param string|null $where Additional conditions to restrict loaded references
      * @param array $whereParams
      * @return mixed
+     * @throws Exception
      */
-    public function getAllRelated(
-        string $modelClass,
-        ?string $refColumn = null,
-        ?string $where = null,
-        array $whereParams = []
-    ) {
+    public function getAllRelated(string $modelClass, ?string $refColumn = null, ?string $where = null, array $whereParams = []
+    )
+    {
         if ($modelClass !== static::class && !is_subclass_of($modelClass, self::class)) {
             throw new Exception("Parameter modelClass must be a subclass of " . self::class);
         }
+
         $refColumn ??= self::getConventions()->getFkColumn(static::class);
 
         // Ensure this entity was loaded from DB (has a ResultSet) before attempting to resolve relations
