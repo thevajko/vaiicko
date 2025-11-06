@@ -22,8 +22,18 @@ class ClassLoader
     public static function Boot(): void
     {
         spl_autoload_register(function ($class_name) {
-            // Convert namespace separators to directory separators for the current OS
-            $file = '..' . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $class_name) . '.php';
+            // Determine the project root (one level up from this file's directory) as an absolute path
+            $baseDir = realpath(dirname(__DIR__));
+            if ($baseDir === false) {
+                // Fallback, should not happen, but keep relative to ensure some resolution
+                $baseDir = dirname(__DIR__);
+            }
+
+            // Normalize class name (remove leading backslash) and convert namespace to path
+            $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, ltrim($class_name, '\\')) . '.php';
+
+            // Build absolute path to the target file
+            $file = $baseDir . DIRECTORY_SEPARATOR . $relativePath;
 
             // Check if the file corresponding to the class exists
             if (file_exists($file)) {
