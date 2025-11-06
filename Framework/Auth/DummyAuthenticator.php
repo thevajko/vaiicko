@@ -53,7 +53,7 @@ class DummyAuthenticator implements IAuthenticator
     {
         // Check if the provided login and password match the hardcoded credentials
         if ($username == self::LOGIN && password_verify($password, self::PASSWORD_HASH)) {
-            $this->user = new User(id: null, login: self::LOGIN, name: self::USERNAME);
+            $this->user = new User(id: null, username: self::LOGIN, name: self::USERNAME);
             // Store the entire User object in the session
             $this->session->set('user', $this->user);
             return true;
@@ -96,7 +96,7 @@ class DummyAuthenticator implements IAuthenticator
 
         // Upgrade legacy string session value to a User object
         if (is_string($sessionValue) && $sessionValue !== '') {
-            $this->user = new User(id: null, login: self::LOGIN, name: $sessionValue);
+            $this->user = new User(id: null, username: self::LOGIN, name: $sessionValue);
             $this->session->set('user', $this->user);
             return $this->user;
         }
