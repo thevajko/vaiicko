@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Auth\SimpleAuthenticator;
+use Framework\Auth\DummyAuthenticator;
 use Framework\Core\ErrorHandler;
 use Framework\DB\DefaultConventions;
 
@@ -24,7 +24,7 @@ class Configuration
     /**
      * Version of the framework.
      */
-    public const FW_VERSION = '3.0.2';
+    public const FW_VERSION = '3.0.4';
 
     /**
      * Database connection settings.
@@ -66,7 +66,7 @@ class Configuration
      * Class name for the authenticator. This class must implement the IAuthenticator interface. Comment out this line
      * if authentication is not required in the application.
      */
-    public const AUTH_CLASS = SimpleAuthenticator::class;
+    public const AUTH_CLASS = DummyAuthenticator::class;
 
     /**
      * Class name for the error handler. This class must implement the IHandleError interface.
