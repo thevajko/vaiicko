@@ -413,7 +413,7 @@ abstract class Model implements \JsonSerializable
      * Retrieves an array of property names from the model class.
      * Uses reflection to get all declared properties (excluding private framework properties).
      *
-     * @return array An array of property names from the model class.
+     * @return array An associative array of property names (keys and values are the same) from the model class.
      */
     private static function getModelProperties(): array
     {
@@ -425,9 +425,9 @@ abstract class Model implements \JsonSerializable
         $properties = [];
         foreach ($reflection->getProperties() as $property) {
             $propertyName = $property->getName();
-            // Exclude internal framework properties
-            if ($propertyName !== '_dbId' && $propertyName !== '_resultSet') {
-                $properties[] = $propertyName;
+            // Exclude internal framework properties that start with underscore
+            if (!str_starts_with($propertyName, '_')) {
+                $properties[$propertyName] = true;
             }
         }
         
@@ -452,7 +452,7 @@ abstract class Model implements \JsonSerializable
             $propertyName = static::toPropertyName($columnName);
             
             // Check if the property exists in the model
-            if (!in_array($propertyName, $modelProperties)) {
+            if (!isset($modelProperties[$propertyName])) {
                 $extraColumns[] = $columnName;
                 continue;
             }
@@ -466,11 +466,14 @@ abstract class Model implements \JsonSerializable
         
         // Throw a descriptive error if there are extra columns in the database
         if (!empty($extraColumns)) {
-            throw new Exception(
-                'Database table `' . static::getTableName() . '` contains columns that do not have corresponding properties in model class `' . static::class . '`: ' 
-                . implode(', ', array_map(fn($col) => "`$col`", $extraColumns)) . '. '
-                . 'Please add these properties to the model class or remove them from the database table.'
-            );
+            $columnList = implode(', ', array_map(fn($col) => "`$col`", $extraColumns));
+            throw new Exception(sprintf(
+                'Database table `%s` contains columns that do not have corresponding properties in model class `%s`: %s. ' .
+                'Please add these properties to the model class or remove them from the database table.',
+                static::getTableName(),
+                static::class,
+                $columnList
+            ));
         }
         
         return implode(', ', $dbColumns);
