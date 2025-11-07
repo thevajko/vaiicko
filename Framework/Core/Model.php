@@ -38,6 +38,7 @@ abstract class Model implements \JsonSerializable
     protected static array $columnsMap = [];
 
     private static array $dbColumns = []; // Cache for database column names
+    private static array $modelProperties = []; // Cache for model property names
     private static IDbConvention $dbConventions; // Instance for database naming conventions
     private mixed $_dbId = null; // Store the primary key value for the model
     private ?ResultSet $_resultSet = null; // ResultSet for related entity loading
@@ -409,23 +410,69 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
+     * Retrieves an array of property names from the model class.
+     * Uses reflection to get all declared properties (excluding private framework properties).
+     *
+     * @return array An array of property names from the model class.
+     */
+    private static function getModelProperties(): array
+    {
+        if (isset(self::$modelProperties[static::class])) {
+            return self::$modelProperties[static::class];
+        }
+        
+        $reflection = new \ReflectionClass(static::class);
+        $properties = [];
+        foreach ($reflection->getProperties() as $property) {
+            $propertyName = $property->getName();
+            // Exclude internal framework properties
+            if ($propertyName !== '_dbId' && $propertyName !== '_resultSet') {
+                $properties[] = $propertyName;
+            }
+        }
+        
+        self::$modelProperties[static::class] = $properties;
+        return $properties;
+    }
+
+    /**
      * Generates a list of database column names formatted for a SELECT SQL clause. Maps the database column names
-     * to their corresponding model property names.
+     * to their corresponding model property names. Only includes columns that have corresponding properties in the model.
      *
      * @return string A comma-separated string of formatted column names for SQL SELECT.
-     * @throws Exception If the query fails due to a database error.
+     * @throws Exception If the query fails due to a database error or if there are extra columns in the database.
      */
     private static function getDBColumnNamesList(): string
     {
         $dbColumns = [];
+        $modelProperties = static::getModelProperties();
+        $extraColumns = [];
+        
         foreach (static::getDbColumns() as $columnName) {
-            $name = static::toPropertyName($columnName);
-            if ($name != $columnName) {
-                $dbColumns[] = "`$columnName` AS {$name}";
+            $propertyName = static::toPropertyName($columnName);
+            
+            // Check if the property exists in the model
+            if (!in_array($propertyName, $modelProperties)) {
+                $extraColumns[] = $columnName;
+                continue;
+            }
+            
+            if ($propertyName != $columnName) {
+                $dbColumns[] = "`$columnName` AS {$propertyName}";
             } else {
                 $dbColumns[] = $columnName;
             }
         }
+        
+        // Throw a descriptive error if there are extra columns in the database
+        if (!empty($extraColumns)) {
+            throw new Exception(
+                'Database table `' . static::getTableName() . '` contains columns that do not have corresponding properties in model class `' . static::class . '`: ' 
+                . implode(', ', array_map(fn($col) => "`$col`", $extraColumns)) . '. '
+                . 'Please add these properties to the model class or remove them from the database table.'
+            );
+        }
+        
         return implode(', ', $dbColumns);
     }
 
