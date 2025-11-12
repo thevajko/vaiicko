@@ -1,0 +1,82 @@
+<?php
+
+namespace Framework\Auth;
+
+use Framework\Core\App;
+use Framework\Core\IAuthenticator;
+use Framework\Core\IIdentity;
+use Framework\Http\Session;
+
+abstract class SessionAuthenticator implements IAuthenticator
+{
+    // Session key for storing the user identity
+    protected const IDENTITY_SESSION_KEY = 'fw.session.user.identity';
+
+    // Application instance
+    private App $app;
+    // Session management instance
+    private Session $session;
+
+    /**
+     * DummyAuthenticator constructor.
+     *
+     * @param App $app Instance of the application for accessing session and other services.
+     */
+    public function __construct(App $app)
+    {
+        $this->app = $app;
+        $this->session = $this->app->getSession();
+    }
+
+    /**
+     * Authenticates a user based on provided username and password.
+     *
+     * @param string $username User's login attempt.
+     * @param string $password User's password attempt.
+     * @return IIdentity|null Returns the authenticated user identity if successful; null otherwise.
+     */
+    protected abstract function authenticate(string $username, string $password): ?IIdentity;
+
+    /**
+     * Logs in a user with the specified credentials.
+     * @inheritdoc
+     */
+    public function login(string $username, string $password): bool
+    {
+        $identity = $this->authenticate($username, $password);
+        if ($identity instanceof IIdentity) {
+            // Store the entire User object in the session
+            $this->session->set(static::IDENTITY_SESSION_KEY, $identity);
+            return true;
+        }
+        else if ($identity !== null) {
+            throw new \RuntimeException('Authenticated identity must implement IIdentity interface.');
+        }
+        return false;
+    }
+
+    /**
+     * Logs out the user by destroying the session.
+     *
+     * @return void
+     */
+    public function logout(): void
+    {
+        $this->session->destroy(); // Destroy the session to log out the user
+    }
+
+    /**
+     * Returns the associated app user object.
+     *
+     * @return AppUser The current application user.
+     */
+    public function getUser(): AppUser
+    {
+        $identity = $this->session->get(static::IDENTITY_SESSION_KEY);
+        if ($identity !== null && !($identity instanceof IIdentity)) {
+            throw new \RuntimeException('Stored identity must implement IIdentity interface.');
+        }
+        return new AppUser($identity);
+    }
+
+}

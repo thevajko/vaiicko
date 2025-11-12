@@ -3,6 +3,7 @@
 namespace Framework\Core;
 
 use App\Configuration;
+use Framework\Auth\AppUser;
 use Framework\DB\Connection;
 use Framework\Http\HttpException;
 use Framework\Http\Request;
@@ -110,7 +111,7 @@ class App
                 }
             } else {
                 // If authorization fails, check if the user is logged in or redirect to the login page.
-                if ($this->auth->isLogged() || !defined('\\App\\Configuration::LOGIN_URL')) {
+                if (($this->auth != null && $this->auth->getUser()->isLoggedIn()) || !defined('\\App\\Configuration::LOGIN_URL')) {
                     throw new HttpException(403); // Forbidden access
                 } else {
                     (new RedirectResponse(Configuration::LOGIN_URL))->send();
@@ -175,7 +176,7 @@ class App
      *
      * @return IAuthenticator|null The authenticator instance, or null if not set.
      */
-    public function getAuth(): ?IAuthenticator
+    public function getAuthenticator(): ?IAuthenticator
     {
         return $this->auth;
     }
@@ -202,6 +203,16 @@ class App
         } else {
             return $this->session; // Return the existing session.
         }
+    }
+
+    /**
+     * Gets the current application user.
+     *
+     * @return AppUser The current application user.
+     */
+    public function getAppUser() : AppUser
+    {
+        return $this->auth?->getUser() ?? new AppUser();
     }
 
     /**
