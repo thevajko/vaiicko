@@ -111,7 +111,7 @@ class App
                 }
             } else {
                 // If authorization fails, check if the user is logged in or redirect to the login page.
-                if (($this->auth != null && $this->auth->getUser()->isLoggedIn()) || !defined('\\App\\Configuration::LOGIN_URL')) {
+                if (($this->auth?->getUser()?->isLoggedIn()) || !defined('\\App\\Configuration::LOGIN_URL')) {
                     throw new HttpException(403); // Forbidden access
                 } else {
                     (new RedirectResponse(Configuration::LOGIN_URL))->send();
@@ -210,7 +210,7 @@ class App
      *
      * @return AppUser The current application user.
      */
-    public function getAppUser() : AppUser
+    public function getAppUser(): AppUser
     {
         return $this->auth?->getUser() ?? new AppUser();
     }

@@ -18,7 +18,7 @@ abstract class SessionAuthenticator implements IAuthenticator
     private Session $session;
 
     /**
-     * DummyAuthenticator constructor.
+     * SessionAuthenticator constructor.
      *
      * @param App $app Instance of the application for accessing session and other services.
      */
@@ -29,11 +29,13 @@ abstract class SessionAuthenticator implements IAuthenticator
     }
 
     /**
-     * Authenticates a user based on provided username and password.
+     * Abstract method to authenticate a user based on provided username and password.
+     * 
+     * This method must be implemented by subclasses to provide the actual authentication logic.
      *
      * @param string $username User's login attempt.
      * @param string $password User's password attempt.
-     * @return IIdentity|null Returns the authenticated user identity if successful; null otherwise.
+     * @return IIdentity|null Implementations should return an IIdentity on successful authentication, or null on failure.
      */
     protected abstract function authenticate(string $username, string $password): ?IIdentity;
 
@@ -49,7 +51,7 @@ abstract class SessionAuthenticator implements IAuthenticator
             $this->session->set(static::IDENTITY_SESSION_KEY, $identity);
             return true;
         }
-        else if ($identity !== null) {
+        elseif ($identity !== null) {
             throw new \RuntimeException('Authenticated identity must implement IIdentity interface.');
         }
         return false;

@@ -20,7 +20,7 @@ class DummyUser implements IIdentity
      *
      * @param string $name The name of the user.
      */
-    function __construct(string $name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }

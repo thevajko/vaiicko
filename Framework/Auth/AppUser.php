@@ -66,7 +66,10 @@ class AppUser
      */
     public function __call(string $name, array $arguments)
     {
-        if ($this->identity && method_exists($this->identity, $name)) {
+        if ($this->identity === null) {
+            throw new \BadMethodCallException("Cannot call method {$name} when user is not logged in.");
+        }
+        if (method_exists($this->identity, $name)) {
             return $this->identity->$name(...$arguments);
         }
         throw new \BadMethodCallException("Method {$name} does not exist on current identity.");
