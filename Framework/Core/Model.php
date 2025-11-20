@@ -413,7 +413,7 @@ abstract class Model implements \JsonSerializable
      * Retrieves an array of property names from the model class.
      * Uses reflection to get all declared properties (excluding private framework properties).
      *
-     * @return array An associative array of property names (keys and values are the same) from the model class.
+     * @return array An associative array of property names as keys with boolean true as values.
      */
     private static function getModelProperties(): array
     {
@@ -425,10 +425,15 @@ abstract class Model implements \JsonSerializable
         $properties = [];
         foreach ($reflection->getProperties() as $property) {
             $propertyName = $property->getName();
-            // Exclude internal framework properties that start with underscore
-            if (!str_starts_with($propertyName, '_')) {
-                $properties[$propertyName] = true;
+            // Exclude static properties
+            if ($property->isStatic()) {
+                continue;
             }
+            // Exclude private properties that start with underscore (internal framework properties)
+            if ($property->isPrivate() && str_starts_with($propertyName, '_')) {
+                continue;
+            }
+            $properties[$propertyName] = true;
         }
         
         self::$modelProperties[static::class] = $properties;
