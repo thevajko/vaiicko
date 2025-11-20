@@ -66,7 +66,7 @@ class ViewResponse extends Response
     {
         // View helpers available in all views
         $viewHelpers = [
-            'auth' => $this->app->getAuth(),
+            'user' => $this->app->getAppUser(),
             'link' => $this->app->getLinkGenerator(),
         ];
 

@@ -25,7 +25,7 @@ class AuthController extends BaseController
      * This action serves as the default landing point for the authentication section of the application, directing
      * users to the login URL specified in the configuration.
      *
-     * @return \Framework\Http\Responses\Response The response object for the redirection to the login page.
+     * @return Response The response object for the redirection to the login page.
      */
     public function index(Request $request): Response
     {
@@ -47,7 +47,7 @@ class AuthController extends BaseController
     {
         $logged = null;
         if ($request->hasValue('submit')) {
-            $logged = $this->app->getAuth()->login($request->value('username'), $request->value('password'));
+            $logged = $this->app->getAuthenticator()->login($request->value('username'), $request->value('password'));
             if ($logged) {
                 return $this->redirect($this->url("admin.index"));
             }
@@ -67,7 +67,7 @@ class AuthController extends BaseController
      */
     public function logout(Request $request): Response
     {
-        $this->app->getAuth()->logout();
+        $this->app->getAuthenticator()->logout();
         return $this->html();
     }
 }

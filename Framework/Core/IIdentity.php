@@ -3,13 +3,15 @@
 namespace Framework\Core;
 
 /**
- * Marker interface for identity objects returned by the authenticator.
+ * Interface IIdentity
  *
- * Implement this in application user classes (or other identity representations) so
- * the authenticator can type-hint a common return type while remaining flexible.
+ * Represents a user identity with a method to retrieve the user's name.
+ * Other methods can be added as needed to extend the identity functionality.
+ *
+ * @package Framework\Core
  */
 interface IIdentity
 {
-    // intentionally empty - serves as a common type for authenticated identities
+    public function getName(): string;
 }
 
