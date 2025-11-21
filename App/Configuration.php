@@ -24,7 +24,7 @@ class Configuration
     /**
      * Version of the framework.
      */
-    public const FW_VERSION = '3.0.4';
+    public const FW_VERSION = '3.0.6';
 
     /**
      * Database connection settings.
@@ -85,4 +85,7 @@ class Configuration
      * Example: /uploads/
      */
     public const UPLOAD_URL = '/uploads/';
+
+    // Session key for storing the user identity
+    public const IDENTITY_SESSION_KEY = 'fw.session.user.identity';
 }

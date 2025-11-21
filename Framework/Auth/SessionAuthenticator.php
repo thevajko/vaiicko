@@ -2,6 +2,7 @@
 
 namespace Framework\Auth;
 
+use App\Configuration;
 use Framework\Core\App;
 use Framework\Core\IAuthenticator;
 use Framework\Core\IIdentity;
@@ -9,9 +10,6 @@ use Framework\Http\Session;
 
 abstract class SessionAuthenticator implements IAuthenticator
 {
-    // Session key for storing the user identity
-    protected const IDENTITY_SESSION_KEY = 'fw.session.user.identity';
-
     // Application instance
     private App $app;
     // Session management instance
@@ -48,7 +46,7 @@ abstract class SessionAuthenticator implements IAuthenticator
         $identity = $this->authenticate($username, $password);
         if ($identity instanceof IIdentity) {
             // Store the entire User object in the session
-            $this->session->set(static::IDENTITY_SESSION_KEY, $identity);
+            $this->session->set(Configuration::IDENTITY_SESSION_KEY, $identity);
             return true;
         }
         elseif ($identity !== null) {
@@ -74,7 +72,7 @@ abstract class SessionAuthenticator implements IAuthenticator
      */
     public function getUser(): AppUser
     {
-        $identity = $this->session->get(static::IDENTITY_SESSION_KEY);
+        $identity = $this->session->get(Configuration::IDENTITY_SESSION_KEY);
         if ($identity !== null && !($identity instanceof IIdentity)) {
             throw new \RuntimeException('Stored identity must implement IIdentity interface.');
         }
