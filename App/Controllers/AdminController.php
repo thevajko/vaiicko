@@ -27,7 +27,7 @@ class AdminController extends BaseController
      */
     public function authorize(Request $request, string $action): bool
     {
-        return $this->app->getAuth()->isLogged();
+        return $this->user->isLoggedIn();
     }
 
     /**
@@ -35,7 +35,7 @@ class AdminController extends BaseController
      *
      * This action requires authorization. It returns an HTML response for the admin dashboard or main page.
      *
-     * @return \Framework\Http\Responses\Response Returns a response object containing the rendered HTML.
+     * @return Response Returns a response object containing the rendered HTML.
      */
     public function index(Request $request): Response
     {
