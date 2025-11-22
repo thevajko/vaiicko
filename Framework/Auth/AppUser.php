@@ -2,8 +2,6 @@
 
 namespace Framework\Auth;
 
-use Framework\Core\IIdentity;
-
 /**
  * Class AppUser
  *
