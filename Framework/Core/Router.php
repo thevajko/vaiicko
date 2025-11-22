@@ -41,7 +41,8 @@ class Router
      */
     public function getFullControllerName(): string
     {
-        return 'App\Controllers\\' . $this->getControllerName() . "Controller";
+        $segments = $this->parseControllerSegments();
+        return 'App\\Controllers\\' . implode('\\', $segments) . 'Controller';
     }
 
     /**
@@ -51,7 +52,8 @@ class Router
      */
     public function getControllerName(): string
     {
-        return (!isset($_GET['c']) || empty(trim(@$_GET['c']))) ? "Home" : trim(ucfirst($_GET['c']));
+        $segments = $this->parseControllerSegments();
+        return end($segments);
     }
 
     /**
@@ -61,7 +63,10 @@ class Router
      */
     public function getAction(): string
     {
-        return (!isset($_GET['a']) || empty(trim(@$_GET['a']))) ? "index" : $_GET['a'];
+        $requested = trim((string)($_GET['a'] ?? ''));
+        $requested = $requested === '' ? 'index' : $requested;
+
+        return $this->resolveActionName($requested);
     }
 
     /**
@@ -73,5 +78,52 @@ class Router
     public function getController(): object
     {
         return $this->controller;
+    }
+
+    /**
+     * Parses the controller segments from the URL parameter 'c'. It splits the parameter by '/' and formats each
+     * segment to follow the PascalCase naming convention. If no segments are provided, it defaults to ['Home'].
+     *
+     * @return array An array of formatted controller segments.
+     */
+    private function parseControllerSegments(): array
+    {
+        $raw = $_GET['c'] ?? '';
+        $raw = trim($raw, " \t\n\r\0\x0B/");
+
+        if ($raw === '') {
+            return ['Home'];
+        }
+
+        $parts = array_values(array_filter(explode('/', $raw), static fn($part) => $part !== ''));
+
+        if (empty($parts)) {
+            return ['Home'];
+        }
+
+        return array_map(
+            static fn($part) => str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', strtolower($part)))),
+            $parts
+        );
+    }
+
+    /**
+     * Resolves the action name to be case-insensitive by matching against the instantiated controller’s methods.
+     *
+     * @param string $action The requested action name.
+     * @return string The resolved action name, matching the case of the controller's method.
+     */
+    private function resolveActionName(string $action): string
+    {
+        if (!isset($this->controller)) {
+            return $action;
+        }
+
+        foreach (get_class_methods($this->controller) as $method) {
+            if (strcasecmp($method, $action) === 0) {
+                return $method;
+            }
+        }
+        return $action;
     }
 }

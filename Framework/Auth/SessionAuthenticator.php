@@ -5,7 +5,6 @@ namespace Framework\Auth;
 use App\Configuration;
 use Framework\Core\App;
 use Framework\Core\IAuthenticator;
-use Framework\Core\IIdentity;
 use Framework\Http\Session;
 
 abstract class SessionAuthenticator implements IAuthenticator
