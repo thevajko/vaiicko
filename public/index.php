@@ -13,5 +13,5 @@ try {
     $app->run();
 } catch (Exception $e) {
     // Handle any exceptions that occur during the application run
-    die('An error occurred: ' . $e->getMessage());
+    die('<pre>An error occurred: ' . $e->getMessage() . PHP_EOL . PHP_EOL . $e->getTraceAsString() . '</pre>');
 }
