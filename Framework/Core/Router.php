@@ -16,6 +16,7 @@ class Router
 {
     private object $controller;
     private string $action;
+    private array $controllerSegments = [];
 
     /**
      * Processes the current URL to determine the controller and action to run. This method initializes the controller
@@ -25,7 +26,8 @@ class Router
      */
     public function processURL(): void
     {
-        $fullControllerName = $this->getFullControllerName();
+        $this->controllerSegments = $this->parseControllerSegments();
+        $fullControllerName = 'App\\Controllers\\' . implode('\\', $this->controllerSegments) . 'Controller';
         $this->controller = new $fullControllerName();
 
         $this->action = $this->getAction();
@@ -39,7 +41,7 @@ class Router
      */
     public function getFullControllerName(): string
     {
-        $segments = $this->parseControllerSegments();
+        $segments = $this->getControllerSegments();
         return 'App\\Controllers\\' . implode('\\', $segments) . 'Controller';
     }
 
@@ -50,8 +52,8 @@ class Router
      */
     public function getControllerName(): string
     {
-        $segments = $this->parseControllerSegments();
-        return end($segments);
+        $segments = $this->getControllerSegments();
+        return $segments[array_key_last($segments)] ?? 'Home';
     }
 
     /**
@@ -90,7 +92,26 @@ class Router
      */
     public function getControllerViewPath(): string
     {
-        return implode(DIRECTORY_SEPARATOR, $this->parseControllerSegments());
+        return implode(DIRECTORY_SEPARATOR, $this->getControllerSegments());
+    }
+
+    /**
+     * Returns the controller path segments parsed from the request or derived from the current controller instance.
+     */
+    public function getControllerSegments(): array
+    {
+        if ($this->controllerSegments !== []) {
+            return $this->controllerSegments;
+        }
+
+        if (isset($this->controller)) {
+            $derived = $this->extractSegmentsFromControllerInstance();
+            if ($derived !== []) {
+                return $this->controllerSegments = $derived;
+            }
+        }
+
+        return $this->controllerSegments = $this->parseControllerSegments();
     }
 
     /**
@@ -117,6 +138,30 @@ class Router
             static fn($part) => str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', strtolower($part)))),
             $parts
         );
+    }
+
+    private function extractSegmentsFromControllerInstance(): array
+    {
+        if (!isset($this->controller)) {
+            return [];
+        }
+
+        $class = get_class($this->controller);
+        $parts = explode('\\', $class);
+        $controllersIndex = array_search('Controllers', $parts, true);
+        if ($controllersIndex === false) {
+            return [];
+        }
+
+        $segments = array_slice($parts, $controllersIndex + 1);
+        if ($segments === []) {
+            return [];
+        }
+
+        $lastIndex = array_key_last($segments);
+        $segments[$lastIndex] = preg_replace('/Controller$/', '', $segments[$lastIndex]);
+
+        return array_values(array_filter($segments, static fn($segment) => $segment !== ''));
     }
 
     /**

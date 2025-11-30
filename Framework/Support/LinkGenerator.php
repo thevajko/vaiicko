@@ -70,7 +70,8 @@ class LinkGenerator
         bool         $appendParameters = false
     ): string
     {
-        // If destination is an array, set parameters accordingly
+        $currentControllerPath = implode('.', $this->router->getControllerSegments());
+
         if (is_array($destination)) {
             if ($parameters != []) {
                 $caller = debug_backtrace()[0];
@@ -80,21 +81,24 @@ class LinkGenerator
             }
 
             $parameters = $destination;
-            $destination = "{$this->router->getControllerName()}.{$this->router->getAction()}";
+            $destination = $currentControllerPath . '.' . $this->router->getAction();
         }
 
-        // If destination does not specify a controller, assume current controller
         if (!str_contains($destination, ".")) {
-            $destination = "{$this->router->getControllerName()}.$destination";
+            $destination = $currentControllerPath . '.' . $destination;
         }
 
         $parts = array_values(array_filter(explode('.', $destination), static fn($part) => $part !== ''));
+        if ($parts === []) {
+            $parts = $this->router->getControllerSegments();
+        }
+
         if (count($parts) === 1) {
-            array_unshift($parts, $this->router->getControllerName());
+            $parts = array_merge($this->router->getControllerSegments(), $parts);
         }
 
         $action = array_pop($parts);
-        $controllerSegments = $parts ?: [$this->router->getControllerName()];
+        $controllerSegments = $parts ?: $this->router->getControllerSegments();
         $controller = $this->buildControllerQueryValue($controllerSegments);
 
         // Build query arguments
