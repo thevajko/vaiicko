@@ -12,6 +12,7 @@ try {
     // Run the application
     $app->run();
 } catch (Exception $e) {
-    // Handle any exceptions that occur during the application run
-    die('<pre>An error occurred: ' . $e->getMessage() . PHP_EOL . PHP_EOL . $e->getTraceAsString() . '</pre>');
+    header('Content-Type: text/plain; charset=utf-8');
+
+    die("An error occurred: {$e->getMessage()}" . PHP_EOL . PHP_EOL . $e->getTraceAsString());
 }

@@ -120,11 +120,14 @@ class LinkGenerator
      */
     private function buildControllerQueryValue(array $segments): string
     {
-        $normalized = array_map(
-            static fn($segment) => lcfirst(trim((string)$segment)),
-            array_filter($segments, static fn($segment) => trim((string)$segment) !== '')
-        );
-
+        $normalized = [];
+        foreach ($segments as $segment) {
+            $segment = trim((string)$segment);
+            if ($segment === '') {
+                continue; // preskočí prázdne segmenty
+            }
+            $normalized[] = lcfirst($segment);
+        }
         return implode('/', $normalized ?: [$this->router->getControllerName()]);
     }
 

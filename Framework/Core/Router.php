@@ -88,8 +88,7 @@ class Router
      */
     private function parseControllerSegments(): array
     {
-        $raw = $_GET['c'] ?? '';
-        $raw = trim($raw, " \t\n\r\0\x0B/");
+        $raw = trim($_GET['c'] ?? '');
 
         if ($raw === '') {
             return ['Home'];

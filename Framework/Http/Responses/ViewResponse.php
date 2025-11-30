@@ -4,6 +4,7 @@ namespace Framework\Http\Responses;
 
 use App\Configuration;
 use Framework\Core\App;
+use Framework\Support\PathResolver;
 use Framework\Support\View as ViewHelper;
 
 /**
@@ -122,22 +123,6 @@ class ViewResponse extends Response
     }
 
     /**
-     * Includes the view file located at the given relative path.
-     *
-     * This method resolves the full path of the view file using the application's view path resolution logic and
-     * includes the file, making it part of the current output.
-     *
-     * @param string $relativePath The relative path of the view file to include.
-     *
-     * @return void
-     */
-    private function includeView(string $relativePath): void
-    {
-        $fullPath = $this->resolveViewPath($relativePath);
-        require $fullPath;
-    }
-
-    /**
      * Resolves the full path of a view file given its relative path.
      *
      * This method normalizes the directory separators in the relative path, prepends the base views directory, and
@@ -159,7 +144,7 @@ class ViewResponse extends Response
             return $candidate;
         }
 
-        $resolved = $this->resolveCaseInsensitive($base, $normalized);
+        $resolved = PathResolver::resolveCaseInsensitive($base, $normalized);
         if ($resolved !== null && is_file($resolved)) {
             return $resolved;
         }
@@ -180,45 +165,6 @@ class ViewResponse extends Response
         return dirname(__DIR__, 3)
             . DIRECTORY_SEPARATOR . 'App'
             . DIRECTORY_SEPARATOR . 'Views';
-    }
-
-    /**
-     * Resolves the given relative path to a file in a case-insensitive manner.
-     *
-     * This method attempts to find a file matching the given relative path by scanning the directory contents and
-     * performing a case-insensitive comparison. It is useful for filesystems that are case-insensitive.
-     *
-     * @param string $baseDir The base directory to start the resolution from.
-     * @param string $relativePath The relative path to resolve.
-     * @return string|null The resolved path, or null if not found.
-     */
-    private function resolveCaseInsensitive(string $baseDir, string $relativePath): ?string
-    {
-        $segments = array_filter(explode(DIRECTORY_SEPARATOR, $relativePath), static fn($part) => $part !== '');
-        $current = $baseDir;
-
-        foreach ($segments as $segment) {
-            $entries = @scandir($current);
-            if ($entries === false) {
-                return null;
-            }
-
-            $match = null;
-            foreach ($entries as $entry) {
-                if (strcasecmp($entry, $segment) === 0) {
-                    $match = $entry;
-                    break;
-                }
-            }
-
-            if ($match === null) {
-                return null;
-            }
-
-            $current .= DIRECTORY_SEPARATOR . $match;
-        }
-
-        return $current;
     }
 
     /**

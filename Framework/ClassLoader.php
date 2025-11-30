@@ -36,60 +36,18 @@ class ClassLoader
             $file = $baseDir . DIRECTORY_SEPARATOR . $relativePath;
 
             if (!file_exists($file)) {
-                $resolved = self::resolveCaseInsensitivePath($baseDir, $relativePath);
+                $resolved = \Framework\Support\PathResolver::resolveCaseInsensitive($baseDir, $relativePath);
                 if ($resolved !== null) {
                     $file = $resolved;
                 }
             }
 
-            // Check if the file corresponding to the class exists
             if (file_exists($file)) {
-                // Include the class file if it exists
                 require $file;
             } else {
-                // Throw an exception if the class file is not found
                 throw new Exception("Class {$class_name} file {$file} was not found.");
             }
         });
-    }
-
-    /**
-     * Resolves a file path in a case-insensitive manner.
-     *
-     * This method attempts to find the correct file path by checking each segment of the provided
-     * relative path against the filesystem in a case-insensitive way.
-     *
-     * @param string $baseDir The base directory to start the search from.
-     * @param string $relativePath The relative path to resolve.
-     * @return string|null The resolved file path if found, otherwise null.
-     */
-    private static function resolveCaseInsensitivePath(string $baseDir, string $relativePath): ?string
-    {
-        $segments = array_filter(explode(DIRECTORY_SEPARATOR, $relativePath), static fn($part) => $part !== '');
-        $current = $baseDir;
-
-        foreach ($segments as $segment) {
-            $entries = @scandir($current);
-            if ($entries === false) {
-                return null;
-            }
-
-            $match = null;
-            foreach ($entries as $entry) {
-                if (strcasecmp($entry, $segment) === 0) {
-                    $match = $entry;
-                    break;
-                }
-            }
-
-            if ($match === null) {
-                return null;
-            }
-
-            $current .= DIRECTORY_SEPARATOR . $match;
-        }
-
-        return $current;
     }
 }
 
