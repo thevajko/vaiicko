@@ -15,8 +15,6 @@ namespace Framework\Core;
 class Router
 {
     private object $controller;
-    private string $controllerName;
-    private string $action;
 
     /**
      * Processes the current URL to determine the controller and action to run. This method initializes the controller
@@ -28,9 +26,6 @@ class Router
     {
         $fullControllerName = $this->getFullControllerName();
         $this->controller = new $fullControllerName();
-
-        $this->controllerName = $this->getControllerName();
-        $this->action = $this->getAction();
     }
 
     /**
