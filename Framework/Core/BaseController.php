@@ -136,14 +136,18 @@ abstract class BaseController
      */
     protected function html(array $data = [], string $viewName = null): ViewResponse
     {
-        if ($viewName == null) {
-            $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR .
-                $this->app->getRouter()->getAction();
+        $router = $this->app->getRouter();
+        $controllerViewPath = $router->getControllerViewPath();
+
+        if ($viewName === null) {
+            $viewName = $controllerViewPath . DIRECTORY_SEPARATOR . $router->getAction();
+        } elseif (is_string($viewName)) {
+            $viewName = $controllerViewPath . DIRECTORY_SEPARATOR . $viewName;
         } else {
-            $viewName = is_string($viewName) ?
-                ($this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $viewName) :
-                ($viewName['0'] . DIRECTORY_SEPARATOR . $viewName['1']);
+            [$controllerPart, $actionPart] = $viewName;
+            $viewName = $controllerPart . DIRECTORY_SEPARATOR . $actionPart;
         }
+
         return new ViewResponse($this->app, $viewName, $data);
     }
 

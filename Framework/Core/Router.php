@@ -15,6 +15,7 @@ namespace Framework\Core;
 class Router
 {
     private object $controller;
+    private string $action;
 
     /**
      * Processes the current URL to determine the controller and action to run. This method initializes the controller
@@ -26,6 +27,8 @@ class Router
     {
         $fullControllerName = $this->getFullControllerName();
         $this->controller = new $fullControllerName();
+
+        $this->action = $this->getAction();
     }
 
     /**
@@ -58,10 +61,15 @@ class Router
      */
     public function getAction(): string
     {
+        if (isset($this->action)) {
+            return $this->action;
+        }
+
         $requested = trim((string)($_GET['a'] ?? ''));
         $requested = $requested === '' ? 'index' : $requested;
 
-        return $this->resolveActionName($requested);
+        $this->action = $this->resolveActionName($requested);
+        return $this->action;
     }
 
     /**
@@ -73,6 +81,16 @@ class Router
     public function getController(): object
     {
         return $this->controller;
+    }
+
+    /**
+     * Exposes the controller path segments for use when constructing default view paths.
+     *
+     * @return string The controller path segments.
+     */
+    public function getControllerViewPath(): string
+    {
+        return implode(DIRECTORY_SEPARATOR, $this->parseControllerSegments());
     }
 
     /**
