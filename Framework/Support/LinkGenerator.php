@@ -133,7 +133,7 @@ class LinkGenerator
             $normalized[] = $this->toKebabCase($segment);
         }
         if (empty($normalized)) {
-            return '';
+            return 'home';
         }
         return implode('/', $normalized);
     }

@@ -66,7 +66,7 @@ final class PathResolver
         }
 
         $baseDirReal = rtrim($baseDirReal, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        if (strpos($currentReal, $baseDirReal) !== 0 && $currentReal !== rtrim($baseDirReal, DIRECTORY_SEPARATOR)) {
+        if (!str_starts_with($currentReal, $baseDirReal) && $currentReal !== rtrim($baseDirReal, DIRECTORY_SEPARATOR)) {
             return null;
         }
 
