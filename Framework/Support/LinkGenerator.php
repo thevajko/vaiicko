@@ -116,8 +116,8 @@ class LinkGenerator
      * Builds the controller part of the query string from the given segments.
      *
      * This method normalizes the controller segments by trimming whitespace and converting
-     * the first character of each segment to lowercase. It then joins the segments with
-     * slashes to form the controller path used in the URL.
+     * PascalCase to kebab-case (e.g., UserPhoto becomes user-photo). It then joins the
+     * segments with slashes to form the controller path used in the URL.
      *
      * @param array $segments The segments representing the controller path.
      * @return string The normalized controller path for the query string.
@@ -128,11 +128,26 @@ class LinkGenerator
         foreach ($segments as $segment) {
             $segment = trim((string)$segment);
             if ($segment === '') {
-                continue; // preskočí prázdne segmenty
+                continue; // skips empty segments
             }
-            $normalized[] = lcfirst($segment);
+            $normalized[] = $this->toKebabCase($segment);
         }
-        return implode('/', $normalized ?: [$this->router->getControllerName()]);
+        if (empty($normalized)) {
+            return $this->toKebabCase($this->router->getControllerName());
+        }
+        return implode('/', $normalized);
+    }
+
+    /**
+     * Converts a PascalCase or camelCase string to kebab-case.
+     *
+     * @param string $value The input string.
+     * @return string The kebab-case version of the string.
+     */
+    private function toKebabCase(string $value): string
+    {
+        // Insert hyphen before uppercase letters, then lowercase the whole string
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $value));
     }
 
     /**
