@@ -118,7 +118,7 @@ class Router
      * Parses the controller segments from the URL parameter 'c'. It splits the parameter by '/' and formats each
      * segment to follow the PascalCase naming convention. If no segments are provided, it defaults to ['Home'].
      *
-     * Only alphanumeric characters, hyphens, and underscores are allowed in segment names.
+     * Only alphanumeric characters, hyphens, underscores, and forward slashes (as path separators) are allowed.
      * Invalid characters are stripped from the input before processing.
      *
      * @return array An array of formatted controller segments.
