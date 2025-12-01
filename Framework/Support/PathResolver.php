@@ -22,6 +22,11 @@ final class PathResolver
      */
     public static function resolveCaseInsensitive(string $baseDir, string $relativePath): ?string
     {
+        // Reject path traversal attempts
+        if (str_contains($relativePath, '..')) {
+            return null;
+        }
+
         $segments = array_filter(
             explode(DIRECTORY_SEPARATOR, $relativePath),
             static fn($part) => $part !== ''
@@ -29,7 +34,11 @@ final class PathResolver
         $current = $baseDir;
 
         foreach ($segments as $segment) {
-            $entries = @scandir($current);
+            if (!is_dir($current) || !is_readable($current)) {
+                return null;
+            }
+
+            $entries = scandir($current);
             if ($entries === false) {
                 return null;
             }
@@ -49,7 +58,19 @@ final class PathResolver
             $current .= DIRECTORY_SEPARATOR . $match;
         }
 
-        return $current;
+        // Ensure resolved path is within the base directory
+        $baseDirReal = realpath($baseDir);
+        $currentReal = realpath($current);
+        if ($baseDirReal === false || $currentReal === false) {
+            return null;
+        }
+
+        $baseDirReal = rtrim($baseDirReal, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if (strpos($currentReal, $baseDirReal) !== 0 && $currentReal !== rtrim($baseDirReal, DIRECTORY_SEPARATOR)) {
+            return null;
+        }
+
+        return $currentReal;
     }
 }
 

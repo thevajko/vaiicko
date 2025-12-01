@@ -14,5 +14,9 @@ try {
 } catch (Exception $e) {
     header('Content-Type: text/plain; charset=utf-8');
 
-    die("An error occurred: {$e->getMessage()}" . PHP_EOL . PHP_EOL . $e->getTraceAsString());
+    if (getenv('APP_ENV') === 'development' || getenv('APP_DEBUG') === 'true') {
+        die("An error occurred: {$e->getMessage()}" . PHP_EOL . PHP_EOL . $e->getTraceAsString());
+    } else {
+        die("An error occurred. Please contact the administrator.");
+    }
 }

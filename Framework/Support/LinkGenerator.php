@@ -128,12 +128,12 @@ class LinkGenerator
         foreach ($segments as $segment) {
             $segment = trim((string)$segment);
             if ($segment === '') {
-                continue; // skips empty segments
+                continue;
             }
             $normalized[] = $this->toKebabCase($segment);
         }
         if (empty($normalized)) {
-            return $this->toKebabCase($this->router->getControllerName());
+            return '';
         }
         return implode('/', $normalized);
     }
