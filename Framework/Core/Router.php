@@ -118,6 +118,9 @@ class Router
      * Parses the controller segments from the URL parameter 'c'. It splits the parameter by '/' and formats each
      * segment to follow the PascalCase naming convention. If no segments are provided, it defaults to ['Home'].
      *
+     * Only alphanumeric characters, hyphens, and underscores are allowed in segment names.
+     * Invalid characters are stripped from the input before processing.
+     *
      * @return array An array of formatted controller segments.
      */
     private function parseControllerSegments(): array
@@ -127,6 +130,9 @@ class Router
         if ($raw === '') {
             return ['Home'];
         }
+
+        // Sanitize input: only allow alphanumeric characters, hyphens, underscores, and forward slashes
+        $raw = preg_replace('/[^a-zA-Z0-9\-_\/]/', '', $raw);
 
         $parts = array_values(array_filter(explode('/', $raw), static fn($part) => $part !== ''));
 
