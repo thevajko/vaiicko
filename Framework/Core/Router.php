@@ -15,8 +15,8 @@ namespace Framework\Core;
 class Router
 {
     private object $controller;
-    private string $controllerName;
     private string $action;
+    private array $controllerSegments = [];
 
     /**
      * Processes the current URL to determine the controller and action to run. This method initializes the controller
@@ -26,10 +26,10 @@ class Router
      */
     public function processURL(): void
     {
-        $fullControllerName = $this->getFullControllerName();
+        $this->controllerSegments = $this->parseControllerSegments();
+        $fullControllerName = 'App\\Controllers\\' . implode('\\', $this->controllerSegments) . 'Controller';
         $this->controller = new $fullControllerName();
 
-        $this->controllerName = $this->getControllerName();
         $this->action = $this->getAction();
     }
 
@@ -41,7 +41,8 @@ class Router
      */
     public function getFullControllerName(): string
     {
-        return 'App\Controllers\\' . $this->getControllerName() . "Controller";
+        $segments = $this->getControllerSegments();
+        return 'App\\Controllers\\' . implode('\\', $segments) . 'Controller';
     }
 
     /**
@@ -51,7 +52,8 @@ class Router
      */
     public function getControllerName(): string
     {
-        return (!isset($_GET['c']) || empty(trim(@$_GET['c']))) ? "Home" : trim(ucfirst($_GET['c']));
+        $segments = $this->getControllerSegments();
+        return $segments[array_key_last($segments)] ?? 'Home';
     }
 
     /**
@@ -61,7 +63,15 @@ class Router
      */
     public function getAction(): string
     {
-        return (!isset($_GET['a']) || empty(trim(@$_GET['a']))) ? "index" : $_GET['a'];
+        if (isset($this->action)) {
+            return $this->action;
+        }
+
+        $requested = trim((string)($_GET['a'] ?? ''));
+        $requested = $requested === '' ? 'index' : $requested;
+
+        $this->action = $this->resolveActionName($requested);
+        return $this->action;
     }
 
     /**
@@ -73,5 +83,110 @@ class Router
     public function getController(): object
     {
         return $this->controller;
+    }
+
+    /**
+     * Exposes the controller path segments for use when constructing default view paths.
+     *
+     * @return string The controller path segments.
+     */
+    public function getControllerViewPath(): string
+    {
+        return implode(DIRECTORY_SEPARATOR, $this->getControllerSegments());
+    }
+
+    /**
+     * Returns the controller path segments parsed from the request or derived from the current controller instance.
+     */
+    public function getControllerSegments(): array
+    {
+        if ($this->controllerSegments !== []) {
+            return $this->controllerSegments;
+        }
+
+        if (isset($this->controller)) {
+            $derived = $this->extractSegmentsFromControllerInstance();
+            if ($derived !== []) {
+                return $this->controllerSegments = $derived;
+            }
+        }
+
+        return $this->controllerSegments = $this->parseControllerSegments();
+    }
+
+    /**
+     * Parses the controller segments from the URL parameter 'c'. It splits the parameter by '/' and formats each
+     * segment to follow the PascalCase naming convention. If no segments are provided, it defaults to ['Home'].
+     *
+     * Only alphanumeric characters, hyphens, underscores, and forward slashes (as path separators) are allowed.
+     * Invalid characters are stripped from the input before processing.
+     *
+     * @return array An array of formatted controller segments.
+     */
+    private function parseControllerSegments(): array
+    {
+        $raw = trim($_GET['c'] ?? '');
+
+        if ($raw === '') {
+            return ['Home'];
+        }
+
+        // Sanitize input: only allow alphanumeric characters, hyphens, underscores, and forward slashes
+        $raw = preg_replace('/[^a-zA-Z0-9\-_\/]/', '', $raw);
+
+        $parts = array_values(array_filter(explode('/', $raw), static fn($part) => $part !== ''));
+
+        if (empty($parts)) {
+            return ['Home'];
+        }
+
+        return array_map(
+            static fn($part) => str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', strtolower($part)))),
+            $parts
+        );
+    }
+
+    private function extractSegmentsFromControllerInstance(): array
+    {
+        if (!isset($this->controller)) {
+            return [];
+        }
+
+        $class = get_class($this->controller);
+        $parts = explode('\\', $class);
+        $controllersIndex = array_search('Controllers', $parts, true);
+        if ($controllersIndex === false) {
+            return [];
+        }
+
+        $segments = array_slice($parts, $controllersIndex + 1);
+        if ($segments === []) {
+            return [];
+        }
+
+        $lastIndex = array_key_last($segments);
+        $segments[$lastIndex] = preg_replace('/Controller$/', '', $segments[$lastIndex]);
+
+        return array_values(array_filter($segments, static fn($segment) => $segment !== ''));
+    }
+
+    /**
+     * Resolves the action name to be case-insensitive by matching against the instantiated controller’s methods.
+     *
+     * @param string $action The requested action name.
+     * @return string The resolved action name, matching the case of the controller's method.
+     */
+    private function resolveActionName(string $action): string
+    {
+        if (!isset($this->controller)) {
+            return $action;
+        }
+
+        foreach (get_class_methods($this->controller) as $method) {
+            if (strcasecmp($method, $action) === 0) {
+                return $method;
+            }
+        }
+        return $action;
     }
 }

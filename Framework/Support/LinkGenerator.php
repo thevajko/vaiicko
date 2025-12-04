@@ -46,6 +46,7 @@ class LinkGenerator
      *
      * Examples:
      * - url("home.index")                                    // URL for HomeController's index action
+     * - url("api.messages.index")                            // URL for Api\MessagesController's index action
      * - url("index")                                         // URL for the current controller's index action
      * - url("home.index", ["param1" => 1, "param2" => true]) // URL with parameters for HomeController's index action
      * - url("index", ["param1" => 1, "param2" => true])      // URL with parameters for the current controller and
@@ -64,11 +65,13 @@ class LinkGenerator
      */
     public function url(
         string|array $destination,
-        array $parameters = [],
-        bool $absolute = false,
-        bool $appendParameters = false
-    ): string {
-        // If destination is an array, set parameters accordingly
+        array        $parameters = [],
+        bool         $absolute = false,
+        bool         $appendParameters = false
+    ): string
+    {
+        $currentControllerPath = implode('.', $this->router->getControllerSegments());
+
         if (is_array($destination)) {
             if ($parameters != []) {
                 $caller = debug_backtrace()[0];
@@ -78,26 +81,73 @@ class LinkGenerator
             }
 
             $parameters = $destination;
-            $destination = "{$this->router->getControllerName()}.{$this->router->getAction()}";
+            $destination = $currentControllerPath . '.' . $this->router->getAction();
         }
 
-        // If destination does not specify a controller, assume current controller
         if (!str_contains($destination, ".")) {
-            $destination = "{$this->router->getControllerName()}.{$destination}";
+            $destination = $currentControllerPath . '.' . $destination;
         }
 
-        // Split the destination into controller and action
-        list($controller, $action) = explode(".", $destination);
+        $parts = array_values(array_filter(explode('.', $destination), static fn($part) => $part !== ''));
+        if ($parts === []) {
+            $parts = $this->router->getControllerSegments();
+        }
+
+        if (count($parts) === 1) {
+            $parts = array_merge($this->router->getControllerSegments(), $parts);
+        }
+
+        $action = array_pop($parts);
+        $controllerSegments = $parts ?: $this->router->getControllerSegments();
+        $controller = $this->buildControllerQueryValue($controllerSegments);
 
         // Build query arguments
         $args = $appendParameters ? $this->request->get() : [];
-        $args = ["c" => lcfirst($controller), "a" => $action != "index" ? $action : null] + $parameters + $args;
+        $args = ["c" => $controller, "a" => $action != "index" ? $action : null] + $parameters + $args;
 
         // Determine the base URL
         $basePath = $absolute ? $this->request->getBaseUrl() : "";
 
         // Construct and return the final URL
         return $basePath . "?" . http_build_query($args);
+    }
+
+    /**
+     * Builds the controller part of the query string from the given segments.
+     *
+     * This method normalizes the controller segments by trimming whitespace and converting
+     * PascalCase to kebab-case (e.g., UserPhoto becomes user-photo). It then joins the
+     * segments with slashes to form the controller path used in the URL.
+     *
+     * @param array $segments The segments representing the controller path.
+     * @return string The normalized controller path for the query string.
+     */
+    private function buildControllerQueryValue(array $segments): string
+    {
+        $normalized = [];
+        foreach ($segments as $segment) {
+            $segment = trim((string)$segment);
+            if ($segment === '') {
+                continue;
+            }
+            $normalized[] = $this->toKebabCase($segment);
+        }
+        if (empty($normalized)) {
+            return 'home';
+        }
+        return implode('/', $normalized);
+    }
+
+    /**
+     * Converts a PascalCase or camelCase string to kebab-case.
+     *
+     * @param string $value The input string.
+     * @return string The kebab-case version of the string.
+     */
+    private function toKebabCase(string $value): string
+    {
+        // Insert hyphen before uppercase letters, then lowercase the whole string
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $value));
     }
 
     /**

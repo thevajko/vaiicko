@@ -35,12 +35,16 @@ class ClassLoader
             // Build absolute path to the target file
             $file = $baseDir . DIRECTORY_SEPARATOR . $relativePath;
 
-            // Check if the file corresponding to the class exists
+            if (!file_exists($file)) {
+                $resolved = \Framework\Support\PathResolver::resolveCaseInsensitive($baseDir, $relativePath);
+                if ($resolved !== null) {
+                    $file = $resolved;
+                }
+            }
+
             if (file_exists($file)) {
-                // Include the class file if it exists
                 require $file;
             } else {
-                // Throw an exception if the class file is not found
                 throw new Exception("Class {$class_name} file {$file} was not found.");
             }
         });
