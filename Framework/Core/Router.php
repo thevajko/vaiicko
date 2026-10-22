@@ -33,8 +33,20 @@ class Router
             throw new HttpException(404);
         }
 
+        // Check the controller file directly, so the class loader does not throw an exception (500) for a missing class
+        $controllerFile = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Controllers'
+            . DIRECTORY_SEPARATOR . $this->getControllerName() . 'Controller.php';
+        if (!file_exists($controllerFile)) {
+            throw new HttpException(404);
+        }
+
         $fullControllerName = $this->getFullControllerName();
         $this->controller = new $fullControllerName();
+
+        // The action must be an existing public method of the controller
+        if (!is_callable([$this->controller, $this->getAction()])) {
+            throw new HttpException(404);
+        }
 
         $this->controllerName = $this->getControllerName();
         $this->action = $this->getAction();
