@@ -24,7 +24,7 @@ class Configuration
     /**
      * Version of the framework.
      */
-    public const FW_VERSION = '3.0.6';
+    public const FW_VERSION = '3.0.7';
 
     /**
      * Database connection settings.
@@ -85,6 +85,20 @@ class Configuration
      * Example: /uploads/
      */
     public const UPLOAD_URL = '/uploads/';
+
+    /**
+     * Content-Security-Policy header sent with every response (defense in depth against XSS). It blocks inline
+     * scripts (<script>...</script>, onclick="...") and scripts from foreign domains. If you use another CDN, add it
+     * here. Set to null to disable the header.
+     */
+    public const CONTENT_SECURITY_POLICY = "default-src 'self'; "
+        . "script-src 'self' https://cdn.jsdelivr.net; "
+        . "style-src 'self' https://cdn.jsdelivr.net; "
+        . "img-src 'self' data:; "
+        . "object-src 'none'; "
+        . "base-uri 'self'; "
+        . "form-action 'self'; "
+        . "frame-ancestors 'self'";
 
     // Session key for storing the user identity
     public const IDENTITY_SESSION_KEY = 'fw.session.user.identity';

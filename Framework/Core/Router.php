@@ -2,6 +2,8 @@
 
 namespace Framework\Core;
 
+use Framework\Http\HttpException;
+
 /**
  * Class Router
  *
@@ -26,6 +28,11 @@ class Router
      */
     public function processURL(): void
     {
+        // Allow only valid PHP identifiers, so user input never gets into class/method names or error messages
+        if (!self::isValidName($this->getControllerName()) || !self::isValidName($this->getAction())) {
+            throw new HttpException(404);
+        }
+
         $fullControllerName = $this->getFullControllerName();
         $this->controller = new $fullControllerName();
 
@@ -62,6 +69,17 @@ class Router
     public function getAction(): string
     {
         return (!isset($_GET['a']) || empty(trim(@$_GET['a']))) ? "index" : $_GET['a'];
+    }
+
+    /**
+     * Checks whether the name of the controller or the action from the URL is a valid identifier.
+     *
+     * @param string $name The name to check.
+     * @return bool True if the name contains only letters, digits and underscores and does not start with a digit.
+     */
+    private static function isValidName(string $name): bool
+    {
+        return preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $name) === 1;
     }
 
     /**

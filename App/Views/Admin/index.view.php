@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col">
             <div>
-                Welcome, <strong><?= $user->getName() ?></strong>!<br><br>
+                Welcome, <strong><?= e($user->getName()) ?></strong>!<br><br>
                 This part of the application is accessible only after logging in.
             </div>
         </div>

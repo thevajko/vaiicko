@@ -14,7 +14,7 @@ $view->setLayout('auth');
                 <div class="card-body">
                     <h5 class="card-title text-center">Username</h5>
                     <div class="text-center text-danger mb-3">
-                        <?= @$message ?>
+                        <?= e($message ?? null) ?>
                     </div>
                     <form class="form-signin" method="post" action="<?= $link->url("login") ?>">
                         <div class="form-label-group mb-3">

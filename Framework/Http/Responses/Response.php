@@ -2,6 +2,7 @@
 
 namespace Framework\Http\Responses;
 
+use App\Configuration;
 use Framework\Http\HttpException;
 
 /**
@@ -32,6 +33,9 @@ abstract class Response
             );
         }
         http_response_code($this->statusCode);
+        if (Configuration::CONTENT_SECURITY_POLICY !== null && !headers_sent()) {
+            header('Content-Security-Policy: ' . Configuration::CONTENT_SECURITY_POLICY);
+        }
         $this->generate();
     }
 
