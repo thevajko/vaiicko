@@ -53,3 +53,6 @@ try {
 } catch (Exception $e) {
     die('Error initializing class loader: ' . $e->getMessage());
 }
+
+// Load global helper functions (e.g. e() for escaping output in views)
+require __DIR__ . DIRECTORY_SEPARATOR . 'Support' . DIRECTORY_SEPARATOR . 'functions.php';

@@ -87,9 +87,9 @@ class Configuration
     public const UPLOAD_URL = '/uploads/';
 
     /**
-     * Content-Security-Policy header sent with every response (defense in depth against XSS). It blocks inline
-     * scripts (<script>...</script>, onclick="...") and scripts from foreign domains. If you use another CDN, add it
-     * here. Set to null to disable the header.
+     * Content-Security-Policy sent with every response (defense in depth against XSS). It forbids inline scripts
+     * (<script>...</script>, onclick="..."), inline styles and resources from foreign domains. If you use another
+     * CDN, add it here. Set to null to disable the header.
      */
     public const CONTENT_SECURITY_POLICY = "default-src 'self'; "
         . "script-src 'self' https://cdn.jsdelivr.net; "
@@ -99,6 +99,13 @@ class Configuration
         . "base-uri 'self'; "
         . "form-action 'self'; "
         . "frame-ancestors 'self'";
+
+    /**
+     * Flag to send the policy above in the report-only mode (Content-Security-Policy-Report-Only header). In this
+     * mode, the browser does not block anything, it only reports violations in the developer console. Set to false
+     * to enforce the policy.
+     */
+    public const CONTENT_SECURITY_POLICY_REPORT_ONLY = true;
 
     // Session key for storing the user identity
     public const IDENTITY_SESSION_KEY = 'fw.session.user.identity';

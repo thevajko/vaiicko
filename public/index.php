@@ -2,8 +2,6 @@
 
 // Require the class loader to enable automatic loading of classes
 require __DIR__ . '/../Framework/ClassLoader.php';
-// Require global helper functions (e.g. e() for escaping output in views)
-require __DIR__ . '/../Framework/Support/functions.php';
 
 use Framework\Core\App;
 
