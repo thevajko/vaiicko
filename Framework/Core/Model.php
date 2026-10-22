@@ -22,6 +22,7 @@ use PDOException;
  * - To set a custom table name: define `protected static ?string $tableName = 'my_table';`
  * - To set a custom primary key: define `protected static ?string $primaryKey = 'my_pk';`
  * - To map DB columns to properties: define `protected static array $columnsMap = ['db_column' => 'propertyName'];`
+ * - To allow only some properties to be set from a request: define `protected static ?array $fillable = ['title'];`
  *
  * @package App\Core\Storage
  */
@@ -32,10 +33,12 @@ abstract class Model implements \JsonSerializable
      * - $tableName: custom DB table name
      * - $primaryKey: custom primary key column
      * - $columnsMap: map of DB column => property name
+     * - $fillable: names of properties that can be set by setFromRequest() (null = all properties)
      */
     protected static ?string $tableName = null;
     protected static ?string $primaryKey = null;
     protected static array $columnsMap = [];
+    protected static ?array $fillable = null;
 
     private static array $dbColumns = []; // Cache for database column names
     private static array $modelProperties = []; // Cache for model property names
@@ -79,18 +82,49 @@ abstract class Model implements \JsonSerializable
     /**
      * Populates the model's properties with values from the incoming request.
      *
-     * This method matches property names with corresponding request parameters.
+     * This method matches property names with corresponding request parameters. To prevent mass assignment (e.g. a user
+     * adding `userId` or `role` field to the form), list the allowed properties in `$fields` or in `static::$fillable`.
+     * The primary key, static properties and array values are never set. If `Configuration::MODEL_REQUIRE_FILLABLE`
+     * is true, the whitelist is required.
+     *
+     * Example: `$post->setFromRequest($request, ['title', 'text']);`
      *
      * @param Request $request The incoming HTTP request containing parameters.
+     * @param array|null $fields Names of properties allowed to be set; null uses `static::$fillable` (null = all).
      * @return void
+     * @throws Exception If the whitelist is required but neither `$fields` nor `static::$fillable` is defined.
      */
-    public function setFromRequest(Request $request): void
+    public function setFromRequest(Request $request, ?array $fields = null): void
     {
+        $allowed = $fields ?? static::$fillable;
+        if ($allowed === null
+            && defined('\\App\\Configuration::MODEL_REQUIRE_FILLABLE')
+            && Configuration::MODEL_REQUIRE_FILLABLE
+        ) {
+            throw new Exception(sprintf(
+                'Model %s has no whitelist for setFromRequest(). Define protected static ?array $fillable = [...] ' .
+                'in the model or pass the allowed fields: $model->setFromRequest($request, [\'title\', ...]).',
+                static::class
+            ));
+        }
+
         $data = $request->isPost() ? $request->post() : $request->get();
+        $properties = static::getModelProperties();
+        $pkProperty = static::toPropertyName(static::getPkColumnName());
+
         foreach ($data as $key => $value) {
-            if (property_exists(get_class($this), $key)) {
-                $this->{$key} = $value;
+            if ($allowed !== null && !in_array($key, $allowed, true)) {
+                continue;
             }
+            // Only declared non-static properties, never the primary key (record identity is kept in the model)
+            if (!isset($properties[$key]) || $key === $pkProperty) {
+                continue;
+            }
+            // DB columns are scalar, an array (e.g. title[]=x) would only cause a TypeError
+            if (is_array($value)) {
+                continue;
+            }
+            $this->{$key} = $value;
         }
     }
 
