@@ -28,24 +28,24 @@ class Router
      */
     public function processURL(): void
     {
-        // Allow only valid PHP identifiers, so user input never gets into class/method names or error messages
-        if (!self::isValidName($this->getControllerName()) || !self::isValidName($this->getAction())) {
-            throw new HttpException(404);
+        // Allow only valid PHP identifiers, so user input never gets into class/method names
+        foreach (['controller' => $this->getControllerName(), 'action' => $this->getAction()] as $type => $name) {
+            if (!self::isValidName($name)) {
+                throw self::notFound("Invalid {$type} name \"{$name}\" in the URL (allowed: letters, digits, _).");
+            }
         }
 
-        // Check the controller file directly, so the class loader does not throw an exception (500) for a missing class
-        $controllerFile = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Controllers'
-            . DIRECTORY_SEPARATOR . $this->getControllerName() . 'Controller.php';
-        if (!file_exists($controllerFile)) {
-            throw new HttpException(404);
-        }
-
+        // The details are passed as a previous exception, so they are shown only if exception details are enabled
         $fullControllerName = $this->getFullControllerName();
+        if (!\ClassLoader::classExists($fullControllerName)) {
+            throw self::notFound("Controller {$fullControllerName} (file "
+                . \ClassLoader::getClassFile($fullControllerName) . ") was not found.");
+        }
         $this->controller = new $fullControllerName();
 
         // The action must be an existing public method of the controller
         if (!is_callable([$this->controller, $this->getAction()])) {
-            throw new HttpException(404);
+            throw self::notFound("Action {$this->getAction()} was not found in controller {$fullControllerName}.");
         }
 
         $this->controllerName = $this->getControllerName();
@@ -92,6 +92,17 @@ class Router
     private static function isValidName(string $name): bool
     {
         return preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $name) === 1;
+    }
+
+    /**
+     * Creates a 404 exception with the detailed reason for developers.
+     *
+     * @param string $detail Description of the problem (shown only if exception details are enabled).
+     * @return HttpException The exception to throw.
+     */
+    private static function notFound(string $detail): HttpException
+    {
+        return new HttpException(404, null, new \Exception($detail));
     }
 
     /**

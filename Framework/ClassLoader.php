@@ -22,18 +22,7 @@ class ClassLoader
     public static function Boot(): void
     {
         spl_autoload_register(function ($class_name) {
-            // Determine the project root (one level up from this file's directory) as an absolute path
-            $baseDir = realpath(dirname(__DIR__));
-            if ($baseDir === false) {
-                // Fallback, should not happen, but keep relative to ensure some resolution
-                $baseDir = dirname(__DIR__);
-            }
-
-            // Normalize class name (remove leading backslash) and convert namespace to path
-            $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, ltrim($class_name, '\\')) . '.php';
-
-            // Build absolute path to the target file
-            $file = $baseDir . DIRECTORY_SEPARATOR . $relativePath;
+            $file = self::getClassFile($class_name);
 
             // Check if the file corresponding to the class exists
             if (file_exists($file)) {
@@ -44,6 +33,39 @@ class ClassLoader
                 throw new Exception("Class {$class_name} file {$file} was not found.");
             }
         });
+    }
+
+    /**
+     * Checks whether the class is already loaded or its file exists. Unlike class_exists(), it does not throw
+     * an exception when the class file is missing.
+     *
+     * @param string $className Fully qualified class name.
+     * @return bool True if the class can be loaded.
+     */
+    public static function classExists(string $className): bool
+    {
+        return class_exists($className, false) || file_exists(self::getClassFile($className));
+    }
+
+    /**
+     * Returns the absolute path of the file that should contain the class (namespace is mapped to directories).
+     *
+     * @param string $className Fully qualified class name.
+     * @return string Absolute path to the class file.
+     */
+    public static function getClassFile(string $className): string
+    {
+        // Determine the project root (one level up from this file's directory) as an absolute path
+        $baseDir = realpath(dirname(__DIR__));
+        if ($baseDir === false) {
+            // Fallback, should not happen, but keep relative to ensure some resolution
+            $baseDir = dirname(__DIR__);
+        }
+
+        // Normalize class name (remove leading backslash) and convert namespace to path
+        $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, ltrim($className, '\\')) . '.php';
+
+        return $baseDir . DIRECTORY_SEPARATOR . $relativePath;
     }
 }
 

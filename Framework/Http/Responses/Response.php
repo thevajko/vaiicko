@@ -2,7 +2,6 @@
 
 namespace Framework\Http\Responses;
 
-use App\Configuration;
 use Framework\Http\HttpException;
 
 /**
@@ -33,29 +32,7 @@ abstract class Response
             );
         }
         http_response_code($this->statusCode);
-        $this->sendSecurityPolicy();
         $this->generate();
-    }
-
-    /**
-     * Sends the Content-Security-Policy header if it is configured. Older configurations without the CSP constants
-     * are supported (no header is sent). Report-only mode is the default unless it is explicitly disabled.
-     *
-     * @return void
-     */
-    private function sendSecurityPolicy(): void
-    {
-        if (!defined('\\App\\Configuration::CONTENT_SECURITY_POLICY')
-            || Configuration::CONTENT_SECURITY_POLICY === null
-            || headers_sent()
-        ) {
-            return;
-        }
-
-        $reportOnly = !defined('\\App\\Configuration::CONTENT_SECURITY_POLICY_REPORT_ONLY')
-            || Configuration::CONTENT_SECURITY_POLICY_REPORT_ONLY;
-        $headerName = $reportOnly ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
-        header($headerName . ': ' . Configuration::CONTENT_SECURITY_POLICY);
     }
 
     /**

@@ -87,18 +87,14 @@ class Configuration
     public const UPLOAD_URL = '/uploads/';
 
     /**
-     * Content-Security-Policy sent with every response (defense in depth against XSS). It forbids inline scripts
-     * (<script>...</script>, onclick="..."), inline styles and resources from foreign domains. If you use another
-     * CDN, add it here. Set to null to disable the header.
+     * Optional Content-Security-Policy sent with HTML (view) responses as an extra protection against XSS. Null means
+     * that no header is sent. Example policy that allows only own scripts and the CDN used for Bootstrap (inline
+     * scripts and onclick="..." are forbidden):
+     *
+     * "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; "
+     * . "img-src 'self' data: https:; object-src 'none'; base-uri 'self'"
      */
-    public const CONTENT_SECURITY_POLICY = "default-src 'self'; "
-        . "script-src 'self' https://cdn.jsdelivr.net; "
-        . "style-src 'self' https://cdn.jsdelivr.net; "
-        . "img-src 'self' data:; "
-        . "object-src 'none'; "
-        . "base-uri 'self'; "
-        . "form-action 'self'; "
-        . "frame-ancestors 'self'";
+    public const CONTENT_SECURITY_POLICY = null;
 
     /**
      * Flag to send the policy above in the report-only mode (Content-Security-Policy-Report-Only header). In this
