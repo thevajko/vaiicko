@@ -38,6 +38,7 @@ abstract class Model implements \JsonSerializable
     protected static ?string $tableName = null;
     protected static ?string $primaryKey = null;
     protected static array $columnsMap = [];
+    /** @var string[]|null */
     protected static ?array $fillable = null;
 
     private static array $dbColumns = []; // Cache for database column names
@@ -90,7 +91,7 @@ abstract class Model implements \JsonSerializable
      * Example: `$post->setFromRequest($request, ['title', 'text']);`
      *
      * @param Request $request The incoming HTTP request containing parameters.
-     * @param array|null $fields Names of properties allowed to be set; null uses `static::$fillable` (null = all).
+     * @param string[]|null $fields Names of properties allowed to be set; null uses `static::$fillable` (null = all).
      * @return void
      * @throws Exception If the whitelist is required but neither `$fields` nor `static::$fillable` is defined.
      */
