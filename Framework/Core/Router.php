@@ -38,8 +38,8 @@ class Router
         // The details are passed as a previous exception, so they are shown only if exception details are enabled
         $fullControllerName = $this->getFullControllerName();
         if (!\ClassLoader::classExists($fullControllerName)) {
-            throw self::notFound("Controller {$fullControllerName} (file "
-                . \ClassLoader::getClassFile($fullControllerName) . ") was not found.");
+            throw self::notFound("Controller class {$fullControllerName} was not found (expected in file "
+                . \ClassLoader::getClassFile($fullControllerName) . ").");
         }
         $this->controller = new $fullControllerName();
 

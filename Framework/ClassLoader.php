@@ -36,15 +36,24 @@ class ClassLoader
     }
 
     /**
-     * Checks whether the class is already loaded or its file exists. Unlike class_exists(), it does not throw
-     * an exception when the class file is missing.
+     * Checks whether the class exists and loads it if needed. Unlike class_exists(), it does not throw an exception
+     * when the class file is missing. If the file exists but does not contain the class (e.g. a typo in the class
+     * name), false is returned.
      *
      * @param string $className Fully qualified class name.
-     * @return bool True if the class can be loaded.
+     * @return bool True if the class is loaded.
      */
     public static function classExists(string $className): bool
     {
-        return class_exists($className, false) || file_exists(self::getClassFile($className));
+        if (class_exists($className, false)) {
+            return true;
+        }
+        // Do not call the autoloader for a missing file, it would throw an exception
+        if (!file_exists(self::getClassFile($className))) {
+            return false;
+        }
+        // Load the file and check that it really declares the class
+        return class_exists($className);
     }
 
     /**
