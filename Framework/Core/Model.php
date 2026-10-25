@@ -118,7 +118,7 @@ abstract class Model implements \JsonSerializable
                 continue;
             }
             // Only declared non-static properties, never the primary key (record identity is kept in the model)
-            if (!isset($properties[$key]) || $key === $pkProperty) {
+            if (!array_key_exists($key, $properties) || $key === $pkProperty) {
                 continue;
             }
             // DB columns are scalar, an array (e.g. title[]=x) would only cause a TypeError
