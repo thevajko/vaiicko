@@ -99,7 +99,7 @@ abstract class Model implements \JsonSerializable
     {
         $allowed = $fields ?? static::$fillable;
         if ($allowed === null
-            && defined('\\App\\Configuration::MODEL_REQUIRE_FILLABLE')
+            && defined(Configuration::class . '::MODEL_REQUIRE_FILLABLE')
             && Configuration::MODEL_REQUIRE_FILLABLE
         ) {
             throw new Exception(sprintf(
