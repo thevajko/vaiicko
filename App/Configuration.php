@@ -24,7 +24,7 @@ class Configuration
     /**
      * Version of the framework.
      */
-    public const FW_VERSION = '3.0.6';
+    public const FW_VERSION = '3.0.7';
 
     /**
      * Database connection settings.
@@ -85,6 +85,23 @@ class Configuration
      * Example: /uploads/
      */
     public const UPLOAD_URL = '/uploads/';
+
+    /**
+     * Optional Content-Security-Policy sent with HTML (view) responses as an extra protection against XSS. Null means
+     * that no header is sent. Example policy that allows only own scripts and the CDN used for Bootstrap (inline
+     * scripts and onclick="..." are forbidden):
+     *
+     * "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; "
+     * . "img-src 'self' data: https:; object-src 'none'; base-uri 'self'"
+     */
+    public const CONTENT_SECURITY_POLICY = null;
+
+    /**
+     * Flag to send the policy above in the report-only mode (Content-Security-Policy-Report-Only header). In this
+     * mode, the browser does not block anything, it only reports violations in the developer console. Set to false
+     * to enforce the policy.
+     */
+    public const CONTENT_SECURITY_POLICY_REPORT_ONLY = true;
 
     // Session key for storing the user identity
     public const IDENTITY_SESSION_KEY = 'fw.session.user.identity';

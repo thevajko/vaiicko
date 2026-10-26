@@ -2,6 +2,8 @@
 
 namespace Framework\Core;
 
+use Framework\Http\HttpException;
+
 /**
  * Class Router
  *
@@ -26,8 +28,25 @@ class Router
      */
     public function processURL(): void
     {
+        // Allow only valid PHP identifiers, so user input never gets into class/method names
+        foreach (['controller' => $this->getControllerName(), 'action' => $this->getAction()] as $type => $name) {
+            if (!self::isValidName($name)) {
+                throw self::notFound("Invalid {$type} name \"{$name}\" in the URL (allowed: letters, digits, _).");
+            }
+        }
+
+        // The details are passed as a previous exception, so they are shown only if exception details are enabled
         $fullControllerName = $this->getFullControllerName();
+        if (!\ClassLoader::classExists($fullControllerName)) {
+            throw self::notFound("Controller class {$fullControllerName} was not found (expected in file "
+                . \ClassLoader::getClassFile($fullControllerName) . ").");
+        }
         $this->controller = new $fullControllerName();
+
+        // The action must be an existing public method of the controller
+        if (!is_callable([$this->controller, $this->getAction()])) {
+            throw self::notFound("Action {$this->getAction()} was not found in controller {$fullControllerName}.");
+        }
 
         $this->controllerName = $this->getControllerName();
         $this->action = $this->getAction();
@@ -62,6 +81,28 @@ class Router
     public function getAction(): string
     {
         return (!isset($_GET['a']) || empty(trim(@$_GET['a']))) ? "index" : $_GET['a'];
+    }
+
+    /**
+     * Checks whether the name of the controller or the action from the URL is a valid identifier.
+     *
+     * @param string $name The name to check.
+     * @return bool True if the name contains only letters, digits and underscores and does not start with a digit.
+     */
+    private static function isValidName(string $name): bool
+    {
+        return preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $name) === 1;
+    }
+
+    /**
+     * Creates a 404 exception with the detailed reason for developers.
+     *
+     * @param string $detail Description of the problem (shown only if exception details are enabled).
+     * @return HttpException The exception to throw.
+     */
+    private static function notFound(string $detail): HttpException
+    {
+        return new HttpException(404, null, new \Exception($detail));
     }
 
     /**

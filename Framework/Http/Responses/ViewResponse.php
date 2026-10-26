@@ -64,6 +64,8 @@ class ViewResponse extends Response
      */
     protected function generate(): void
     {
+        $this->sendSecurityPolicy();
+
         // View helpers available in all views
         $viewHelpers = [
             'user' => $this->app->getAppUser(),
@@ -114,6 +116,27 @@ class ViewResponse extends Response
             . DIRECTORY_SEPARATOR . 'App'
             . DIRECTORY_SEPARATOR . 'Views'
             . DIRECTORY_SEPARATOR . $viewPath;
+    }
+
+    /**
+     * Sends the Content-Security-Policy header if it is configured. Older configurations without the CSP constants
+     * are supported (no header is sent). Report-only mode is the default unless it is explicitly disabled.
+     *
+     * @return void
+     */
+    private function sendSecurityPolicy(): void
+    {
+        if (!defined(Configuration::class . '::CONTENT_SECURITY_POLICY')
+            || Configuration::CONTENT_SECURITY_POLICY === null
+            || headers_sent()
+        ) {
+            return;
+        }
+
+        $reportOnly = !defined(Configuration::class . '::CONTENT_SECURITY_POLICY_REPORT_ONLY')
+            || Configuration::CONTENT_SECURITY_POLICY_REPORT_ONLY;
+        $headerName = $reportOnly ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
+        header($headerName . ': ' . Configuration::CONTENT_SECURITY_POLICY);
     }
 
     /**
