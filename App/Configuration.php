@@ -92,6 +92,7 @@ class Configuration
      * to setFromRequest(), otherwise an exception is thrown.
      */
     public const MODEL_REQUIRE_FILLABLE = true;
+    /**
      * Optional Content-Security-Policy sent with HTML (view) responses as an extra protection against XSS. Null means
      * that no header is sent. Example policy that allows only own scripts and the CDN used for Bootstrap (inline
      * scripts and onclick="..." are forbidden):
