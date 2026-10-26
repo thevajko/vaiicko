@@ -48,7 +48,7 @@ class Connection
         try {
             if (self::$instance == null) {
                 $db = new PDO(
-                    'mysql:dbname=' . Configuration::DB_NAME . ';host=' . Configuration::DB_HOST,
+                    'mysql:dbname=' . Configuration::DB_NAME . ';host=' . Configuration::DB_HOST . ';charset=utf8mb4',
                     Configuration::DB_USER,
                     Configuration::DB_PASS
                 );
@@ -58,7 +58,7 @@ class Connection
             }
             return self::$instance;
         } catch (PDOException $e) {
-            throw new Exception('Connection failed: ' . $e->getMessage());
+            throw new Exception('Connection failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
@@ -96,7 +96,7 @@ class Connection
         try {
             return new DebugStatement($this->db->prepare($sql));
         } catch (PDOException $e) {
-            throw new Exception('Prepare failed: ' . $e->getMessage());
+            throw new Exception('Prepare failed: ' . $e->getMessage(), 0, $e);
         }
     }
 

@@ -95,7 +95,7 @@ class HttpException extends Exception
      * @param null $message Custom error message (if not provided, a standard message is used)
      * @param Throwable|null $previous Optional previous exception for exception chaining
      */
-    public function __construct(int $statusCode, $message = null, Throwable $previous = null)
+    public function __construct(int $statusCode, $message = null, ?Throwable $previous = null)
     {
         parent::__construct(
             $message ? $message : self::$statusCodeMessages[$statusCode],

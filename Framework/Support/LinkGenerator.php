@@ -116,11 +116,7 @@ class LinkGenerator
         $assetPath = '/' . ltrim($path, '/');
 
         if ($absolute) {
-            $serverProtocol = strtolower($this->request->server('SERVER_PROTOCOL') ?? 'http');
-            $isHttps = str_starts_with($serverProtocol, 'https')
-                || ($this->request->server('HTTPS') ?? '') === 'on'
-                || ($this->request->server('REQUEST_SCHEME') ?? '') === 'https';
-            $protocol = $isHttps ? 'https' : 'http';
+            $protocol = $this->request->isHttps() ? 'https' : 'http';
             $host = $this->request->server('HTTP_HOST') ?? '';
             return $protocol . '://' . $host . $dir . $assetPath;
         }

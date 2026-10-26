@@ -103,6 +103,19 @@ class Session
     }
 
     /**
+     * Generates a new session ID and keeps the session data.
+     *
+     * It should be called whenever the privileges of the user change (typically after a successful login), so an
+     * attacker cannot use a session ID that was known before the login (session fixation attack).
+     *
+     * @return bool True on success; false on failure.
+     */
+    public function regenerateId(): bool
+    {
+        return session_regenerate_id(true);
+    }
+
+    /**
      * Destroys the current session.
      *
      * This method unsets all session variables, deletes the session cookie (if it exists), and then destroys

@@ -131,18 +131,26 @@ abstract class BaseController
      * data. If a view name is not provided, the method infers it from the current controller and action.
      *
      * @param array $data Associative array containing data to be passed to the view.
-     * @param string|null $viewName The name of the view to render, or null to infer from context.
+     * @param string|array|null $viewName The name of the view to render (from the views of the current controller),
+     *                                    an array [controller, view] to render a view of another controller
+     *                                    (e.g. ['Post', 'form'] renders App/Views/Post/form.view.php), or null to infer
+     *                                    the view from the current action.
      * @return ViewResponse The constructed ViewResponse object.
+     * @throws Exception If the array form of the view name does not contain exactly two items.
      */
-    protected function html(array $data = [], string $viewName = null): ViewResponse
+    protected function html(array $data = [], string|array|null $viewName = null): ViewResponse
     {
-        if ($viewName == null) {
+        if ($viewName === null) {
             $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR .
                 $this->app->getRouter()->getAction();
+        } elseif (is_string($viewName)) {
+            $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $viewName;
         } else {
-            $viewName = is_string($viewName) ?
-                ($this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR . $viewName) :
-                ($viewName['0'] . DIRECTORY_SEPARATOR . $viewName['1']);
+            if (count($viewName) !== 2) {
+                throw new Exception('The view name must be given as an array [controller, view].');
+            }
+            [$controllerName, $view] = array_values($viewName);
+            $viewName = ucfirst($controllerName) . DIRECTORY_SEPARATOR . $view;
         }
         return new ViewResponse($this->app, $viewName, $data);
     }

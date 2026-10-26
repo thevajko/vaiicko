@@ -1,7 +1,7 @@
 <?php
 
 /** @var string $contentHTML */
-/** @var \Framework\Core\IAuthenticator $auth */
+/** @var \Framework\Auth\AppUser $user */
 /** @var \Framework\Support\LinkGenerator $link */
 ?>
 

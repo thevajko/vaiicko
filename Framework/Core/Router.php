@@ -41,10 +41,14 @@ class Router
             throw self::notFound("Controller class {$fullControllerName} was not found (expected in file "
                 . \ClassLoader::getClassFile($fullControllerName) . ").");
         }
+        if (!is_subclass_of($fullControllerName, BaseController::class)) {
+            throw self::notFound("Class {$fullControllerName} is not a controller (it must extend "
+                . BaseController::class . ").");
+        }
         $this->controller = new $fullControllerName();
 
-        // The action must be an existing public method of the controller
-        if (!is_callable([$this->controller, $this->getAction()])) {
+        // The action must be a public method of the controller (not of the framework's BaseController)
+        if (!self::isAction($this->controller, $this->getAction())) {
             throw self::notFound("Action {$this->getAction()} was not found in controller {$fullControllerName}.");
         }
 
@@ -70,7 +74,12 @@ class Router
      */
     public function getControllerName(): string
     {
-        return (!isset($_GET['c']) || empty(trim(@$_GET['c']))) ? "Home" : trim(ucfirst($_GET['c']));
+        $name = $_GET['c'] ?? null;
+        if ($name === null || (is_string($name) && trim($name) === "")) {
+            return "Home";
+        }
+        // An array (e.g. ?c[]=x) is not a valid name, the empty string is rejected in processURL()
+        return is_string($name) ? ucfirst(trim($name)) : "";
     }
 
     /**
@@ -80,7 +89,12 @@ class Router
      */
     public function getAction(): string
     {
-        return (!isset($_GET['a']) || empty(trim(@$_GET['a']))) ? "index" : $_GET['a'];
+        $name = $_GET['a'] ?? null;
+        if ($name === null || (is_string($name) && trim($name) === "")) {
+            return "index";
+        }
+        // An array (e.g. ?a[]=x) is not a valid name, the empty string is rejected in processURL()
+        return is_string($name) ? $name : "";
     }
 
     /**
@@ -92,6 +106,31 @@ class Router
     private static function isValidName(string $name): bool
     {
         return preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $name) === 1;
+    }
+
+    /**
+     * Checks whether the method can be run as an action of the controller.
+     *
+     * An action is a public non-static method declared in the controller (or in its ancestor from the application),
+     * not in the framework's BaseController (e.g. setApp() or authorize() are not actions). The name must match
+     * exactly, including the letter case, because the view of the action is searched by the same name.
+     *
+     * @param object $controller The controller instance.
+     * @param string $action The name of the action from the URL.
+     * @return bool True if the method is an action.
+     */
+    private static function isAction(object $controller, string $action): bool
+    {
+        if (!method_exists($controller, $action)) {
+            return false;
+        }
+        $method = new \ReflectionMethod($controller, $action);
+        return $method->getName() === $action
+            && $method->isPublic()
+            && !$method->isStatic()
+            && !$method->isConstructor()
+            && !str_starts_with($action, '__')
+            && $method->getDeclaringClass()->getName() !== BaseController::class;
     }
 
     /**

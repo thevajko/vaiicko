@@ -45,6 +45,8 @@ abstract class SessionAuthenticator implements IAuthenticator
     {
         $identity = $this->authenticate($username, $password);
         if ($identity instanceof IIdentity) {
+            // A new session ID after login prevents the session fixation attack
+            $this->session->regenerateId();
             // Store the entire User object in the session
             $this->session->set(Configuration::IDENTITY_SESSION_KEY, $identity);
             return true;

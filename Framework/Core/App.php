@@ -9,6 +9,7 @@ use Framework\Http\HttpException;
 use Framework\Http\Request;
 use Framework\Http\Responses\RedirectResponse;
 use Framework\Http\Responses\Response;
+use Framework\Http\Responses\ViewResponse;
 use Framework\Http\Session;
 use Framework\Support\LinkGenerator;
 
@@ -89,6 +90,8 @@ class App
     public function run(): void
     {
         ob_start();
+        // The response that was sent to the client (used to decide whether the SQL log can be appended)
+        $sentResponse = null;
 
         try {
             // Process the incoming URL to determine the appropriate controller and action.
@@ -105,16 +108,18 @@ class App
                 // If the response is valid, send it to the client.
                 if ($response instanceof Response) {
                     $response->send();
+                    $sentResponse = $response;
                 } else {
                     throw new \Exception("Action " . $this->router->getFullControllerName() . "." .
-                        $this->router->getAction() . "didn't return an instance of Response.");
+                        $this->router->getAction() . " didn't return an instance of Response.");
                 }
             } else {
                 // If authorization fails, check if the user is logged in or redirect to the login page.
                 if (($this->auth?->getUser()?->isLoggedIn()) || !defined('\\App\\Configuration::LOGIN_URL')) {
                     throw new HttpException(403); // Forbidden access
                 } else {
-                    (new RedirectResponse(Configuration::LOGIN_URL))->send();
+                    $sentResponse = new RedirectResponse(Configuration::LOGIN_URL);
+                    $sentResponse->send();
                 }
             }
         } catch (\Throwable $exception) {
@@ -128,18 +133,22 @@ class App
 
             // Get the configured error handler and process the error.
             $errorHandler = new (Configuration::ERROR_HANDLER_CLASS)();
-            $errorHandler->handleError($this, $exception)->send();
+            $sentResponse = $errorHandler->handleError($this, $exception);
+            $sentResponse->send();
         }
 
-        // If SQL debugging is enabled, display executed SQL queries.
-        if (Configuration::SHOW_SQL_QUERY) {
+        // If SQL debugging is enabled, display executed SQL queries. Only HTML pages (and redirects, which are shown
+        // as a page with a link in the debug mode) are extended, other responses (e.g. JSON) would be corrupted.
+        if (Configuration::SHOW_SQL_QUERY
+            && ($sentResponse instanceof ViewResponse || $sentResponse instanceof RedirectResponse)
+        ) {
             $queries = array_map(function ($q) {
                 $lines = explode("\n", $q);
                 $query = "Sent ";
                 foreach ($lines as $line) {
                     if (preg_match("/^Sent SQL: \[\d+]/", $line)) {
                         $query = $line;
-                    } elseif (preg_match("/^Params: \d+/", $line)) {
+                    } elseif (preg_match("/^Params:\s+\d+/", $line)) {
                         break;
                     } else {
                         $query .= $line . "\n";

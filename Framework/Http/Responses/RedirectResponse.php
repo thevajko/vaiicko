@@ -27,14 +27,16 @@ class RedirectResponse extends Response
      * RedirectResponse constructor.
      *
      * Initializes a new instance of RedirectResponse with the specified URL.
-     * The HTTP status code is set to 301 (Moved Permanently) by default.
+     * The HTTP status code is set to 302 (Found) by default. It is a temporary redirect, which the browser does not
+     * remember (unlike 301 Moved Permanently), and after a form submission the browser loads the new URL using the
+     * GET method. If needed, the status code can be changed using setStatusCode(), e.g. to 303 (See Other).
      *
      * @param string $redirectUrl The URL to which the client should be redirected.
      */
     public function __construct(string $redirectUrl)
     {
         $this->redirectUrl = $redirectUrl;
-        $this->setStatusCode(301);
+        $this->setStatusCode(302);
     }
 
     /**

@@ -71,23 +71,43 @@ class Request
     /**
      * Checks if the request body contains JSON data.
      *
+     * Parameters of the media type are ignored, so e.g. "application/json; charset=utf-8" is also recognized.
+     *
      * @return bool True if the request body has a Content-Type of "application/json", otherwise false.
      */
     public function isJson(): bool
     {
-        return $this->server('CONTENT_TYPE') === "application/json";
+        return self::mediaTypes($this->server('CONTENT_TYPE'))[0] === 'application/json';
     }
 
     /**
      * Checks if the client requests a JSON formatted response.
      *
-     * This method checks the 'Accept' header of the request for the value 'application/json'.
+     * This method checks whether the 'Accept' header of the request lists the media type 'application/json'. The
+     * header may contain more media types and parameters, e.g. "application/json, text/plain;q=0.9". The wildcard
+     * media type alone (sent by browsers) does not mean that the client wants JSON.
      *
      * @return bool True if the client expects a JSON response, otherwise false.
      */
     public function wantsJson(): bool
     {
-        return $this->server('HTTP_ACCEPT') === "application/json";
+        return in_array('application/json', self::mediaTypes($this->server('HTTP_ACCEPT')), true);
+    }
+
+    /**
+     * Checks if the request was sent over a secure HTTPS connection.
+     *
+     * Note: if the application runs behind a reverse proxy, the proxy must pass the information about HTTPS to the
+     * web server (e.g. as the HTTPS server variable).
+     *
+     * @return bool True if the request uses HTTPS, otherwise false.
+     */
+    public function isHttps(): bool
+    {
+        $https = strtolower((string)($this->server('HTTPS') ?? ''));
+        return ($https !== '' && $https !== 'off')
+            || strtolower((string)($this->server('REQUEST_SCHEME') ?? '')) === 'https'
+            || (string)($this->server('SERVER_PORT') ?? '') === '443';
     }
 
     /**
@@ -158,7 +178,10 @@ class Request
      * Retrieves uploaded files from the request.
      *
      * If a specific key is provided, it returns the corresponding UploadedFile object; if no key is specified,
-     * it returns an array of all uploaded files.
+     * it returns an array of all uploaded files (indexed by the names of the form fields).
+     *
+     * If more files were uploaded in one form field (e.g. `<input type="file" name="photos[]" multiple>`), an array
+     * of UploadedFile objects is returned for that field.
      *
      * @param string|null $key The key of the file to retrieve, or null to retrieve all.
      * @return UploadedFile|UploadedFile[]|null The UploadedFile object or an array of files, or null if not found.
@@ -166,9 +189,28 @@ class Request
     public function file(?string $key = null): UploadedFile|array|null
     {
         if ($key === null) {
-            return array_map(fn($file) => new UploadedFile($file), $this->files);
+            return array_map(fn($file) => self::toUploadedFiles($file), $this->files);
         }
-        return isset($this->files[$key]) ? new UploadedFile($this->files[$key]) : null;
+        return isset($this->files[$key]) ? self::toUploadedFiles($this->files[$key]) : null;
+    }
+
+    /**
+     * Converts one item of the $_FILES array to the UploadedFile object, or to the array of UploadedFile objects, if
+     * more files were uploaded in one form field (PHP then stores the names, sizes, etc. in separate arrays).
+     *
+     * @param array $fileData The item of the $_FILES array.
+     * @return UploadedFile|UploadedFile[] The uploaded file or files.
+     */
+    private static function toUploadedFiles(array $fileData): UploadedFile|array
+    {
+        if (!is_array($fileData['name'])) {
+            return new UploadedFile($fileData);
+        }
+        $files = [];
+        foreach (array_keys($fileData['name']) as $index) {
+            $files[$index] = self::toUploadedFiles(array_map(fn($values) => $values[$index], $fileData));
+        }
+        return $files;
     }
 
     /**
@@ -201,7 +243,7 @@ class Request
      * Constructs and returns the base URL of the current request.
      *
      * The base URL is derived from the PHP_SELF and HTTP_HOST server variables, determining the appropriate protocol
-     * (HTTP or HTTPS) based on the server protocol.
+     * (HTTP or HTTPS) using isHttps().
      *
      * @return string The full base URL, including the scheme, host, and script path.
      */
@@ -211,9 +253,22 @@ class Request
         $hostName = $this->server('HTTP_HOST');
 
         // Determine the request protocol (HTTP or HTTPS)
-        $protocol = strtolower(substr($this->server('SERVER_PROTOCOL'), 0, 5)) === 'https' ?
-            'https' : 'http';
+        $protocol = $this->isHttps() ? 'https' : 'http';
 
         return $protocol . '://' . $hostName . $path;
+    }
+
+    /**
+     * Parses a header value with media types (Content-Type, Accept) to the list of media types without parameters.
+     *
+     * @param mixed $headerValue The value of the header, e.g. "application/json, text/plain;q=0.9".
+     * @return string[] Lowercase media types, e.g. ['application/json', 'text/plain']; [''] if the header is empty.
+     */
+    private static function mediaTypes(mixed $headerValue): array
+    {
+        return array_map(
+            fn($part) => strtolower(trim(explode(';', $part)[0])),
+            explode(',', (string)($headerValue ?? ''))
+        );
     }
 }
