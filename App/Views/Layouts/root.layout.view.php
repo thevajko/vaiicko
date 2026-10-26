@@ -34,7 +34,7 @@
             </li>
         </ul>
         <?php if ($user->isLoggedIn()) { ?>
-            <span class="navbar-text">Logged in user: <b><?= $user->getName() ?></b></span>
+            <span class="navbar-text">Logged in user: <b><?= e($user->getName()) ?></b></span>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $link->url('auth.logout') ?>">Log out</a>
