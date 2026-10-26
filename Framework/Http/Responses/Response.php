@@ -59,7 +59,10 @@ abstract class Response
      *
      * @param string $name The name of the cookie
      * @param mixed $value The value of the cookie
-     * @param int $expires_or_options Expiration time as a Unix timestamp or an options array
+     * @param int|array $expires_or_options Expiration time as a Unix timestamp or an options array with the keys
+     *                                      expires, path, domain, secure, httponly and samesite (the remaining
+     *                                      parameters are then ignored), e.g.
+     *                                      ['expires' => time() + 3600, 'httponly' => true, 'samesite' => 'Lax']
      * @param string $path The path on the server where the cookie will be available
      * @param string $domain The (sub)domain that the cookie is available to
      * @param bool $secure Whether the cookie should be transmitted over a secure HTTPS connection
@@ -71,12 +74,15 @@ abstract class Response
     public function setCookie(
         string $name,
         string $value = "",
-        int $expires_or_options = 0,
+        int|array $expires_or_options = 0,
         string $path = "",
         string $domain = "",
         bool $secure = false,
         bool $httponly = false
     ): bool {
+        if (is_array($expires_or_options)) {
+            return setcookie($name, $value, $expires_or_options);
+        }
         return setcookie($name, $value, $expires_or_options, $path, $domain, $secure, $httponly);
     }
 }
