@@ -9,6 +9,10 @@ This framework was created to support the teaching of the subject Development of
 The framework source code is fully commented. In case you need additional information to understand,
 visit the [WIKI stránky](https://github.com/thevajko/vaiicko/wiki/00-%C3%9Avodn%C3%A9-inform%C3%A1cie) (only in Slovak).
 
+# Requirements
+
+- __PHP 8.0__ or newer with the __PDO__ extension
+
 # Docker configuration
 
 The Framework has a basic configuration for running and debugging web applications in the `<root>/docker` directory. 
