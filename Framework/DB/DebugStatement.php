@@ -41,11 +41,14 @@ class DebugStatement
      */
     public function execute(?array $params = null): bool
     {
-        $result = $this->stmt->execute($params);
-        ob_start(); // Start output buffering to capture debug output
-        $this->stmt->debugDumpParams(); // Dumps the parameters for logging
-        Connection::appendQueryLog(ob_get_clean()); // Log the captured output
-        return $result;
+        try {
+            return $this->stmt->execute($params);
+        } finally {
+            // The query is logged also if it failed, so the failing query can be seen in the SQL debug output
+            ob_start(); // Start output buffering to capture debug output
+            $this->stmt->debugDumpParams(); // Dumps the parameters for logging
+            Connection::appendQueryLog(ob_get_clean()); // Log the captured output
+        }
     }
 
     /**
