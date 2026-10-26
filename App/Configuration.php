@@ -24,7 +24,7 @@ class Configuration
     /**
      * Version of the framework.
      */
-    public const FW_VERSION = '3.0.7';
+    public const FW_VERSION = '3.1.0';
 
     /**
      * Database connection settings.
