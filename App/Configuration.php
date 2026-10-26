@@ -87,6 +87,12 @@ class Configuration
     public const UPLOAD_URL = '/uploads/';
 
     /**
+     * Flag to require a whitelist of properties for Model::setFromRequest() (protection against mass assignment).
+     * If true, the model must define `protected static ?array $fillable = [...]` or the allowed fields must be passed
+     * to setFromRequest(), otherwise an exception is thrown.
+     */
+    public const MODEL_REQUIRE_FILLABLE = true;
+    /**
      * Optional Content-Security-Policy sent with HTML (view) responses as an extra protection against XSS. Null means
      * that no header is sent. Example policy that allows only own scripts and the CDN used for Bootstrap (inline
      * scripts and onclick="..." are forbidden):
