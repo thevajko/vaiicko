@@ -134,7 +134,7 @@ abstract class BaseController
      * @param string|null $viewName The name of the view to render, or null to infer from context.
      * @return ViewResponse The constructed ViewResponse object.
      */
-    protected function html(array $data = [], string $viewName = null): ViewResponse
+    protected function html(array $data = [], ?string $viewName = null): ViewResponse
     {
         if ($viewName == null) {
             $viewName = $this->app->getRouter()->getControllerName() . DIRECTORY_SEPARATOR .
